@@ -1,5 +1,24 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { brand, blogCategories, contact } from "../data/profile.js";
+
+const beijingTimeFormatter = new Intl.DateTimeFormat("zh-CN", {
+  timeZone: "Asia/Shanghai",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: false,
+});
+
+function formatBeijingTime(date) {
+  const parts = Object.fromEntries(
+    beijingTimeFormatter.formatToParts(date).map(({ type, value }) => [type, value]),
+  );
+  return `${parts.year}.${parts.month}.${parts.day} · ${parts.hour}:${parts.minute}:${parts.second}`;
+}
 
 /**
  * Hero：全屏首页
@@ -8,6 +27,15 @@ import { brand, blogCategories, contact } from "../data/profile.js";
  * - 底部：状态条 / 时间戳
  */
 export default function Hero() {
+  const [beijingTime, setBeijingTime] = useState(() => formatBeijingTime(new Date()));
+
+  useEffect(() => {
+    const updateTime = () => setBeijingTime(formatBeijingTime(new Date()));
+    updateTime();
+    const timer = window.setInterval(updateTime, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
     <section id="hero" className="hero">
       {/* 背景层：淡蓝渐变 + 网格 */}
@@ -33,13 +61,9 @@ export default function Hero() {
       <div className="container hero__content">
         {/* 顶部 meta 行 */}
         <div className="hero__top">
-          <div className="hero__chip">
-            <span className="hero__chip-dot" />
-            <span>{brand.nameEn}</span>
-          </div>
           <div className="hero__loc">
             <span className="hero__loc-line" />
-            <span>CN · 2025 — 2026</span>
+            <span>北京 · {beijingTime}</span>
           </div>
         </div>
 
@@ -48,9 +72,8 @@ export default function Hero() {
           <div className="eyebrow">PORTFOLIO · TEAM</div>
 
           <h1 className="hero__title">
-            <span className="hero__title-line">西瓜</span>
-            <span className="hero__title-line">
-              <span className="hero__title-accent">柚子</span>
+            <span className="hero__title-line hero__title-line--brand">
+              西瓜<span className="hero__title-accent">柚子</span>
             </span>
             <span className="hero__title-line hero__title-line--sub">
               {brand.slogan}

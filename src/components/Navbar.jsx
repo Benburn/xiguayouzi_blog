@@ -37,7 +37,7 @@ export default function Navbar() {
 
   const navItems = [
     { id: "hero", label: "首页" },
-    { id: "about", label: "团队" },
+    { id: "about", label: "研究" },
     { id: "blog", label: "开源项目" },
     { id: "contact", label: "联系" },
   ];
@@ -50,8 +50,7 @@ export default function Navbar() {
             <span className="dot" />
           </span>
           <span className="nav__brand-text">
-            <span className="nav__brand-name">{brand.name}</span>
-            <span className="nav__brand-sub">{brand.nameEn}</span>
+            <span className="nav__brand-name nav__brand-name--en">{brand.nameEn}</span>
           </span>
         </Link>
 

@@ -118,7 +118,7 @@ export default function Contact() {
           <nav className="footer__nav" aria-label="底部导航">
             <Link to="/#hero">首页</Link>
             <span className="dot-sep" />
-            <Link to="/#about">团队</Link>
+            <Link to="/#about">研究方向</Link>
             <span className="dot-sep" />
             <Link to="/#blog">开源项目</Link>
             <span className="dot-sep" />

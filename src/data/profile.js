@@ -42,7 +42,7 @@ export const experience = [
   {
     period: "2018.09 — 2021.12",
     role: "基础医学研究助理",
-    company: "北京顶级三家医院",
+    company: "北京顶级三甲医院",
     points: [
       "参与国家自然科学基金面上项目 2 项",
       "在 Front. Oncol. / Bioeng. Biotechnol. 等期刊发表论文 4 篇",
@@ -73,6 +73,24 @@ export const highlights = [
   { label: "主理人身份", value: "2", suffix: "重 · 临床 × 工程" },
   { label: "公众号矩阵", value: "2", suffix: "个在运营" },
   { label: "内容方向", value: "3", suffix: "条主线" },
+];
+
+export const researchDirections = [
+  {
+    code: "01",
+    title: "基于人工智能的医学影像分析",
+    titleEn: "AI · MEDICAL IMAGING",
+  },
+  {
+    code: "02",
+    title: "骨与软骨组织再生",
+    titleEn: "BONE · CARTILAGE REGENERATION",
+  },
+  {
+    code: "03",
+    title: "AI 浪潮下的淘金者",
+    titleEn: "BUILDING IN THE AI ERA",
+  },
 ];
 
 // =========================================================
@@ -126,7 +144,7 @@ export const blogPosts = [
 
 ## 起点：为什么选择这条路
 
-2018 年在北京顶级三家医院做基础研究时，我第一次完整跑通"锶掺杂羟基磷灰石"的体内外评价。临床医生反复追问的问题是——*这东西到底能不能上车？* 当时我答不上来。
+2018 年在北京顶级三甲医院做基础研究时，我第一次完整跑通"锶掺杂羟基磷灰石"的体内外评价。临床医生反复追问的问题是——*这东西到底能不能上车？* 当时我答不上来。
 
 2022 年带着这个问题进入工业界，开始把实验室的"工艺可行"翻译成注册路径上的"工艺可控"。
 
@@ -206,6 +224,47 @@ export const blogPosts = [
   },
 
   // —— 医学影像 ——
+  {
+    slug: "clinical-ultrasound-reference-cards",
+    category: "imaging",
+    title: "超声正常值老记不住？这套「临床超声正常值知识卡片」帮你搞定",
+    excerpt:
+      "全书 6 章 32 节、206 张知识卡片，其中 170 张配有原书真图；支持问答翻面、列表速查、章节导航与离线使用。",
+    date: "2026-07-10",
+    readTime: "3 分钟",
+    cover: null,
+    tags: ["超声正常值", "知识卡片", "学习工具"],
+    body: `# 超声正常值老记不住？
+
+## 这套「临床超声正常值知识卡片」帮你搞定
+
+全书共整理为 **6 章、32 节、206 张知识卡片**，其中 **170 张卡片配有原书真图**，帮助你把分散、难记的超声测量正常值变成可以随时复习和查询的知识库。
+
+## 两种学习方式
+
+- **问答翻面模式**：像 Anki 一样刷卡，先回忆答案，再翻面核对。
+- **列表速查模式**：需要某项正常值时，可以直接打开列表快速查询。
+
+## 使用体验
+
+- 左侧章节导航，一点即可直达对应章节
+- 5 套主题自由选择
+- 页面内置实时时钟
+- 单节文件采用图片内嵌方式，双击即可查看
+- 文件转发后不会丢失图片
+- 想从头通读时，可以打开「全书合集」
+
+无需安装软件，打开网页即可使用；同时支持离线浏览，适合在通勤、值班间隙等碎片时间高效复习。
+
+> 收藏它，让超声测量正常值真正长在脑子里。
+
+## 获取知识卡片
+
+**夸克网盘：** [点击打开「临床超声正常值知识卡片」](https://pan.quark.cn/s/006960e4fc27)
+
+**提取码：E7jG**
+`,
+  },
   {
     slug: "ultrasound-basics",
     category: "imaging",
@@ -381,7 +440,7 @@ export function getCategoryById(id) {
 // 导航
 export const navItems = [
   { id: "hero", label: "首页" },
-  { id: "about", label: "团队" },
+  { id: "about", label: "研究" },
   { id: "blog", label: "开源项目" },
   { id: "contact", label: "联系" },
 ];

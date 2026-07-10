@@ -1,8 +1,8 @@
-import { owner, experience, contact, highlights } from "../data/profile.js";
+import { experience, contact, researchDirections } from "../data/profile.js";
 
 /**
- * About：团队背景模块
- * - 顶部：团队介绍 + 数据指标
+ * About：研究方向与主理人经历
+ * - 顶部：三项研究方向
  * - 中部：主理人 4 段经历（时间线）
  * - 底部：联系方式（公众号、小红书、邮箱、微信）
  */
@@ -12,23 +12,20 @@ export default function About() {
       <div className="container">
         {/* 章节头 */}
         <div className="section-head">
-          <div className="eyebrow">01 · TEAM</div>
+          <div className="eyebrow">01 · RESEARCH</div>
           <h2 className="section-title">
-            团队<span className="accent"> 背景</span>
+            研究<span className="accent"> 方向</span>
           </h2>
-          <p className="section-lead">{owner.bio}</p>
+          <p className="section-lead">立足临床与工程交叉视角，关注医学影像、组织再生与人工智能带来的新机会。</p>
         </div>
 
-        {/* 数据指标 */}
-        <div className="about__stats">
-          {highlights.map((h) => (
-            <div className="about__stat" key={h.label}>
-              <div className="about__stat-value">
-                <span className="about__stat-num">{h.value}</span>
-                <span className="about__stat-suffix">{h.suffix}</span>
-              </div>
-              <div className="about__stat-label">{h.label}</div>
-              <div className="about__stat-line" />
+        <div className="research-grid">
+          {researchDirections.map((direction) => (
+            <div className="research-card" key={direction.code}>
+              <span className="research-card__code">{direction.code}</span>
+              <div className="research-card__icon" aria-hidden="true" />
+              <h3 className="research-card__title">{direction.title}</h3>
+              <span className="research-card__en">{direction.titleEn}</span>
             </div>
           ))}
         </div>
