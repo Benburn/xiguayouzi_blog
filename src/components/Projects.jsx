@@ -11,13 +11,13 @@ export default function Projects() {
     <section id="blog" className="section projects">
       <div className="container">
         <div className="section-head">
-          <div className="eyebrow">02 · OPEN-SOURCE PROJECTS</div>
+          <div className="eyebrow">02 · NOTES & OPEN-SOURCE PROJECTS</div>
           <h2 className="section-title">
-            三个<span className="accent"> 开源项目</span>
+            文章与<span className="accent"> 开源项目</span>
           </h2>
           <p className="section-lead">
-            把研究、临床、成长三条主线公开记录，欢迎取用、引用、讨论。
-            每个项目下都有持续更新的文章列表。
+            沿着医疗器械、医学影像与个人成长三条主线，持续记录临床观察、
+            工程实践与阶段思考。
           </p>
         </div>
 

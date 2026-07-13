@@ -67,44 +67,57 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* 主标题区 */}
-        <div className="hero__main">
-          <div className="eyebrow">PORTFOLIO · TEAM</div>
+        <div className="hero__stage">
+          {/* 主标题区 */}
+          <div className="hero__main">
+            <div className="hero__identity">
+              <span className="hero__identity-dot" />
+              超声科医生 · 医疗器械工程师
+            </div>
+            <div className="eyebrow">PERSONAL NOTES · CLINICAL × ENGINEERING</div>
 
-          <h1 className="hero__title">
-            <span className="hero__title-line hero__title-line--brand">
-              西瓜<span className="hero__title-accent">柚子</span>
-            </span>
-            <span className="hero__title-line hero__title-line--sub">
-              {brand.slogan}
-            </span>
-          </h1>
+            <h1 className="hero__title">
+              <span className="hero__title-line hero__title-line--brand">
+                西瓜<span className="hero__title-accent">柚子</span>
+              </span>
+              <span className="hero__title-line hero__title-line--sub">
+                {brand.slogan}
+              </span>
+            </h1>
 
-          <p className="hero__lead">{brand.description}</p>
+            <p className="hero__lead">{brand.description}</p>
 
-          <div className="hero__ctas">
-            <a
-              href="#contact"
-              className="btn btn-primary"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              建立联系
-              <span className="arrow">→</span>
-            </a>
-            <a
-              href="#blog"
-              className="btn btn-ghost"
-              onClick={(e) => {
-                e.preventDefault();
-                document.getElementById("blog")?.scrollIntoView({ behavior: "smooth" });
-              }}
-            >
-              查看项目
-            </a>
+            <div className="hero__ctas">
+              <a
+                href="#blog"
+                className="btn btn-primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("blog")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                阅读文章
+                <span className="arrow">→</span>
+              </a>
+              <a
+                href="#about"
+                className="btn btn-ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                了解研究方向
+              </a>
+            </div>
           </div>
+
+          <figure className="hero__visual">
+            <img
+              src="/images/hero-ultrasound-probes-v4.webp"
+              alt="线阵、心脏相控阵和腹部凸阵超声探头"
+            />
+          </figure>
         </div>
 
         {/* 项目入口（3 个分类卡） */}
