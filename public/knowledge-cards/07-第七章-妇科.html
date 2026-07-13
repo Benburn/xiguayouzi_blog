@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第七章 妇科</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #ec4899 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #ec4899; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #ec4899;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #ec4899;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #ec4899;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #ec4899; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #ec4899;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #ec4899;
+  transition: width 0.3s; box-shadow: 0 0 8px #ec4899;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #ec4899;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #ec4899;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #ec4899;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #ec4899; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第七章 妇科</h1>
+    <p>Pages 95-112 · 子宫/卵巢</p>
+    <div class="stats">
+      <span class="stat">📇 共 134 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "7-1-1", "title": "放射状动脉", "front": "请简述该名词的定义。", "back": "<b>放射状动脉</b>:<br>弓状动脉发出第二级分支朝向子宫腔呈放射状垂直分布，称为放射状动脉。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-2", "title": "直肠子宫陷凹", "front": "请简述该名词的定义。", "back": "<b>直肠子宫陷凹</b>:<br>在子宫后面，腹膜沿子宫壁向下至子宫颈后方及阴道后穹隆，再折向直肠，形成直肠子宫陷凹。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-3", "title": "黏膜下肌瘤", "front": "请简述该名词的定义。", "back": "<b>黏膜下肌瘤</b>:<br>肌瘤部分或完全位于子宫腔内，肌瘤表面覆盖子宫内膜。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-4", "title": "子宫腺肌瘤", "front": "请简述该名词的定义。", "back": "<b>子宫腺肌瘤</b>:<br>属于局灶型子宫腺肌病类，是由于子宫内膜在肌层中局限性生长，形成结节或团块，但无假包膜，与周围肌层亦无明显界限。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-5", "title": "子宫内膜息肉", "front": "请简述该名词的定义。", "back": "<b>子宫内膜息肉</b>:<br>是由于子宫内膜腺体和纤维间质局限性增生隆起而形成的一种带蒂的瘤样病变。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-6", "title": "endometrial carcinoma", "front": "请简述该名词的定义。", "back": "<b>endometrial carcinoma</b>:<br>即子宫内膜癌，是发生于子宫内膜的一组上皮性恶性肿瘤，以来源于子宫内膜腺体的腺癌最常见。为女性生殖系统常见的三大恶性肿瘤之一。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-7", "title": "子宫颈癌", "front": "请简述该名词的定义。", "back": "<b>子宫颈癌</b>:<br>是最常见的妇科恶性肿瘤，好发于宫颈管柱状上皮与鳞状上皮移行处。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-8", "title": "子宫发育不良", "front": "请简述该名词的定义。", "back": "<b>子宫发育不良</b>:<br>又称幼稚子宫，系两侧副中肾管会合后短时间内即停止发育所致。子宫较正常小，宫颈相对较长，宫体与宫颈之比为1:1或2:3。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-9", "title": "septate uterus", "front": "请简述该名词的定义。", "back": "<b>septate uterus</b>:<br>即纵隔子宫，因双侧副中肾管融合后，中隔吸收受阻，形成不同程度的中隔，中隔由宫底到宫颈内口或外口为完全中隔子宫，中隔止于宫颈以上任何部位为不完全中隔子宫。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-10", "title": "卵巢瘤样病变", "front": "请简述该名词的定义。", "back": "<b>卵巢瘤样病变</b>:<br>又称非赘生性囊肿，是卵巢的常见疾病，大多是由于卵巢的功能性改变引起的潴留囊肿，包括卵巢巧克力囊肿、滤泡囊肿、黄体囊肿、多囊卵巢、黄素化囊肿等。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-11", "title": "滤泡囊肿", "front": "请简述该名词的定义。", "back": "<b>滤泡囊肿</b>:<br>常为单发，是由于卵泡成熟后不破裂或闭锁，卵泡液潴留使之持续长大而形成的囊肿，直径常不超过4cm，外形圆形或类圆形，形态规则，囊液清亮，囊壁薄而光滑。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-12", "title": "黄体囊肿", "front": "请简述该名词的定义。", "back": "<b>黄体囊肿</b>:<br>排卵后的黄体在形成过程中，黄体血肿液化所致，其声像图表现具有多样性。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-13", "title": "PCOS", "front": "请简述该名词的定义。", "back": "<b>PCOS</b>:<br>即多囊卵巢综合征，是月经调节机制失常所致，与内分泌有关，临床表现为月经稀发或闭经、不孕、多毛和肥胖等。声像图可见双侧卵巢均匀性长大，髓质回声增强，可见多个不成熟的小卵泡，总数常超过12个，直径2~9mm。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-14", "title": "卵巢巧克力囊肿", "front": "请简述该名词的定义。", "back": "<b>卵巢巧克力囊肿</b>:<br>即卵巢子宫内膜异位囊肿，是指具有活性的子宫内膜异位到卵巢形成的囊性病变，因囊肿内的异位内膜反复出血，形成暗褐色黏稠液体，似“巧克力”，因此得名。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-15", "title": "成熟畸胎瘤", "front": "请简述该名词的定义。", "back": "<b>成熟畸胎瘤</b>:<br>是来源于原始生殖细胞的生殖细胞肿瘤，由多胚层组织构成，因肿瘤成分多以外胚层为主，故又称皮样囊肿。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-16", "title": "Meigs syndrome", "front": "请简述该名词的定义。", "back": "<b>Meigs syndrome</b>:<br>卵巢纤维瘤常伴发胸腔积液、腹水，具此三者称为梅格斯综合征，切除肿瘤后，胸腔积液、腹水即可自行消失。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-17", "title": "杂乱结构征", "front": "请简述该名词的定义。", "back": "<b>杂乱结构征</b>:<br>成熟畸胎瘤肿块内含多种回声成分，表现为无回声区内有斑点状、团状强回声，并伴有多条短线状高回声平行排列，浮于其中，组织学成分也多样，可含有牙齿、骨组织、钙化及油脂样物。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-18", "title": "交界性肿瘤", "front": "请简述该名词的定义。", "back": "<b>交界性肿瘤</b>:<br>交界性肿瘤是指上皮细胞有增殖活跃及核异形，表现为上皮细胞层次增加，但无间质浸润，是一种低度潜在恶性肿瘤，生长缓慢，转移率低，复发迟。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-19", "title": "卵巢转移癌", "front": "请简述该名词的定义。", "back": "<b>卵巢转移癌</b>:<br>卵巢转移癌指体内任何部位的原发性肿瘤转移到卵巢形成的转移性恶性肿瘤，占卵巢肿瘤的5%～10%，大多累及双侧卵巢，病灶表现为多发性结节，镜下可见原发肿瘤的形态特征。常见的卵巢转移癌为库肯勃瘤，为含明显印戒细胞成分的黏液性腺癌，大多来自胃肠道，肿瘤大小不等，多保持卵巢原形或呈肾形，切面实性，呈胶质样；镜下可见印戒细胞，间质内可有黏液，形成黏液湖。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-20", "title": "宫内节育器嵌顿", "front": "请简述该名词的定义。", "back": "<b>宫内节育器嵌顿</b>:<br>由于节育器过大或放置时操作不当损伤宫壁，导致部分或全部节育器嵌入子宫肌层内，为节育器嵌顿。声像表现为节育器偏离宫腔中央部位，嵌入肌层甚至接近浆膜层。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-1-21", "title": "输卵管积水", "front": "请简述该名词的定义。", "back": "<b>输卵管积水</b>:<br>因输卵管伞端及狭部粘连闭锁，浆液性渗出液积聚形成输卵管积水。积水输卵管表面光滑，管壁薄，形似卷曲腊肠形。声像表现为子宫旁囊性肿块，呈腊肠状，边界清，内为无回声区，无回声区内见稀疏点状回声。CDFI 显示肿块边缘偶可见点状血流信号。", "tags": ["名词解释", "妇科"], "kind": "名词解释", "page": 98, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-1", "title": "1. 女性内生殖器包括___、___、___及___, 后二者称为___。", "front": "", "back": "<b>答案:</b>阴道 子宫 输卵管 卵巢 子宫附件", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-2", "title": "2. 子宫体壁由外到内分为___、___、___。内膜表面的2/3称为___，靠近子宫肌层的1/3内膜称为___。", "front": "", "back": "<b>答案:</b>浆膜层 肌层 子宫内膜 功能层 基底层", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-3", "title": "3. 妇科超声检查途径主要包括：___、___、___。", "front": "", "back": "<b>答案:</b>经腹部扫查 经阴道扫查 经直肠扫查", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-4", "title": "4. 经腹部超声扫查要求病人膀胱 ___ ，检查前1小时，病人饮水约 ___ 。所用凸阵探头，探头频率约 ___ 。", "front": "", "back": "<b>答案:</b>适度充盈 500ml 3.5~5.0MHz", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-5", "title": "5. 新生儿子宫、宫颈总长度___ cm, 1岁后逐渐减小至___ cm, 宫颈：宫体为___。", "front": "", "back": "<b>答案:</b>3.5 2.5 2:1", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-6", "title": "6. 子宫肌瘤常见的临床症状有___、___。", "front": "", "back": "<b>答案:</b>月经量大 尿频", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-7", "title": "7. 子宫肌瘤最常见的变性有___。", "front": "", "back": "<b>答案:</b>玻璃样变", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-8", "title": "8. 子宫内膜增生症是子宫内膜受___持续作用而无___拮抗，发生不同程度的增生性改变，多见于青春期和更年期。", "front": "", "back": "<b>答案:</b>雌激素 孕激素", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-9", "title": "9. 子宫内膜癌的二维超声早期仅表现为内膜稍增厚，回声均匀，无法与___鉴别，需要根据病史和___诊断。随病情的发展，子宫内膜明显增厚，呈局限性或弥漫性不均匀混合性回声。", "front": "", "back": "<b>答案:</b>内膜增生症 诊断", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-10", "title": "10. 宫颈浸润癌主要症状有___、___；癌肿侵犯周围组织可出现继发症状。", "front": "", "back": "<b>答案:</b>接触性阴道流血 阴道排液", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-11", "title": "11. 浸润型宫颈癌大体病理类型：___、___、___和___。", "front": "", "back": "<b>答案:</b>内生型 外生型 溃疡型 颈管型", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-12", "title": "12. 先天性无子宫为两侧___未发育所致，伴有阴道发育不全，可有正常的双侧___、___。", "front": "", "back": "<b>答案:</b>副中肾管中、下段 输卵管 卵巢", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-13", "title": "13. 单角子宫的超声表现为子宫外形呈梭形，向一侧弯曲，横径较小，宫底横切面仅见___，宫腔内膜呈___，同侧可见正常卵巢。", "front": "", "back": "<b>答案:</b>一侧宫角 管状", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-14", "title": "14. 根据世界卫生组织1973年制定的卵巢肿瘤的组织学分类，可将卵巢肿瘤分为___、___、___、___。", "front": "", "back": "<b>答案:</b>上皮性肿瘤 性索间质肿瘤 生殖细胞肿瘤 转移性肿瘤", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-15", "title": "15. 卵巢上皮性肿瘤按良恶性划分，可分为___、___、___。", "front": "", "back": "<b>答案:</b>良性 恶性 交界性", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-16", "title": "16. 与滋养细胞疾病有关的卵巢瘤样病变为___。", "front": "", "back": "<b>答案:</b>黄素化囊肿", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-17", "title": "17. 常见的卵巢功能性改变形成的潴留囊肿有___、___、___。", "front": "", "back": "<b>答案:</b>滤泡囊肿 黄体囊肿 多囊卵巢", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-18", "title": "18. 具有活性的子宫内膜组织出现在子宫内膜以外的部位时称为___，多发生在___，该处病灶常因反复出血形成囊肿，称为___，因内含的液体呈暗褐色黏糊状，又被称为___。", "front": "", "back": "<b>答案:</b>子宫内膜异位症 卵巢 卵巢子宫内膜异位囊肿 巧克力囊肿", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-19", "title": "19. 卵巢良性肿瘤包括___，___，___，___。", "front": "", "back": "<b>答案:</b>卵巢囊肿腺瘤 成熟畸胎瘤 卵泡膜细胞瘤 卵巢纤维瘤", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-20", "title": "20. 卵泡膜细胞瘤为良性肿瘤，能分泌___，因此常合并___。", "front": "", "back": "<b>答案:</b>雌激素 子宫内膜增生症", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-21", "title": "21. 卵巢浆液性囊腺瘤光镜下囊壁为___组织，内衬___上皮；卵巢黏液性囊腺瘤光镜下囊壁为___组织，内衬___上皮。", "front": "", "back": "<b>答案:</b>纤维结缔 单层柱状 纤维结缔 单层高柱状黏液", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-22", "title": "22. 卵巢囊腺瘤多普勒超声表现为囊壁、囊内分隔以及乳头上见___状血流，可记录到___动脉频谱，最大血流速度常在___左右，RI值大于___。", "front": "", "back": "<b>答案:</b>细条 低速中等阻力 15cm/s 0.4", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-23", "title": "23. 卵巢纤维瘤来源于原始性腺中的___，占卵巢肿瘤的___%，多见于___，单侧为多。", "front": "", "back": "<b>答案:</b>性索及间质组织 2~5 中年妇女", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-24", "title": "24. 成熟畸胎瘤由多胚层组织构成，其中以___为主，由于肿瘤成分特殊，活动度大，容易并发___。", "front": "", "back": "<b>答案:</b>外胚层 蒂扭转", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-25", "title": "25. 卵巢囊腺瘤可分为___，___两种类型，破裂后易发生腹膜种植的囊腺瘤是___。", "front": "", "back": "<b>答案:</b>浆液性囊腺瘤 黏液性囊腺瘤 黏液性囊腺瘤", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-26", "title": "26. 卵泡膜细胞瘤是来源___及___的卵巢良性肿瘤。", "front": "", "back": "<b>答案:</b>原始性腺中的性索 间质组织", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-27", "title": "27. 面团征是 ___ 的特征性改变，其组织学结构成分是 ___，___。", "front": "", "back": "<b>答案:</b>成熟畸胎瘤 脂质 毛发", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-28", "title": "28. 卵巢囊腺癌包括___和___。", "front": "", "back": "<b>答案:</b>浆液性囊腺癌 黏液性囊腺癌", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-29", "title": "29. 未成熟畸胎瘤好发于 ___ ，临床上有 ___ 。瘤体较大，含有2~3个胚层，未成熟胚胎组织分化程度不同，主要为 ___ 。成熟畸胎瘤恶变多发生在 ___ ，恶变成分为癌或肉瘤组织，成熟畸胎瘤有1%~2%发生癌变。", "front": "", "back": "<b>答案:</b>儿童和青年妇女 AFP 升高的表现 原始神经组织 年龄较大妇女", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-30", "title": "30. 输卵管癌早期无特异症状和体征，肿瘤进展可出现输卵管癌“三联症”，即___、___、___。", "front": "", "back": "<b>答案:</b>阴道排液 腹痛 盆腔肿块", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-2-31", "title": "31. 由于宫内节育器的形状、质地不同，其超声表现不尽相同，临床最常用的金属圆环较具特征性，由于金属环产生___，形成“彗星尾”征。", "front": "", "back": "<b>答案:</b>多重反射", "tags": ["填空题", "妇科"], "kind": "填空题", "page": 99, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-1", "title": "1. 关于卵巢形态学特征，正确的描述是", "front": "A.成年女性卵巢重约 15g<br>B.卵巢白膜是平滑肌<br>C.卵巢表面无腹膜<br>D.皮质内含血管、神经、淋巴管<br>E.髓质内含许多始基卵泡", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 100, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-2", "title": "2. 子宫动脉来自", "front": "A.髂总动脉<br>B.腹主动脉<br>C.髂内动脉<br>D.髂外动脉<br>E.骨盆漏斗韧带", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 100, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-3", "title": "3. 妇科超声 不能 了解", "front": "A.子宫卵巢的位置、大小及周邻的关系<br>B.判断盆腔是否有肿块<br>C.判断肿块的内部结构<br>D.判断肿物的物理性质<br>E.判断肿块的病理分型", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 100, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-4", "title": "4. 经阴道超声扫查所用的端式凸阵阴道探头频率一般是", "front": "A.5.0 ~ 7.5MHz<br>B.3.0 ~ 3.5MHz<br>C.2.0 ~ 5.5MHz<br>D.7.0 ~ 9.0MHz<br>E.4.0 ~ 7.5MHz", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 101, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-5", "title": "5. 经阴道超声扫查适用于", "front": "A.阴道畸形病人<br>B.肥胖病人<br>C.月经期<br>D.流产术后<br>E.急性阴道炎", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 101, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-6", "title": "6. 关于正常子宫声像图， 不正确 的描述是", "front": "A.横断面宫体呈椭圆形<br>B.子宫体呈均匀的中等强回声<br>C.宫腔呈线状强回声<br>D.纵断面后倾后屈子宫呈倒置梨形<br>E.宫颈回声较宫体稍强且致密", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 101, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-7", "title": "7. 关于正常卵巢的声像图表现， 不正确 的描述是", "front": "A.多位于髂内动脉的内前方<br>B.卵巢呈等至弱回声，内可见呈小囊状的卵泡回声<br>C.成年女性的卵巢长径小于4cm<br>D.盆腔内血管可作为卵巢定位的标志<br>E.小于25mm为未成熟卵泡", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 101, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-8", "title": "8. 子宫两侧的附件结构， 不包括", "front": "A.输卵管<br>B.卵巢<br>C.阔韧带<br>D.输卵管系膜", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 102, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-9", "title": "9. 关于子宫动脉， 不正确 的描述是", "front": "A.发自髂内动脉前干<br>B.卵巢和输卵管的血脉血供来源于子宫动脉的上行支<br>C.下行支发出分支分布于子宫与阴道<br>D.子宫动脉频谱形态随月经周期发生变化<br>E.子宫动脉频谱波形可形成舒张早期“切迹”", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 102, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-10", "title": "10. 子宫肌壁间肌瘤与子宫腺肌瘤的超声鉴别要点是", "front": "A.病灶周围有无正常子宫肌壁组织<br>B.频谱多普勒的频谱形态<br>C.子宫形态<br>D.病灶的大小<br>E.病灶内部回声", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 102, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-11", "title": "11. 弥漫型子宫腺肌病的超声表现， 不包括", "front": "A.子宫增大<br>B.肌层回声不均<br>C.宫腔线偏移<br>D.病灶处有栅栏状衰减回声<br>E.病灶周边环状血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 102, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-12", "title": "12. 子宫内膜息肉与子宫黏膜下肌瘤的鉴别点， 不包括", "front": "A.黏膜下肌瘤形状圆<br>B.肌瘤双侧内膜对称性增厚<br>C.息肉呈水滴状<br>D.肌瘤多有声衰减<br>E.黏膜下肌瘤可致内膜基底线变形或中断", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 103, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-13", "title": "13. 关于子宫内膜癌的病理及临床，正确的描述是", "front": "A.大体病理分为内生型和外生型<br>B.来源于子宫内膜上皮的鳞癌最多见<br>C.生长迅速<br>D.超声检查可以明确诊断子宫内膜癌<br>E.对巨大癌肿，需要经阴道超声扫查与经腹部扫查相结合方可获得较完整准确的诊断信息", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 103, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-14", "title": "14. 关于子宫颈癌的病理及临床描述，正确的描述是", "front": "A.颈管型宫颈癌阴道窥器无法观察，需经阴道超声辅助诊断<br>B.宫颈癌最主要的临床症状是绝经后阴道不规则出血<br>C.经阴道超声检查可以确诊宫颈癌<br>D.对于溃疡型宫颈癌，妇科窥器检查更容易发现宫颈病变<br>E.宫颈癌与子宫肌瘤超声表现各不相同，无需鉴别", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 103, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-15", "title": "15. 卵巢良性肿瘤", "front": "A.不会发生恶变<br>B.功能性肿瘤可出现内分泌症状<br>C.不会引起盆腔积液<br>D.内部回声杂乱，常见乳头状突起<br>E.生长速度快", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 103, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-16", "title": "16. 关于黄体囊肿的描述， 不正确 的描述是", "front": "A.是由于黄体血肿液化形成<br>B.声像图表现与其所处的月经周期有关<br>C.常见于滋养细胞疾病的病人<br>D.囊壁常可探及半环或环状血流信号<br>E.需要与宫外孕破裂、卵巢实性或混合性肿瘤相鉴别", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 104, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-17", "title": "17. 关于多囊卵巢的声像图表现， 不正确 的描述是", "front": "A.双侧卵巢均匀性增大<br>B.卵巢包膜下可见大小相近的小卵泡呈车轮状排列<br>C.小卵泡总数常超过10个<br>D.卵巢中央髓质成分少，回声减弱<br>E.小卵泡直径不超过1cm", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 104, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-18", "title": "18. 子宫内膜异位最常发生在", "front": "A.子宫肌层内<br>B.子宫直肠陷凹<br>C.子宫圆韧带<br>D.卵巢<br>E.剖宫产后瘢痕", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 104, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-19", "title": "19. 关于卵巢子宫内膜异位症的表现， 不正确 的描述是", "front": "A.子宫内膜异位症80%以上发生在卵巢<br>B.囊肿声像图不随月经周期变化<br>C.囊肿多与周围组织粘连<br>D.囊肿内含似巧克力样陈旧性液体<br>E.有25%子宫内膜异位症病人无明显临床症状", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 104, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-20", "title": "20. 不属于 卵巢良性肿瘤的是", "front": "A.黏液性囊腺瘤<br>B.皮样囊肿<br>C.浆液性囊腺瘤<br>D.卵巢囊肿<br>E.卵泡膜细胞瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 105, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-21", "title": "21. 卵巢纤维瘤", "front": "A.能分泌雌激素<br>B.可见较明显的包膜回声<br>C.常合并腹水和胸腔积液<br>D.生长迅速，多见于儿童<br>E.其内可见脂肪、软骨、牙齿、平滑肌等成分", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 105, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-22", "title": "22. 关于卵巢囊肿， 不正确 的描述是", "front": "A.由多胚层组织构成<br>B.分为浆液性囊肿瘤与黏液性囊肿瘤<br>C.乳头状囊肿瘤囊壁上可见有乳头状突起<br>D.单房性囊肿瘤边界清晰，壁薄而完整，厚度均匀<br>E.多房性囊肿瘤内有纤细分隔回声，分隔光滑而均", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 105, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-23", "title": "23. 卵巢子宫内膜样腺癌与下列卵巢恶性肿瘤超声表现 难以 鉴别的是", "front": "A.无性细胞瘤<br>B.卵巢囊腺癌<br>C.卵巢未成熟畸胎瘤<br>D.卵巢内胚窦瘤<br>E.卵巢无性细胞瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 105, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-24", "title": "24. 无性细胞瘤多见于", "front": "A.绝经后妇女<br>B.新生儿<br>C.青春期及青年期<br>D.围绝经期女性<br>E.40岁左右的女性", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 106, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-25", "title": "25. 关于盆腔急性炎症的超声表现， 不正确 的描述是", "front": "A.盆腔无声像改变<br>B.子宫直肠凹陷处积液<br>C.卵巢增大、回声不均<br>D.附件肿块<br>E.附件区见“Donuts”征", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 106, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-26", "title": "26. 不会 造成输卵管扩张的是", "front": "A.异位妊娠<br>B.输卵管癌<br>C.盆腔炎<br>D.输卵管结扎<br>E.子宫内膜息肉", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 106, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-27", "title": "27. 欲行全子宫加双附件切除术， 无需 切断的韧带是", "front": "A.圆韧带<br>B.卵巢固有韧带<br>C.卵巢悬韧带<br>D.主韧带<br>E.阔韧带", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "妇科"], "kind": "选择题", "page": 106, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-1", "title": "28. 病人，女性。35岁，孕2产1，剖宫产史。月经量多3年，经期腰酸痛，无尿频、尿急、尿疼。血红蛋白10g/L，血CA125 60U/ml。超声检查显示：子宫不对称性增大，后壁厚，回声不均匀，内部见多个1~3mm的无回声区。其最可能的诊断是", "front": "A.子宫肌瘤<br>B.子宫腺肌瘤<br>C.弥漫性子宫腺肌病<br>D.子宫肌瘤囊性变<br>E.子宫肌瘤红色变性", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 107, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-2", "title": "29. 病人，女性。29岁，孕2产0。月经量多2年，无尿频、尿急。血红蛋白9g/L，血CA125 26U/ml。超声检查显示：子宫增大，宫腔内见团状低回声，大小约3cm×2cm×2.5cm，回声较均匀，肿物蒂部子宫内膜中断；CDFI显示肿物周边半环状血流信号。其最可能的诊断是", "front": "A.子宫内膜增生<br>B.子宫内膜息肉<br>C.子宫内膜癌<br>D.子宫黏膜下肌瘤<br>E.子宫腺肌瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 107, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-3", "title": "30. 病人，女性。55岁，绝经6年，阴道不规则出血3个月余。经阴道超声检查提示子宫内膜单层厚度8mm，回声呈不均匀的高回声，其内可显示短棒状血流信号。为明确诊断，其最需要进一步进行的检查是", "front": "A.X线盆腔摄片<br>B.超声造影<br>C.CT<br>D.诊断性刮宫<br>E.MRI", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 107, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-4", "title": "31. 病人，女性。38岁，阴道不规则出血1年余，主要为性交后出血。妇科检查发现宫颈Ⅲ度糜烂。为明确诊断，最有价值的检查是", "front": "A.经阴道彩色多普勒超声检查<br>B.超声造影<br>C.宫颈组织活检<br>D.妇科检查<br>E.MRI", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 107, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-5", "title": "32. 病人，女。18岁，目前尚无月经来潮，每月可有周期性下腹疼痛。其最 不可能 的诊断是", "front": "A.阴道闭锁<br>B.宫颈闭锁<br>C.幼稚子宫<br>D.双子宫<br>E.处女膜闭锁", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 108, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-6", "title": "33. 病人，女性。26岁，停经56天，阴道流血2天。妇科查体示子宫增大如孕3月大小，血hCG&gt;20000U/L。超声检查示：子宫增大，宫腔内查见多个无回声，呈“蜂窝状”改变。双侧附件区均查见大小约10cm分隔状囊性占位，液体清亮，隔膜较薄，隔上可探及血流信号。病人双附件区的囊肿可能是", "front": "A.滤泡囊肿<br>B.黄素化囊肿<br>C.黄体囊肿<br>D.多囊卵巢<br>E.巧克力囊肿", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 108, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-7", "title": "34. 病人，女。35岁，平日月经规律，今晨起床活动突感左下腹疼痛，侧卧位时疼痛稍有减轻。超声检查于左附件区见 6.5cm×4.0cm×5.2cm 肿物，边界清，其内回声杂乱，有“脂-液”分层。其最可能的诊断是", "front": "A.黄体囊肿<br>B.子宫肌瘤<br>C.多囊卵巢<br>D.畸胎瘤<br>E.卵巢纤维瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 108, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-8", "title": "35. 病人，女。40岁，子宫右侧可探及大小约 4.2cm×5.0cm 实质低回声肿物，边界 清，后方伴衰减，该病人胸、腹腔内均可见游离液体。其最可能的诊断是", "front": "A.黏膜下肌瘤<br>B.卵巢纤维瘤<br>C.成熟畸胎瘤<br>D.卵巢囊肿<br>E.巧克力囊肿", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 108, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-9", "title": "36. 病人，女。16岁，因右下腹部扪及一较大包块来就诊。病人自述包块短期内长大较快。实验室检查发现血清甲胎蛋白（AFP）浓度明显增高。超声检查显示：子宫右侧见一 10.0 cm×8.7 cm 实性为主的囊实性肿块，实性部分为较均质的等回声或稍低回声，内见大小不一、边界清晰的小囊腔散在分布；CDFI 显示肿块实性部分内血管异常扩张，血流信号非常丰富，血流阻力极低。其最可能的诊断是", "front": "A.卵巢无性细胞瘤<br>B.卵巢子宫内膜样腺癌<br>C.卵巢囊腺癌<br>D.卵巢未成熟畸胎瘤<br>E.卵巢内胚窦瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 109, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-10", "title": "37. 病人，女。32岁，反复下腹痛、低热、盗汗3月。血常规检查（-），肿瘤标志物（-）。超声检查显示：盆腔内见大片不规则液性暗区及条索状粘连带，子宫内膜、子宫浆膜面、附件和肠管表面可见粟粒状增强回声斑。其最可能的诊断是", "front": "A.异位妊娠<br>B.卵巢肿瘤<br>C.盆腔结核<br>D.促排卵后改变<br>E.子宫内膜异位囊肿", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 109, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-11", "title": "38. 病人，女。65岁，反复下腹痛、阴道排液2月。超声检查显示：子宫旁不规则形肿物6cm×3cm，无包膜，内呈不均质混合性回声。宫腔线分离、宫腔积液约2mm，宫旁肿块囊壁上或实质部分内见散在血流信号，探及低阻力动脉频谱及静脉频谱。其 最不可能 的诊断是", "front": "A.浆膜下子宫肌瘤<br>B.卵巢恶性肿瘤<br>C.输卵管癌<br>D.盆腔炎症<br>E.子宫内膜异位囊肿恶变", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "妇科"], "kind": "选择题", "page": 109, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-39-40", "title": "共用备选答案 · 第 39~40 题", "front": "<b>下列第 39~40 题共用以下备选答案:</b><br>A.绝经后阴道出血<br>B.接触性出血<br>C.月经量过多<br>D.月经淋漓不尽<br>E.月经量过少", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-1", "title": "39. 于宫颈癌的典型临床表现是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-2", "title": "40. 子宫内膜息肉的临床表现是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-41-42", "title": "共用备选答案 · 第 41~42 题", "front": "<b>下列第 41~42 题共用以下备选答案:</b><br>A.先天性无子宫<br>B.残角子宫<br>C.双角子宫<br>D.中隔子宫<br>E.单角子宫", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-3", "title": "41. 由副中肾管衍生物发育不全所致的子宫发育异常是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-4", "title": "42. 最可能出现周期性一侧下腹痛的子宫发育异常是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-43-46", "title": "共用备选答案 · 第 43~46 题", "front": "<b>下列第 43~46 题共用以下备选答案:</b><br>A.滤泡囊肿<br>B.黄体囊肿<br>C.黄素化囊肿<br>D.巧克力囊肿<br>E.多囊卵巢", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-5", "title": "43. 子宫内膜异位到卵巢形成的囊肿是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-6", "title": "44. 常伴发于葡萄胎的囊肿是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-7", "title": "45. 卵泡不排卵形成的潴留囊肿是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-8", "title": "46. 与不孕症相关的卵巢瘤样病变是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-47-48", "title": "共用备选答案 · 第 47~48 题", "front": "<b>下列第 47~48 题共用以下备选答案:</b><br>A.皮样囊肿<br>B.卵巢纤维瘤<br>C.卵巢囊肿<br>D.卵泡膜细胞瘤<br>E.颗粒细胞瘤", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-9", "title": "47. 属于上皮性来源的肿瘤是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-10", "title": "48. 来源于原始生殖细胞的肿瘤是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-49-51", "title": "共用备选答案 · 第 49~51 题", "front": "<b>下列第 49~51 题共用以下备选答案:</b><br>A.面团征<br>B.壁立结节征<br>C.瀑布征<br>D.脂液分层征<br>E.线条征", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-11", "title": "49. 肿瘤内有一强回声水平分界线，上方呈均质密集点状回声，下方为无回声区，此种超声图像是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-12", "title": "50. 肿块无回声区内可见圆形或椭圆形团状高回声，边缘清晰，浮于囊肿内或位于一侧，此种超声图像是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-13", "title": "51. 囊肿内壁隆起的“结节样”强回声，可单个或多个，后伴声影，其内无血流信号，此种超声图像是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-52-54", "title": "共用备选答案 · 第 52~54 题", "front": "<b>下列第 52~54 题共用以下备选答案:</b><br>A.卵巢囊肿癌<br>B.卵巢未成熟畸胎瘤<br>C.卵巢子宫内膜样腺癌<br>D.卵巢转移癌<br>E.卵巢无性细胞瘤", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-14", "title": "52. 卵巢恶性肿瘤中最常见者", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-15", "title": "53. 肿瘤含滋养叶细胞时可出现 hCG 异常升高", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-16", "title": "54. 肿瘤超声表现为囊实性肿块，其囊性区或实性区内可含有实性高回声团或结节状高回声，有时伴声影", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-shared-55-57", "title": "共用备选答案 · 第 55~57 题", "front": "<b>下列第 55~57 题共用以下备选答案:</b><br>A.正常位置节育器<br>B.节育器嵌顿<br>C.节育器下移<br>D.节育器外移<br>E.带器妊娠", "back": "", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": true, "image": "", "figcap": ""}, {"no": "7-3-17", "title": "55. 节育器不在宫腔内而向下移位，节育器下缘达宫颈内口或内口以下，称为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-18", "title": "56. 节育器偏离宫腔中央部位，嵌入肌层，称为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-3-19", "title": "57. 节育器强回声位于宫腔中央，最下缘位于宫颈内口上方，称为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "妇科"], "kind": "共用备选答案", "page": 0, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-1", "title": "1. 卵巢由哪些韧带固定于盆腔内？", "front": "", "back": "<b>参考答案:</b><br>卵巢外侧以骨盆漏斗韧带（卵巢悬韧带）连于骨盆壁，内侧以卵巢固有韧带与子宫\n连接。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-2", "title": "2. 输卵管分为哪几部分？", "front": "", "back": "<b>参考答案:</b><br>输卵管分为间质部、峡部、壶腹部及伞部。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-3", "title": "3. 简述经直肠超声扫查的适应证。", "front": "", "back": "<b>参考答案:</b><br>经直肠超声扫查主要适用于未婚妇女、老年性阴道萎缩、阴道畸形等经腹部扫查图像模糊但又不适宜阴道扫查的病人和情况，如阴道持续流血等。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-4", "title": "4. 简述经阴道超声扫查的优缺点。", "front": "", "back": "<b>参考答案:</b><br>（1）优点：经阴道超声探头频率高，探头在阴道内紧贴宫颈与阴道后穹窿，盆腔脏器声像图显示更加清晰，且无需充盈膀胱，也不受肥胖、多重反射及肠气影响。\n\n（2）缺点：经阴道超声对处女膜完整的女性、严重阴道炎、月经期、老年性阴道萎缩以及阴道畸形者进行检查受到限制。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-5", "title": "5. 简述子宫弥漫性腺肌病与局灶性腺肌病主要声像图表现及临床表现。", "front": "", "back": "<b>参考答案:</b><br>子宫弥漫性腺肌病时子宫呈球形增大，三个径线之和常&gt;15cm，或前后壁不对称，常见后壁增厚，宫腔内膜线向前或向后移位，肌层回声弥漫性增高、不均质，常有栅栏状衰减。局灶型子宫腺肌病时子宫不规则增大，局部隆起，病灶呈不均质高回声，可伴有声衰减或呈栅栏状衰减回声，病灶与周围正常肌层间边界不清。子宫腺肌病最常见的临床表现为痛经和（或）月经量大。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-6", "title": "6. 简述子宫黏膜下肌瘤同子宫内膜息肉的超声鉴别诊断要点及主要临床表现。", "front": "", "back": "<b>参考答案:</b><br>子宫黏膜下肌瘤宫腔线变形，凸向肌瘤对侧，包块呈均匀低回声或不均匀回声，当肌瘤完全突出至子宫腔内，形成有蒂的黏膜下肌瘤时，肌瘤表面仅由黏膜层覆盖，仅有蒂部与子宫肌层相连。子宫内膜息肉黏膜轮廓较完整，宫腔内见高回声或中等回声结节，常呈水滴状，内部可见有散在多发直径1~2mm圆形无回声。子宫黏膜下肌瘤和子宫内膜息肉均可表现为月经量大，经期延长。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-7", "title": "7. 试述子宫内膜癌超声鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>（1）局限型子宫内膜癌与子宫内膜息肉鉴别：①观察病灶与正常内膜界限是否清晰，内膜息肉界限清晰，而内膜癌界限不清；②观察内膜基底层是否清晰，内膜息肉内膜基底层完整，内膜与局部肌层分界清晰，而内膜癌常有肌层浸润，内膜基底层分界不清；③病灶内是否显示异常血流信号及检测到低阻力型动脉频谱，内膜息肉血流信号稀少，无低阻力型血流频谱。\n\n（2）弥漫型子宫内膜癌与子宫内膜增生症鉴别：①观察内膜回声是否均匀，内膜增生症内膜呈均匀性增厚，内膜癌回声杂乱、强弱不均；②内膜基底线是否清晰，内膜癌累及肌层时，与肌层分界不清；③内膜及肌层是否有丰富血流信号，特别是有无低阻力血流频谱，内膜癌血流丰富，容易记录到极低阻力的动脉血流频谱。但早期癌变难以鉴别，需结合诊刮病理检查。\n\n（3）子宫内膜癌与子宫肉瘤鉴别：多数情况下子宫肉瘤发生于肌层，子宫内膜间质肉瘤则可发生于内膜，此时鉴别诊断需依赖病理检查。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-8", "title": "8. 简述子宫颈癌的二维超声表现。", "front": "", "back": "<b>参考答案:</b><br>（1）外生型宫颈癌：宫颈增大，宫颈形态不规则，宫颈外口处可见实性不均质低回声\n肿块。\n\n（2）内生型宫颈癌：宫颈增大，宫颈管结构消失，宫颈局部呈不均质实性低回声。也可因癌肿呈弥漫性生长而表现为宫颈管内膜弥漫性增厚。\n\n（3）宫颈癌宫体浸润：子宫下段内膜、肌层与宫颈界限不清，宫体正常结构难辨。\n\n（4）宫颈癌宫旁侵犯：膀胱侵犯时，宫颈实性低回声肿块突向膀胱，膀胱后壁连续性中断，肿块增大压迫输尿管时可出现输尿管扩张及肾盂积水声像；肿块向后或向宫旁生长时，宫颈结构杂乱，盆腔内器官结构关系混乱不清。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-9", "title": "9. 简述残角子宫的病理及临床特征。", "front": "", "back": "<b>参考答案:</b><br>残角子宫是因一侧副中肾管发育不全所致，可伴该侧泌尿系发育畸形。残角子宫根据有无内膜腔及内膜腔是否与对侧正常子宫腔相通分为不同类型，临床表现复杂。无内膜型和有内膜相通型平时无明显临床症状，有内膜不相通型则在月经初潮后出现周期性一侧下腹痛，易发展为腺肌病、子宫内膜异位囊肿，常伴不孕。若妊娠发生在残角子宫内，至中期妊娠可突然发生破裂而出现典型的宫外孕破裂症状，严重时危及生命。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-10", "title": "10. 简述子宫未发育或发育不良的超声表现。", "front": "", "back": "<b>参考答案:</b><br>（1）先天性无子宫：在适度充盈膀胱的情况下，在膀胱后方无论纵切还是横切均不能显示子宫声像。有时膀胱两侧可见卵巢结构。\n\n（2）始基子宫：子宫极小，在膀胱后方呈条索状肌性结构回声，难辨宫体宫颈结构，无宫腔线和内膜回声，可见卵巢结构。\n\n（3）子宫发育不良：子宫细小，宫体与宫颈之比为2:3或1:1，可显示宫腔线和内膜回声，可见正常卵巢结构。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-11", "title": "11. 简述卵巢良恶性肿瘤的超声鉴别要点。", "front": "", "back": "<b>参考答案:</b><br>&lt;table border=1 style='margin: auto; word-wrap: break-word;'&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;良性肿瘤&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;恶性肿瘤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;形态&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;形态规则&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;形态多样,不规则&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;边界&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;清楚&lt;/td&gt;&lt;td style='...", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-12", "title": "12. 为什么说黄体囊肿的超声图像具有多样性？", "front": "", "back": "<b>参考答案:</b><br>黄体囊肿是由黄体血肿吸收后形成的囊性结构，根据黄体血肿出血的量和时间，其声像图表现具有多样性。\n\n（1）黄体早期：囊内出血较多，超声图像表现为卵巢内的圆形或类圆形囊肿，囊壁\n厚，内壁粗糙，囊内充满或见较多杂乱的不均质低回声。\n\n（2）黄体中期：黄体血肿内血液凝固，部分被吸收，可见囊壁变得薄而规则，内壁光滑，囊内回声减低，呈网格状结构。\n\n（3）黄体晚期：血液吸收后囊肿变小，转变为白体，超声可见内部呈实性稍强回声，与周围卵巢组织分界不清。当血液完全吸收后形成黄体囊肿，囊壁变得光滑，囊内为无回声，与卵巢其他非赘生性囊肿难以区分。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-13", "title": "13. 简述卵巢纤维瘤超声诊断要点。", "front": "", "back": "<b>参考答案:</b><br>卵巢纤维瘤的超声诊断要点：①二维超声图像上，肿瘤呈圆形或椭圆形实性肿块，边界及轮廓清晰，无包膜回声，内部回声似肌瘤，为均质实性低回声，伴栅栏状衰减；②彩色多普勒血流成像在肿物的近场可见少许血流信号，为中等阻力动脉频谱，肿瘤后部因有回声衰减，常无血流显示。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-14", "title": "14. 简述成熟畸胎瘤特异性超声表现。", "front": "", "back": "<b>参考答案:</b><br>成熟畸胎瘤因组织成分的多样性，其声像学表现也复杂多样，较具特征的回声征象：①面团征：肿块内圆形或椭圆形光团，边缘清晰，浮于囊肿内或位于一侧；②壁立结节征：囊肿内壁隆起的强回声结节，可单个或多个，后伴声影，内部无血流信号；③杂乱结构征：肿块内含多种回声成分，表现为无回声区内有斑点状、团状强回声，并伴有多条短线状高回声平行排列，浮于其中；④脂液分层征：肿块内高、低回声间有一水平分界线，在线的一侧常为脂质成分的均质密集点状高回声，线的另一侧为无回声。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-15", "title": "15. 简述卵泡膜细胞瘤的超声表现。", "front": "", "back": "<b>参考答案:</b><br>简述卵泡膜细胞瘤的超声图像。\n\n（1）二维超声：肿瘤呈圆形实性肿块，边界及轮廓清晰，呈低回声，由于透声性良好，后方回声轻度增强，没有囊壁结构，调高增益后内部回声可见轻度栅栏样衰减。\n\n（2）多普勒超声：CDFI 在肿瘤内部可显示散在分布的微弱血流信号，为低速中等阻力血流频谱，RI 在 0.40~0.50，最大血流速度在 15cm/s 左右。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-16", "title": "16. 简述卵巢囊腺癌的病理特征、超声表现和鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>（1）病理特征：①卵巢浆液性囊腺癌：肿瘤表面光滑或有乳头状物，切面为多房，腔内充满乳头，常伴出血坏死，囊液混浊，双侧多见；②卵巢黏液性囊腺癌：单侧多见，瘤体较大，囊壁可见乳头或实质区，质地脆，切面多房，囊液混浊或血性。\n\n（2）超声表现上难以区别浆液性或黏液性囊腺癌，声像图均表现为囊性为主的囊实性肿块，囊壁较厚而不均，内有不均匀的分隔，囊液常呈无回声；实性为主者囊内壁见实性块状突起，内部可见大小不等的囊性区，乳头向外生长时肿块边界难辨。CDFI 显示肿块边缘、分隔上和中央实性区见丰富血流信号，可记录到低阻力频谱。\n\n（3）卵巢囊腺癌的鉴别诊断需与卵巢良性上皮性肿瘤、卵巢子宫内膜异位囊肿、盆腔炎性包块等良性肿瘤或病变鉴别。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-17", "title": "17. 简述人工流产和药物流产后组织物残留的超声表现。", "front": "", "back": "<b>参考答案:</b><br>人工流产和药物流产后组织物残留的超声表现为宫腔内有不均质的高回声或低回声团，形态不规则，与正常肌层分界不清；若宫腔内有积血，可见宫腔线分离。多普勒超声可在不均高回声区局部内膜下肌层显示局灶性斑片状或网状彩色血流信号，记录到低阻力\n型滋养层周围动脉血流频谱以及静脉性频谱。", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}, {"no": "7-4-18", "title": "18. 简述如急性输卵管卵巢炎与附件恶性肿瘤超声声像相似时，应如何鉴别诊断？", "front": "", "back": "<b>参考答案:</b><br>当附件肿块无法显示输卵管的特征性的管道状结构时容易误诊为附件恶性肿瘤，主要的鉴别要点为病史和双合诊检查，若近期有下腹疼痛、发热、脓性白带、附件包块触痛等，则提示有炎症的存在，必要时可短期抗感染治疗后复查超声再作出诊断。\n\n（张晶 戴晴 谢红宁 杨太珠 蔡爱露 罗红 孙立涛）", "tags": ["简答题", "妇科"], "kind": "简答题", "page": 112, "chapter": "ch7", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

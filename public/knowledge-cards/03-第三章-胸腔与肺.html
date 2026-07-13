@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第三章 胸腔与肺</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #ef4444 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #ef4444; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #ef4444;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #ef4444;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #ef4444;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #ef4444; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #ef4444;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #ef4444;
+  transition: width 0.3s; box-shadow: 0 0 8px #ef4444;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #ef4444;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #ef4444;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #ef4444;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #ef4444; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第三章 胸腔与肺</h1>
+    <p>Pages 48-53 · 胸膜/肺部超声</p>
+    <div class="stats">
+      <span class="stat">📇 共 37 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "3-1-1", "title": "胸膜腔", "front": "请简述该名词的定义。", "back": "<b>胸膜腔</b>:<br>脏层胸膜与壁层胸膜之间是一个封闭、狭窄的腔隙，即胸膜腔。", "tags": ["名词解释", "胸肺"], "kind": "名词解释", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-1-2", "title": "胸膜滑动征", "front": "请简述该名词的定义。", "back": "<b>胸膜滑动征</b>:<br>脏层胸膜随呼吸可做上下运动，这种现象称为“滑动征”，是特征性生理现象。", "tags": ["名词解释", "胸肺"], "kind": "名词解释", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-1-3", "title": "肺点", "front": "请简述该名词的定义。", "back": "<b>肺点</b>:<br>指在气胸病人的胸壁上存在特定部位，此部位气胸声像与正常肺部声像动态交替出现，超声表现为特定部位“滑动征”或B线随呼吸的周期出现后消失。", "tags": ["名词解释", "胸肺"], "kind": "名词解释", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-1-4", "title": "支气管气相", "front": "请简述该名词的定义。", "back": "<b>支气管气相</b>:<br>实变肺内含气支气管，超声表现为等回声实变肺内条线状强回声，称为“支气管气相”。", "tags": ["名词解释", "胸肺"], "kind": "名词解释", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-1-5", "title": "支气管液相", "front": "请简述该名词的定义。", "back": "<b>支气管液相</b>:<br>实变肺内支气管充满液体时，超声表现为等回声实变肺内分支状无回声结构，称为“支气管液相”。", "tags": ["名词解释", "胸肺"], "kind": "名词解释", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-1", "title": "1. 胸壁是由骨骼及软组织构成，软组织包括___、___、___及乳房等。", "front": "", "back": "<b>答案:</b>皮肤 皮下组织 肌肉", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-2", "title": "2. 胸膜腔是一个封闭、狭窄的腔隙，生理状态下内有微量浆液，约___ml。", "front": "", "back": "<b>答案:</b>13~15ml", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-3", "title": "3. 胸膜增厚分为___和___两种。", "front": "", "back": "<b>答案:</b>弥漫性 局限性", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-4", "title": "4. 膈肌在外侧及前后方与胸壁相交形成 ___。", "front": "", "back": "<b>答案:</b>肋膈角", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-5", "title": "5. 以肋骨为声学标志，胸膜腔各结构容易被识别。胸膜腔位于肋骨深方约___处。", "front": "", "back": "<b>答案:</b>1cm", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-6", "title": "6. 脏层胸膜随呼吸可做上下运动，这种现象称___，是特征性生理现象。", "front": "", "back": "<b>答案:</b>滑动征", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-7", "title": "7. 当含气肺组织紧贴膈肌时，在膈肌上方可反射出肝脏或脾脏的图像，这种现象称为___。", "front": "", "back": "<b>答案:</b>镜面反射", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-2-8", "title": "8. 正常膈肌厚度约为___, 其胸腔面由壁层胸膜覆盖, 腹腔面由腹膜覆盖。", "front": "", "back": "<b>答案:</b>5mm", "tags": ["填空题", "胸肺"], "kind": "填空题", "page": 49, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-1", "title": "1. 产生“彗星尾征”的原因是", "front": "A.多次内部混响<br>B.旁瓣伪像<br>C.镜面伪像<br>D.声束失真<br>E.棱镜伪像", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 50, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-2", "title": "2. 关于肺炎所致肺组织实变的超声表现， 不正确 的描述是", "front": "A.多呈楔形或三角形<br>B.内可见超声“支气管气相”<br>C.与周围正常的肺组织分界欠清晰<br>D.实变肺组织内的血管结构受压变形甚至被破坏<br>E.回声酷似肝实质", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 50, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-3", "title": "3. 关于支气管肺癌， 不正确 的描述是", "front": "A.为肺的原发性肿瘤<br>B.大多数起源于各级支气管黏膜上皮或腺体<br>C.组织学分类可为鳞癌、腺癌、小细胞癌和大细胞癌<br>D.女性多于男性<br>E.可出现类癌综合征", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 50, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-4", "title": "4. 右肝肋缘下向上扫查时常可见到镜面伪像， 不正确 的描述是", "front": "A.正常肝脏：膈下为肝脏实像，膈上为肝脏虚像<br>B.肝内肿瘤：膈下、膈上各有一个对称的肿瘤，前者为实像，后者是伪像<br>C.肝内囊肿：膈下、膈上各有一个对称的肿瘤，前者为实像，后者是伪像<br>D.右侧胸腔积液时，以上镜面伪像更明显<br>E.右侧胸腔积液时，以上镜面伪像消失", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 51, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-5", "title": "5. 可出现混响伪像的是", "front": "A.超声束垂直于胸壁和肺表面引起多次内部混响<br>B.超声束垂直于腹壁引起内部混响<br>C.超声束在器官组织的异物内来回反射<br>D.超声束垂直射入骨膜和骨表面<br>E.超声束射向肩关节软骨和骨表面时，在软骨内部", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 51, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-6", "title": "6. 关于组织、体液的声衰减， 不正确 的描述是", "front": "A.不同的体液也存在着不同的声衰减<br>B.通常骨骼声衰减很强，往往引起声影<br>C.瘢痕组织声衰减也是比较强的，次于骨骼<br>D.含气肺的密度很低，因此不容易引起声衰减<br>E.肝、脾、肾、胰等实质器官声衰减也存在着一定程度的差异", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 51, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-7", "title": "7. 关于人体不同组织回声强度， 不正确 的描述是", "front": "A.皮肤：高回声或较高(较强)回声<br>B.皮下脂肪：较高水平回声<br>C.肝、脾：中等水平回声<br>D.肝、脾包膜：高回声<br>E.胸膜-肺组织：高回声伴多次反射和声影", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "胸肺"], "kind": "选择题", "page": 51, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-1", "title": "8. 该病人出现胸腔积液，则胸腔积液的性状最可能为", "front": "A.清亮透彻<br>B.脓性<br>C.血性<br>D.蛋清状<br>E.乳糜状", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "胸肺"], "kind": "选择题", "page": 52, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-2", "title": "9. 其最可能的诊断是", "front": "A.肺结核<br>B.支气管肺癌<br>C.肺错构瘤<br>D.肺转移瘤<br>E.胸膜间皮瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "胸肺"], "kind": "选择题", "page": 52, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-3", "title": "10. 关于超声探查到的楔形低回声， 不正确 的描述是", "front": "A.可能为阻塞性肺实变<br>B.可能为阻塞性肺不张<br>C.楔形低回声邻近的脏层胸膜的线样强回声中断、显著破坏<br>D.内可见支气管液相<br>E.内可见支气管气相", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "胸肺"], "kind": "选择题", "page": 52, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-shared-11-13", "title": "共用备选答案 · 第 11~13 题", "front": "<b>下列第 11~13 题共用以下备选答案:</b><br>A.混响伪像<br>B.彗星尾征<br>C.胸膜滑动征<br>D.蝙蝠征<br>E.镜面反射", "back": "", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": true, "image": "", "figcap": ""}, {"no": "3-3-1", "title": "11. 当声波垂直投射于光滑的胸膜-肺界面时，表现为垂直于超声束且等距离排列的多条强回声，间距等于皮肤到胸膜线的距离，称", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-2", "title": "12. 脏层胸膜随呼吸可做上下运动，这种现象称为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-3", "title": "13. 肋骨声影和胸膜线构成的图像,称为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-shared-14-16", "title": "共用备选答案 · 第 14~16 题", "front": "<b>下列第 14~16 题共用以下备选答案:</b><br>A.5mm<br>B.13~15ml<br>C.3~4cm<br>D.15~20ml<br>E.1~2cm", "back": "", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": true, "image": "", "figcap": ""}, {"no": "3-3-4", "title": "14. 正常膈肌厚度约为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-5", "title": "15. 胸膜腔生理性积液量为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-3-6", "title": "16. 右膈顶部比左膈顶部高", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "胸肺"], "kind": "共用备选答案", "page": 0, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-4-1", "title": "1. 简述胸壁结构的声像图表现。", "front": "", "back": "<b>参考答案:</b><br>沿肋间用高频探头可显示皮肤、皮下脂肪、胸壁肌层及内外侧筋膜结构。胸壁皮肤呈高回声带，厚2~3mm，其下方低回声为皮下脂肪组织，胸壁肌层为实性等回声，筋膜为细线状高回声，声像图上表现为高-低-等-高回声。由于声波无法穿透骨骼，因此肋骨表现为弧形高回声以及后方伴随声影，相邻两个肋骨之间为肋间肌。", "tags": ["简答题", "胸肺"], "kind": "简答题", "page": 53, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-4-2", "title": "2. 简述恶性胸膜间皮瘤的超声表现。", "front": "", "back": "<b>参考答案:</b><br>①恶性弥漫型间皮瘤多呈广泛胸膜增厚，可包裹肺；②肿瘤位于胸壁与肺之间，自胸膜向胸腔内突起，并与胸壁相连或分界不清；③多呈片状或结节融合状，边界不规则，其范围（长度及宽度）多明显大于厚度；④以低回声多见，亦可呈不均匀等回声，内部无气体或支气管结构；⑤侵及肋骨可见肿块中有弧形强回声伴声影；⑥胸腔积液位于肿瘤与肺表面之间，少量胸腔积液的部位有助于鉴别肺肿瘤与胸膜肿瘤；⑦肺组织受压或受侵犯呈广泛实变。", "tags": ["简答题", "胸肺"], "kind": "简答题", "page": 53, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-4-3", "title": "3. 简述肺实变的超声表现。", "front": "", "back": "<b>参考答案:</b><br>实变肺通常呈楔形、片状，回声类似肝脏。内可见“支气管气相”和“支气管液相”。肺血管也可显示为分支的管状结构。", "tags": ["简答题", "胸肺"], "kind": "简答题", "page": 53, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-4-4", "title": "4. 简述气胸的超声表现。", "front": "", "back": "<b>参考答案:</b><br>当气胸产生时，脏壁层胸膜分离，胸膜腔内充满气体，超声波无法进行有效的传播。若超声检查时提示胸膜“滑动征”及“彗星尾征”（B线）消失，则提示气胸可能。出现“肺\n点”是诊断气胸高度特异性征象。", "tags": ["简答题", "胸肺"], "kind": "简答题", "page": 53, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-4-5", "title": "5. 简述肺水肿的超声表现。", "front": "", "back": "<b>参考答案:</b><br>肺水肿时肺组织中气体和水的比例发生明显变化，气液体间的声阻抗差较大，超声在气体和水的界面上即产生强烈的混响，声束在反射体内来回往返，形成多次反射，表现为弥漫性“彗星尾征”（B线）。", "tags": ["简答题", "胸肺"], "kind": "简答题", "page": 53, "chapter": "ch3", "static": false, "image": "", "figcap": ""}, {"no": "3-4-6", "title": "6. 简述肺实变与周围型肺肿瘤的鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>肺实变二维超声表现为尖端指向肺门的楔形改变，“支气管气相”及“支气管液相”有助于对肺实变的鉴别诊断。周围型肺肿瘤形态不固定，局部胸膜可出现隆起，当恶性肿瘤侵犯胸膜时可出现胸膜线中断，或向内凹陷等表现。\n\n（严昆 王凇） 2100 2101 2102 2103 2104 2105 2106 2107 2108 2109 2110 2111 2112 2113 2114 2115 2116 2117 2118 2119 2200 2201 2202 2203 2204 2205 2206 2207 2208 2209 2210 2211 2212 2213 2214 2215 2216 2217 2218 2219 2220 2221 2222 2223 2224 2225 2226 2227 2228 2229 2230 2231 2232 2233 2234 2235 2236 2237 2238 2239 2240 2241 2242 2243 2244 2245 2246 2247 2248 2249 2250 2251 2252 2253 2254 2255 2256 2257 2258 2259 2260 2261 2262 2263 2264 2265 2266 2267 2268 2269 2270 2271 2272 2273 2274 2275 2276 2277 ...", "tags": ["简答题", "胸肺"], "kind": "简答题", "page": 53, "chapter": "ch3", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

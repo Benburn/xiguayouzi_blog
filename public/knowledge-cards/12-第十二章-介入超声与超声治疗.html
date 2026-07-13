@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第十二章 介入超声与超声治疗</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #dc2626 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #dc2626; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #dc2626;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #dc2626;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #dc2626;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #dc2626; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #dc2626;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #dc2626;
+  transition: width 0.3s; box-shadow: 0 0 8px #dc2626;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #dc2626;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #dc2626;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #dc2626; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第十二章 介入超声与超声治疗</h1>
+    <p>Pages 214-221 · 介入诊断与治疗</p>
+    <div class="stats">
+      <span class="stat">📇 共 43 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "12-2-1", "title": "1. 超声引导穿刺的导向装置分为___和___。", "front": "", "back": "<b>答案:</b>穿刺探头 穿刺架", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-2-2", "title": "2. 超声引导下穿刺置管包括两种方法，即___和___。", "front": "", "back": "<b>答案:</b>套管法 导丝法", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-2-3", "title": "3. 超声引导下肝脏肿瘤介入治疗方法有（列出两种）：___ 和 ___ 等。", "front": "", "back": "<b>答案:</b>无水乙醇消融治疗 射频消融或微波消融", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-2-4", "title": "4. 按国际标准，穿刺针和导管根据其外径大小分为不同型号，分别以大写英文字母和___表示。通常将穿刺针外径小于___称为细针。", "front": "", "back": "<b>答案:</b>G F 1mm", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-2-5", "title": "5. 根据穿刺目的及用途，超声引导下穿刺分为 ___、___ 和 ___。", "front": "", "back": "<b>答案:</b>普通穿刺 穿刺活检 穿刺置管", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-2-6", "title": "6. 目前临床上最常用的自动活检装置是___。", "front": "", "back": "<b>答案:</b>自动活检枪", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-2-7", "title": "7. 上腹部病灶进行超声引导下穿刺时，进针点应距肺底强回声带以下至少 ___ cm。", "front": "", "back": "<b>答案:</b>3", "tags": ["填空题", "介入"], "kind": "填空题", "page": 215, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-1", "title": "1. 不属于 介入超声范畴的是", "front": "A.超声引导下穿刺活检<br>B.超声引导下射频消融治疗<br>C.术中超声<br>D.经食管超声<br>E.床旁超声", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 216, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-2", "title": "2. 关于穿刺针具，正确的描述是", "front": "A.穿刺针型号以 G 表示，18G 针较 20G 针细<br>B.穿刺针的型号以 F 表示<br>C.19G 以上的针一般称为粗针<br>D.外径小于 1mm 的穿刺针为细针<br>E.10 号以上的穿刺针为细针", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 216, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-3", "title": "3. 按国际标准, 穿刺针型号为 18G 17cm, G 前面的数字 18 表示穿刺针", "front": "A.外径<br>B.内径<br>C.长度<br>D.重量<br>E.密度", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 216, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-4", "title": "4. 引流导管的规格以 F 表示,主要是依其", "front": "A.外径<br>B.内径<br>C.长度<br>D.重量<br>E.密度", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 216, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-5", "title": "5. 不属于 超声引导下穿刺禁忌证的是", "front": "A.病人呼吸无法配合<br>B.病人出凝血时间异常<br>C.病人进食后<br>D.病灶显示不清<br>E.进针路径上有大血管", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 217, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-6", "title": "6. 关于超声引导穿刺前病人的准备工作， 不正确 的描述是", "front": "A.常规检查血常规<br>B.检查出凝血时间<br>C.检查心电图<br>D.签署同意书<br>E.检查肾功能", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 217, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-7", "title": "7. 适于穿刺抽液及硬化治疗的是", "front": "A.直径大于 3cm 的单发囊肿<br>B.直径大于 5cm 的单发或多发囊肿<br>C.胆管囊性扩张<br>D.输尿管囊肿<br>E.与胰管相通的囊肿", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 217, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-8", "title": "8. 超声引导下肝脏囊性占位性病变穿刺抽液及硬化治疗的适应证 不包括", "front": "A.直径大于5cm的单发或多发囊肿<br>B.需进一步明确诊断，如临床怀疑有恶变可能的囊肿<br>C.压迫周围脏器引起并发症的囊肿<br>D.囊肿合并感染<br>E.不能排除动脉瘤的囊性病变", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 217, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-9", "title": "9. 肾囊肿穿刺后行酒精硬化治疗的禁忌证是", "front": "A.直径&gt;5cm<br>B.明显向包膜外凸起<br>C.数量超过3个<br>D.位于肾脏上、下极<br>E.抽出液酒精蛋白反应试验囊液不变混浊", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 217, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-10", "title": "10. 不适合 进行穿刺活检的疾病是", "front": "A.肝硬化<br>B.肝左叶实质内占位性病变<br>C.急性胰腺炎<br>D.急性肾炎<br>E.胆管细胞癌", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-11", "title": "11. 关于超声引导下肿瘤射频消融治疗的适应证， 不正确 的描述是", "front": "A.直径&gt;5cm 的肝癌单发结节<br>B.直径≤5cm 的肝癌单发结节<br>C.直径≤4cm 的 3 个结节<br>D.直径≤3cm 的 5 个结节<br>E.术后复发无法再行手术者", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-12", "title": "12. 关于超声引导下肝肿瘤无水乙醇消融治疗，正确的描述是", "front": "A.适用于&lt;5cm 的单发肝癌结节<br>B.应将穿刺针插入病灶中央开始治疗<br>C.注射无水乙醇时应快速推注<br>D.酒精用量应覆盖肿瘤及周边至少1cm范围的正常肝组织<br>E.不适于出现门静脉癌栓或弥漫性肝癌的病人", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-13", "title": "13. 关于囊肿硬化治疗， 不正确 的描述是", "front": "A.无水乙醇的量为囊肿液容量的 1/5 ∼ 1/2 <br>B.注射无水乙醇前，确定穿刺针在囊肿内<br>C.肾囊肿进行酒精蛋白反应实验，如液体变浑浊，则可进行无水乙醇的注射<br>D.囊肿硬化治疗后短期内增大，提示治疗失败<br>E.无法明确穿刺针针尖位置时，可注入生理盐水进行观察", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-14", "title": "14. 关于超声引导下穿刺路径的选择，正确的描述是", "front": "A.胆囊穿刺应先通过一部分肝组织<br>B.上腹部穿刺进针点位于肺底强回声带以下<br>C.肝病灶进行穿刺应尽量直接进入病灶<br>D.肾脏穿刺应先通过一部分肾组织<br>E.胰腺病灶穿刺应先通过一部分胰腺组织", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-15", "title": "15. 关于脓肿的介入治疗， 不正确 的描述是", "front": "A.脓肿引流原则上不能途经空腔脏器<br>B.腹膜后脓肿只能经腰背部或侧腹壁引流<br>C.较大脓肿置管引流后，应每天定时用生理盐水冲洗引流管<br>D.多腔脓肿应置入多根引流管<br>E.肠袢间脓肿不能进行穿刺", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-16", "title": "16. 关于超声引导下治疗，正确的描述是", "front": "A.囊肿硬化治疗后短期内增大，提示治疗失败<br>B.囊肿硬化治疗后6个月无缩小，提示治疗失败<br>C.肝癌无水乙醇消融治疗后2~3天，病人出现发热，需对症治疗<br>D.肝癌无水乙醇消融治疗每周治疗一次<br>E.肝癌无水乙醇消融治疗完成后应立即退针", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 218, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-17", "title": "17. 肝癌射频消融治疗适用于", "front": "A.直径 3cm 的肝癌<br>B.弥漫性肝癌<br>C.安装心脏起搏器的病人<br>D.晚期巨大肝癌<br>E.肝癌伴大量顽固性腹水病人", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 219, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-18", "title": "18. 肝肿瘤射频消融应注意", "front": "A.治疗范围应完全覆盖肿瘤组织<br>B.病灶紧邻肝门部胆管时，应避免胆管损伤<br>C.治疗完成后应快速退针<br>D.治疗完成进行针道凝固时保持针尖温度在 50° C<br>E.治疗中病人出现疼痛、恶心应立即终止治疗", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 219, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-19", "title": "19. 不属于 腔内超声的是", "front": "A.经食管超声<br>B.经直肠超声<br>C.经尿道超声<br>D.经阴道超声<br>E.经会阴超声", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 219, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-20", "title": "20. 关于 HIFU 治疗乳腺癌的适应证, 正确的描述是", "front": "A.Ⅰ、Ⅱ期乳腺癌<br>B.多中心性乳腺癌<br>C.乳晕下乳腺癌<br>D.Ⅲ期乳腺癌<br>E.Ⅳ期乳腺癌", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 219, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-21", "title": "21. 关于 HIFU 治疗肝癌的适应证, 正确的描述是", "front": "A.弥漫性肝癌<br>B.晚期肝癌肝功能严重失代偿<br>C.肿瘤远处转移<br>D.恶病质病人<br>E.直径&lt;12cm 的右肝单发肝癌", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 219, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-22", "title": "22. 关于超声微泡造影剂， 不正确 的描述是", "front": "A.超声微泡可作为空化核，提高超声波空化效应<br>B.超声微泡可携带基因治疗<br>C.超声微泡可携带药物治疗<br>D.仅可用于诊断领域<br>E.超声微泡可与超声联合溶栓", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "介入"], "kind": "选择题", "page": 220, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-1", "title": "23. 病人，男性。45岁，超声体检于右肾下份见一大小约7.5cm×5.4cm的无回声区，边界清楚，边缘欠规则，后方回声增强，CDFI：其内未见确切彩色血流信号。该病人最适宜的治疗方法是", "front": "A.超声引导下射频消融<br>B.超声引导下微波治疗<br>C.超声引导下穿刺抽液及硬化治疗<br>D.超声引导下置管引流<br>E.超声引导下细针抽吸", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "介入"], "kind": "选择题", "page": 220, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-2", "title": "24. 病人，男性。50 岁，原发性肝癌术后 2 年，于左外叶见一大小约 2.1 cm × 1.8 cm 的低回声结节，边界清楚，边缘欠规则，拟行超声引导下无水乙醇消融治疗。正确的描述是", "front": "A.酒精用量应覆盖肿瘤及其周边至少 0.5cm 范围的正常肝组织<br>B.酒精注射时应快速推注<br>C.注射酒精时从病灶中央开始注射<br>D.注射酒精时从病灶浅面开始注射<br>E.酒精用量应覆盖肿瘤及其周边至少 1cm 范围的正常肝组织", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "介入"], "kind": "选择题", "page": 220, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-3", "title": "25. 病人，女性。42岁，肝硬化病史10年，肝右后叶见一大小约3.0cm×2.5cm的低回声结节，边界欠清，边缘规则，内部回声不均匀，周边可见低回声晕。可选择的介入治疗方法中， 不适用 的是", "front": "A.超声引导下无水乙醇消融治疗<br>B.超声引导下置管引流<br>C.超声引导下微波消融治疗<br>D.HIFU 治疗<br>E.超声引导下射频消融治疗", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "介入"], "kind": "选择题", "page": 220, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-shared-26-28", "title": "共用备选答案 · 第 26~28 题", "front": "<b>下列第 26~28 题共用以下备选答案:</b><br>A.超声引导下射频消融治疗<br>B.超声引导下置管引流<br>C.超声引导下穿刺抽液及硬化治疗<br>D.超声引导下无水乙醇消融治疗<br>E.超声引导下细针抽吸", "back": "", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": true, "image": "", "figcap": ""}, {"no": "12-3-1", "title": "26. 直径约6cm的肾囊肿，最适宜的治疗方法为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-2", "title": "27. 直径约4cm的肝癌结节，最适宜的治疗方法为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-3", "title": "28. 直径约5cm的肝脓肿，最适宜的治疗方法为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-shared-29-31", "title": "共用备选答案 · 第 29~31 题", "front": "<b>下列第 29~31 题共用以下备选答案:</b><br>A.经食管超声<br>B.血管内超声<br>C.经直肠超声<br>D.经阴道超声<br>E.超声胃镜", "back": "", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": true, "image": "", "figcap": ""}, {"no": "12-3-4", "title": "29. 判断胃肿瘤的浸润深度可使用", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-5", "title": "30. 左心耳血栓检查可使用", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-3-6", "title": "31. 前列腺穿刺活检可使用", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "介入"], "kind": "共用备选答案", "page": 0, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-4-1", "title": "1. 简述超声引导下穿刺的优势和特点。", "front": "", "back": "<b>参考答案:</b><br>（1）引导准确：理论上普通二维超声完全能够准确引导穿刺针进入直径6mm以上的深部靶病灶内。近年来，随着超声成像技术的飞速发展，特别是实时三维成像技术的不断完善和应用，超声引导穿刺的精确性得到了进一步的提高。\n\n（2）简单方便：超声与X线、CT、MRI等影像学检查方法相比更普及实用，超声引导下穿刺对设备和技术要求都相对简单。超声仪器携带或移动方便，便于进行床旁和术中检查与引导穿刺。\n\n（3）安全可靠：一方面，超声引导穿刺对于操作者和病人均无放射性危害。另一方面，超声引导穿刺的全过程均是在超声实时监视下进行的，不但可观察穿刺针进针过程，避免损伤大血管和邻近重要结构，减少了并发症；而且还能及时评价治疗效果和发现一些潜在的并发症。\n\n（4）费用低廉：与 CT 和 MRI 相比，超声引导穿刺费用低、性价比高，有利于降低医疗成本，减轻病人经济负担。", "tags": ["简答题", "介入"], "kind": "简答题", "page": 221, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-4-2", "title": "2. 简述超声引导下穿刺的禁忌证。", "front": "", "back": "<b>参考答案:</b><br>（1）病人无法配合，如频繁咳嗽、躁动等；\n\n（2）病人有严重出血倾向；\n\n（3）病灶紧邻重要脏器结构或大血管，或穿刺进针路径上有重要脏器结构或大血管而又无法规避；\n\n（4）动脉瘤、嗜铬细胞瘤、肝表面的血管瘤或癌结节及胰腺炎等不宜进行穿刺。", "tags": ["简答题", "介入"], "kind": "简答题", "page": 221, "chapter": "ch12", "static": false, "image": "", "figcap": ""}, {"no": "12-4-3", "title": "3. 简述超声引导下穿刺路径选择的基本原则及注意事项。", "front": "", "back": "<b>参考答案:</b><br>穿刺路径的选择原则是在安全的前提下，以选择最短路径为基本原则。穿刺路径上应避开大血管及其他重要脏器。上腹部穿刺应避免损伤胸膜腔，进针点应距肺底强回声带以下至少3cm。肾、肾上腺、腹膜后病变穿刺，原则上应经侧腹壁或后腹壁进针。\n\n对肝脏病灶进行穿刺应先通过一部分正常肝组织；对胰腺囊肿穿刺禁忌经过正常胰腺组织；肾脏病灶穿刺则要求尽量直接进入病灶，穿刺对周围组织造成的损伤越小越好。\n\n（冉海涛 张群霞）\n# 国家卫生和计划生育委员会“十三五”规划教材配套教材 全国高等学校配套教材 供医学影像学专业用", "tags": ["简答题", "介入"], "kind": "简答题", "page": 221, "chapter": "ch12", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第二章 心脏及大血管</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #10b981 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #10b981; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #10b981;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #10b981;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #10b981;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #10b981; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #10b981;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #10b981;
+  transition: width 0.3s; box-shadow: 0 0 8px #10b981;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #10b981;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #10b981;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #10b981;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #10b981; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第二章 心脏及大血管</h1>
+    <p>Pages 16-47 · 心脏瓣膜病/先心病/冠心病/心肌病</p>
+    <div class="stats">
+      <span class="stat">📇 共 197 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "2-1-1", "title": "心包腔", "front": "请简述该名词的定义。", "back": "<b>心包腔</b>:<br>脏、壁两层心包之间的潜在性腔隙,内含少量浆液起润滑作用。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-2", "title": "心动周期", "front": "请简述该名词的定义。", "back": "<b>心动周期</b>:<br>心脏一个活动周期,由心脏一次收缩和舒张构成。通常用心室活动周期代表心动周期。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-3", "title": "心肌应变", "front": "请简述该名词的定义。", "back": "<b>心肌应变</b>:<br>心脏在外力作用下,心肌某一方向两点之间局部心肌长度的瞬间变化率,以百分比表示(%),表示心肌变形的大小。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-4", "title": "TDI(组织多普勒成像)", "front": "请简述该名词的定义。", "back": "<b>TDI(组织多普勒成像)</b>:<br>以多普勒原理为基础,通过特殊滤波技术直接提取心肌运动的多普勒频移信号,进行彩色编码,以速度/加速度/能量多普勒三种模式成像。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-5", "title": "心室顺应性", "front": "请简述该名词的定义。", "back": "<b>心室顺应性</b>:<br>心室在单位压力变化下所引起的容积改变(dV/dt),是心室舒张功能的主要内容。顺应性差说明心室功能差。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-6", "title": "改良Bernoulli方程", "front": "请简述该名词的定义。", "back": "<b>改良Bernoulli方程</b>:<br>利用频谱多普勒测算狭窄口两端压力阶差,公式ΔP=4V²。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-7", "title": "PHT(压差降半时间)", "front": "请简述该名词的定义。", "back": "<b>PHT(压差降半时间)</b>:<br>评价二尖瓣狭窄的方法,反映压差下降斜率,公式 MVA=220/PHT。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-8", "title": "二尖瓣脱垂", "front": "请简述该名词的定义。", "back": "<b>二尖瓣脱垂</b>:<br>各种病因导致二尖瓣装置损害,瓣叶在收缩中/晚期或全收缩期部分或全部脱向左心房,超过瓣环水平。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-9", "title": "二尖瓣瓣膜瘤(MVA)", "front": "请简述该名词的定义。", "back": "<b>二尖瓣瓣膜瘤(MVA)</b>:<br>主动脉瓣反流冲击二尖瓣前叶,局部瓣膜组织薄弱呈瘤样膨出,突向左房,收缩期显著。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-10", "title": "冠状动脉血流储备", "front": "请简述该名词的定义。", "back": "<b>冠状动脉血流储备</b>:<br>冠脉在运动/缺氧等情况下扩张,血流量可增至静息时4~5倍的能力(CFR)。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-11", "title": "室壁瘤", "front": "请简述该名词的定义。", "back": "<b>室壁瘤</b>:<br>大面积心肌梗死后,纤维瘢痕组织在心腔内压力作用下局部室壁变薄、扩张向外膨出,最常发生于左室心尖部。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-12", "title": "缺血性心肌病", "front": "请简述该名词的定义。", "back": "<b>缺血性心肌病</b>:<br>心肌长期供血不足,导致广泛受累心肌营养障碍/萎缩/纤维化,心脏扩大,出现心力衰竭,与扩张型心肌病相似。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-13", "title": "主动脉夹层", "front": "请简述该名词的定义。", "back": "<b>主动脉夹层</b>:<br>主动脉内膜撕裂,血流进入动脉壁中层形成血肿,将动脉分离成真腔和假腔。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-14", "title": "SAM现象", "front": "请简述该名词的定义。", "back": "<b>SAM现象</b>:<br>见于梗阻性肥厚型心肌病,收缩期二尖瓣C~D段呈多层弓背样向前隆起。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 23, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-15", "title": "左室心肌致密化不全", "front": "请简述该名词的定义。", "back": "<b>左室心肌致密化不全</b>:<br>先天性心肌发育不良罕见类型,正常心内膜胚胎发育停止,心肌小梁压缩不良呈海绵状,属左室发育不良的特殊类型。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-16", "title": "致心律失常性右室心肌病", "front": "请简述该名词的定义。", "back": "<b>致心律失常性右室心肌病</b>:<br>以右心室心肌被纤维或脂肪组织取代为特征的原因不明的心肌病,可进展为弥漫性,最终导致左心功能不全。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-17", "title": "心包积液(PE)", "front": "请简述该名词的定义。", "back": "<b>心包积液(PE)</b>:<br>心包腔内液体超过50ml。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-18", "title": "自发显影", "front": "请简述该名词的定义。", "back": "<b>自发显影</b>:<br>正常血流超声显示为无回声,缓慢流动的血流可呈现烟雾状回声,提示存在血栓形成条件,需抗凝治疗。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-19", "title": "肺动脉高压", "front": "请简述该名词的定义。", "back": "<b>肺动脉高压</b>:<br>静息状态下右心导管测定平均肺动脉收缩压≥25mmHg。轻度40~50;中度50~70;重度≥70mmHg。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-20", "title": "鲁登巴赫综合征", "front": "请简述该名词的定义。", "back": "<b>鲁登巴赫综合征</b>:<br>继发孔型房间隔缺损合并二尖瓣狭窄。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-21", "title": "室间隔缺损(VSD)", "front": "请简述该名词的定义。", "back": "<b>室间隔缺损(VSD)</b>:<br>胚胎发育时期室间隔未能完整发育,导致左右心室之间形成异常通道,产生心室水平分流。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-22", "title": "动脉导管", "front": "请简述该名词的定义。", "back": "<b>动脉导管</b>:<br>胎儿期肺动脉与主动脉之间重要的正常生理通道。出生后1年未闭合=动脉导管未闭。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-23", "title": "房室间隔缺损(AVSD)", "front": "请简述该名词的定义。", "back": "<b>房室间隔缺损(AVSD)</b>:<br>心内膜垫房室组织发育不全造成的低位房间隔、部分流入道室间隔和房室瓣发育异常的一组畸形。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-24", "title": "肺动脉狭窄", "front": "请简述该名词的定义。", "back": "<b>肺动脉狭窄</b>:<br>广义:右室流出道到肺动脉分支之间的任何梗阻。狭义:单纯肺动脉瓣膜处狭窄(最常见)。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-25", "title": "先天性主动脉狭窄", "front": "请简述该名词的定义。", "back": "<b>先天性主动脉狭窄</b>:<br>从左室流出道至升主动脉之间任何部位出现的梗阻,约占先天性心脏病3%~10%。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-26", "title": "法洛四联症(TOF)", "front": "请简述该名词的定义。", "back": "<b>法洛四联症(TOF)</b>:<br>一组复合先天性心血管畸形(肺动脉狭窄、室间隔缺损、主动脉骑跨、右心室肥厚)。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-1-27", "title": "大动脉转位", "front": "请简述该名词的定义。", "back": "<b>大动脉转位</b>:<br>主动脉与肺动脉两支大动脉之间的空间位置及与心室连接关系异常。分完全型和矫正型。", "tags": ["名词解释", "心脏"], "kind": "名词解释", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-1", "title": "三尖瓣位于________与________之间。完整的三尖瓣由________与________组成。", "front": "", "back": "<b>答案:</b>右心房、右心室、三尖瓣环、瓣叶/腱索/乳头肌", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-2", "title": "CVP一般代表________的压力变化。连续测定CVP可反映________情况。", "front": "", "back": "<b>答案:</b>右心房/腔静脉胸腔段、右心前负荷", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-3", "title": "影响心排血量的主要因素是________和________。", "front": "", "back": "<b>答案:</b>心肌前负荷、心肌收缩性(及心肌后负荷)", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-4", "title": "心肌舒张功能障碍可能与________和________等因素有关。", "front": "", "back": "<b>答案:</b>钙离子复位延迟、肌球-肌动蛋白复合体解离障碍/心室顺应性降低", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-5", "title": "二尖瓣狭窄典型M型表现为前后叶运动呈'6'样改变,前后叶________。", "front": "", "back": "<b>答案:</b>同向城墙样", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-6", "title": "二尖瓣狭窄瓣口面积定量评价常用________、________、________。", "front": "", "back": "<b>答案:</b>二维超声直接测量瓣口面积、压差减半时间法(PHT)、连续方程法", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-7", "title": "冠心病是指因冠状动脉________使血管腔狭窄或闭塞,或因冠状动脉________导致心肌缺血缺氧。", "front": "", "back": "<b>答案:</b>粥样硬化、痉挛", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-8", "title": "1979年WHO将冠心病分为:无症状性心肌缺血、________、________、________、________。", "front": "", "back": "<b>答案:</b>心绞痛、心肌梗死、缺血性心力衰竭(缺血性心肌病)、猝死", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-9", "title": "室壁运动异常按程度分为:________、________、________、________。", "front": "", "back": "<b>答案:</b>运动减弱、运动消失、反常运动、室壁瘤", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-10", "title": "肥厚型心肌病以________肥厚最为多见。", "front": "", "back": "<b>答案:</b>室间隔", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-11", "title": "根据左室流出道有无梗阻,肥厚型心肌病分为________和________两型。", "front": "", "back": "<b>答案:</b>梗阻性、非梗阻性", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-12", "title": "心包腔内液体超过________ml即称为心包积液。", "front": "", "back": "<b>答案:</b>50", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-13", "title": "心脏压塞时超声表现为右心房________期塌陷,右心室________期塌陷。", "front": "", "back": "<b>答案:</b>收缩期、舒张早期", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-14", "title": "房间隔缺损分四型:________、________、________、________。", "front": "", "back": "<b>答案:</b>继发孔型、原发孔型、静脉窦型、冠状静脉窦型", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-2-15", "title": "先天性主动脉狭窄分________、________、________三型。", "front": "", "back": "<b>答案:</b>主动脉瓣上、主动脉瓣下、主动脉瓣", "tags": ["填空题", "心脏"], "kind": "填空题", "page": 24, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-1", "title": "1. 下列关于左心室的解剖结构及邻近结构关系的描述， 不正确 的是", "front": "A.左室流入道<br>B.左室流出道<br>C.与肺动脉连接<br>D.左房接口，通过左房室口与左心房连接<br>E.左室壁", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-2", "title": "2. 下列关于室间隔的解剖学要点的描述,正确的是", "front": "A.分为膜部与肌部<br>B.位于左心房室间<br>C.膜部在下、肌部在上<br>D.大部分由纤维组织构成<br>E.其下部紧邻主动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-3", "title": "3. 最能说明心房收缩期在生理上意义的是", "front": "A.心房收缩是舒张期的开始<br>B.左心房收缩引起左心室收缩<br>C.心房收缩期引起心室的快速充盈<br>D.心房收缩期是左心室射血的终结<br>E.心房的血液因心房收缩，最终全部被充盈到左心室", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-4", "title": "4. 等容舒张期在心动周期的时相上指的是", "front": "A.右室舒张晚期时间<br>B.左室舒张中期时间<br>C.左室舒张早期的时间<br>D.肺动脉射血晚期时间<br>E.主动脉瓣关闭到二尖瓣开放这一段时间", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-5", "title": "5. 心动周期的次序排列应该是", "front": "A.快速射血期，减慢射血期，等容收缩期，快速舒张期<br>B.等容收缩期，减慢射血期，快速射血期，等容舒张期<br>C.等容收缩期，快速射血期，减慢射血期，等容舒张期<br>D.等容舒张期，快速舒张期，快速收缩期，等容收缩期<br>E.减慢射血期，等容射血期，等容收缩期，快速射血期", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-6", "title": "6. 心搏出量与心排血量的不同点是", "front": "A.心搏出量在数值上与心排血量相等<br>B.心率不变时，心搏出量增大反而使心排血量减低<br>C.心搏出量大于心排血量<br>D.心排血量是心搏出量乘以心率，心搏出量是每次心搏的排出量<br>E.心排血量不乘以心率，心搏出量需计算心率", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-7", "title": "7. 心肌收缩功能的主要测量指标是", "front": "A.等容收缩期<br>B.收缩期压力减半时间<br>C.右室心肌松弛时间常数<br>D.左室压力最大下降速度<br>E.左室短轴缩短率、室壁收缩期增厚率", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-8", "title": "8. 由左右冠状动脉同时供血的室壁是", "front": "A.右室侧壁<br>B.左室后壁<br>C.右室前壁<br>D.室间隔后 1/3 <br>E.右心室大部分前壁", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-9", "title": "9. 心肌收缩特性 不包括", "front": "A.心肌收缩性能<br>B.心肌泵血能力<br>C.心脏前负荷<br>D.心脏后负荷<br>E.心室顺应性", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-10", "title": "10. 心肌舒张功能 不包括", "front": "A.等容收缩期时间<br>B.等容舒张期时间<br>C.二尖瓣口血流 E 峰幅度<br>D.二尖瓣口血流 A 峰幅度<br>E.二尖瓣口血流 A 峰的速度时间积分", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-11", "title": "11. 心脏瓣膜在生理上的作用", "front": "A.使血液从外周血管回流到心脏<br>B.使血流从大血管回流到心脏<br>C.是血液在心腔间、心腔与大动脉间流通的阀门<br>D.使血液不从外周血管返回心脏<br>E.使血流能从心脏流到体静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-12", "title": "12. 有关心房的描述，正确的是", "front": "A.左心房分前、后两部分（固有心房和腔静脉窦）<br>B.上、下腔静脉开口于右室<br>C.右心房通过半月瓣与右心室相连<br>D.肺左上静脉引流到右房<br>E.右房是心腔中最靠右侧的部分", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-13", "title": "13. 有关左右心室壁的描述， 错误 的是", "front": "A.左室壁厚于右室壁<br>B.左室壁厚9~12mm<br>C.右室壁厚3~4mm<br>D.左室壁是右室壁的1.5倍<br>E.左右室壁的共同部分为室间隔", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-14", "title": "14. 由心尖部可获得的心脏超声切面图为", "front": "A.上腔静脉长轴切面图<br>B.四腔心切面图<br>C.主动脉弓长轴切面图<br>D.大动脉短轴切面<br>E.主动脉短轴切面图", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-15", "title": "15. 评价左心收缩功能指标 不包括", "front": "A.射血分数<br>B.心室容积<br>C.每搏量<br>D.心排血量<br>E.等容舒张期", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-16", "title": "16. 反映收缩功能指标的是", "front": "A.等容舒张期时间<br>B.舒张期压力减半时间<br>C.左室压力最大下降速率<br>D.左室心肌松弛时间常数<br>E.左室短轴缩短率", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-17", "title": "17. 二维超声检测左室判断有无冠心病主要依据为", "front": "A.左心室壁厚径增加<br>B.左心室壁收缩运动幅度增大<br>C.节段性室壁运动异常<br>D.左室形状改变<br>E.左心室壁收缩期增厚率减低", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-18", "title": "18. M型超声心动图的二尖瓣水平波群可观察到的结构运动曲线是", "front": "A.二尖瓣前后叶曲线<br>B.乳头肌曲线<br>C.动脉瓣曲线<br>D.肺动脉瓣曲线<br>E.主动脉根部曲线", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-19", "title": "19. 左室整体舒张功能的超声测量指标为", "front": "A.等容收缩时间<br>B.左室快速充盈分数<br>C.室间隔收缩期增厚率<br>D.左室收缩末期容积<br>E.右室每搏量", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-20", "title": "20. 关于室间隔膜部的描述， 错误 的是", "front": "A.三尖瓣隔瓣附着缘的上方分隔右房与左室<br>B.室间隔的大部分为膜部<br>C.膜部间隔面积不超过 1cm2 <br>D.三尖瓣隔瓣将其分为两部分（于右室面）<br>E.三尖瓣隔瓣附着缘的下方分隔左右心室", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-21", "title": "21. 以下关于快速射血期心血管功能的变化叙述 错误 的是", "front": "A.血液快速从心室输入大血管<br>B.心室压力迅速明显上升<br>C.半月瓣关闭<br>D.心室压超过动脉舒张末压<br>E.快速射血期血量占心室射血量60%左右", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-22", "title": "22. 正常心脏位置最高、最靠近食管的部位为", "front": "A.右心房<br>B.右心室<br>C.下腔静脉<br>D.左心室<br>E.左心房", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-23", "title": "23. 心脏的运动方式包括", "front": "A.收缩与舒张运动及沿短轴的旋转运动<br>B.心脏在胸腔内的移动及沿短轴的旋转运动<br>C.收缩与舒张运动<br>D.收缩与舒张运动，心脏在胸腔内的移动<br>E.收缩与舒张运动，心脏在胸腔内的移动，心脏沿长轴的旋转运动", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-24", "title": "24. 在胸骨旁左室长轴切面中， 观察不到", "front": "A.升主动脉近端<br>B.二尖瓣前后叶回声<br>C.主动脉左冠瓣<br>D.左心室后壁肌层<br>E.前半部室间隔", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-25", "title": "25. 左室短轴缩短分数(FS)为", "front": "A.FS 的正常值范围 34%±5%<br>B.类似于射血分数，反映心脏泵功能的指标<br>C.FS 正常值应大于 25%<br>D.FS = (舒张末期左室内径 - 收缩末期左室内径)/舒张末期左室内径×100%<br>E.FS = (舒张末期左室容积 - 收缩末期左室容积)/舒张末期左室容积×100%", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-26", "title": "26. 关于二尖瓣后叶 M 型超声特征描述正确的是", "front": "A.二尖瓣前叶与后叶呈同向运动<br>B.二尖瓣后叶曲线亦由两峰样曲线组成，与前叶相对应<br>C.二尖瓣后叶在收缩期与前叶合拢，形成共同的 CD 段<br>D.B+C<br>E.A+B+C", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-27", "title": "27. 二尖瓣与三尖瓣的血流多普勒频谱不同之处为", "front": "A.三尖瓣血流频谱幅度(速度)小于二尖瓣<br>B.三尖瓣血流频谱幅度(速度)明显大于二尖瓣血流<br>C.二、三尖瓣血流频谱呈负向<br>D.三尖瓣血流舒张早期速度大于二尖瓣<br>E.三尖瓣血流频谱缺乏收缩期部分", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-28", "title": "28. 多普勒超声显示的血流速度受呼吸运动影响最大的为", "front": "A.上、下腔静脉<br>B.肺动脉瓣口<br>C.二尖瓣口<br>D.三尖瓣口<br>E.左、右肺静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-29", "title": "29. 二尖瓣狭窄的典型 M 型超声心动图的改变是", "front": "A.圆顶样改变<br>B.鱼口样改变<br>C.城墙样改变<br>D.吊床样改变<br>E.瓢匙样改变", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-30", "title": "30. 不属于 二尖瓣中度关闭不全的超声表现是", "front": "A.反流分数为30%~50%<br>B.反流束面积为4~8cm 2 <br>C.左心正常或增大<br>D.反流束长度达左心房中部<br>E.反流量为60~70ml", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-31", "title": "31. 二尖瓣脱垂发生率最高的瓣叶区域是", "front": "A.A1 区<br>B.A2 区<br>C.P1 区<br>D.P2 区<br>E.P3 区", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-32", "title": "32. 主动脉瓣中度关闭不全，反流束宽度/左室流出道宽度比值应为", "front": "A.25% ~ 46%<br>B.25% ~ 50%<br>C.25% ~ 64%<br>D.25% ~ 75%<br>E.50% ~ 75%", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-33", "title": "33. 主动脉瓣脱垂的病因多为", "front": "A.感染性<br>B.风湿性<br>C.马方综合征<br>D.外伤<br>E.瓣叶黏液样变性", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-34", "title": "34. 感染性心内膜炎最具特征性的改变是", "front": "A.瓣膜穿孔<br>B.瓣膜关闭不全<br>C.瓣膜脱垂<br>D.瓣膜瘤形成<br>E.赘生物形成", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-35", "title": "35. 冠状动脉粥样硬化斑块好发于", "front": "A.左冠状动脉主干<br>B.左前降支<br>C.左旋支<br>D.右冠状动脉下 1/3<br>E.后降支", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-36", "title": "36. 关于冠脉循环与心肌缺血， 不正确 的描述是", "front": "A.心脏的血供来自左、右冠状动脉<br>B.正常人冠状动脉储备能力较低<br>C.心肌缺血与冠脉狭窄程度相关<br>D.心肌缺血与冠脉血流量减少相关<br>E.心肌缺血与侧支循环建立情况有关", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-37", "title": "37. 通常由冠脉左前降支供血的室壁节段是", "front": "A.前壁基底段<br>B.侧壁基底段<br>C.下壁基底段<br>D.后壁基底段<br>E.后室间隔基底段", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-38", "title": "38. 通常由冠脉左回旋支供血的室壁节段是", "front": "A.前壁基底段<br>B.侧壁基底段<br>C.下壁基底段<br>D.前室间隔基底段<br>E.后室间隔基底段", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-39", "title": "39. 通常由右冠脉供血的室壁节段是", "front": "A.前壁基底段<br>B.侧壁基底段<br>C.后壁基底段<br>D.前室间隔基底段<br>E.后室间隔基底段", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-40", "title": "40. 关于 TDI, 不正确 的描述是", "front": "A.以多普勒原理为基础<br>B.对心肌运动进行彩色编码<br>C.可对室壁运动进行定量分析<br>D.没有角度依赖性<br>E.梗死心肌节段表现为颜色暗淡或缺失", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-41", "title": "41. 测量节段性室壁射血分数，应采用的方法是", "front": "A.常规二维超声心动图<br>B.M型超声心动图<br>C.TDI<br>D.负荷超声心动图<br>E.三维超声心动图", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-42", "title": "42. 超声心动图诊断冠心病的特征性表现是", "front": "A.冠状动脉狭窄或闭塞<br>B.节段性室壁运动异常<br>C.心脏扩大<br>D.左室舒张功能降低<br>E.乳头肌功能不全", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-43", "title": "43. 关于无症状性心肌缺血， 不正确 的描述是", "front": "A.室壁运动可减弱或消失<br>B.室壁运动可出现不协调<br>C.常出现左室心尖部扩大、圆钝<br>D.左室收缩功能降低，常为整体收缩功能降低<br>E.左室舒张功能降低", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-44", "title": "44. 关于室壁瘤的超声表现， 不正确 的描述是", "front": "A.局部室壁向外膨出，收缩期更明显<br>B.瘤壁变薄，呈矛盾运动<br>C.瘤壁与正常心肌组织间有逐渐转化的交界区<br>D.瘤颈较窄，其长径不大于瘤腔的最大径<br>E.瘤内常并发血栓", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-45", "title": "45. 关于乳头肌功能不全， 不正确 的描述是", "front": "A.乳头肌收缩减弱<br>B.二尖瓣前后叶对合不良、脱垂<br>C.左房、左室扩大<br>D.二尖瓣叶出现连枷样运动<br>E.可见不同程度二尖瓣反流", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-46", "title": "46. 关于心肌梗死并发室间隔穿孔， 不正确 的描述是", "front": "A.缺损口边缘不整齐<br>B.缺损口大小随心动周期变化<br>C.缺损口附近周围室壁运动异常<br>D.左室、右室增大<br>E.好发于膜部室间隔", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-47", "title": "47. 关于心肌梗死并发血栓形成， 不正确 的描述是", "front": "A.为心肌梗死常见并发症<br>B.边界常清楚，边缘多不规则<br>C.血栓附着于室壁的面积较广<br>D.血栓与心内膜面界线常较明确<br>E.血栓附着局部室壁运动多无异常", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-48", "title": "48. 缺血性心肌病与扩张型心肌病超声鉴别的要点是", "front": "A.心腔扩大程度<br>B.心室壁厚度<br>C.二尖瓣舒张期开放幅度<br>D.节段性室壁运动异常<br>E.收缩功能降低程度", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-49", "title": "49. 主动脉夹层，夹层发生在", "front": "A.内膜<br>B.中层<br>C.外膜<br>D.内、中、外三层<br>E.外膜与周围组织之间", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-50", "title": "50. 梗阻性肥厚型心肌病的超声表现， 不正确 的描述是", "front": "A.主动脉瓣收缩中期部分关闭<br>B.室间隔厚度明显增厚<br>C.左室壁厚度增厚，但增厚程度小于室间隔<br>D.心室壁呈弥漫性向心性肥厚<br>E.室间隔厚径与左室壁厚径比值大于1.5", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-51", "title": "51. 临床上与限制型心肌病难以鉴别的疾病主要是", "front": "A.缩窄性心包炎<br>B.扩张型心肌病<br>C.肥厚型心肌病<br>D.急性心肌梗死<br>E.缺血性心肌病", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-52", "title": "52. 关于左室心肌致密化不全， 不正确 的描述是", "front": "A.左心室壁呈非均匀性增厚或变薄<br>B.心肌变薄处为5~6mm<br>C.收缩末期非致密化心肌层与致密化心肌层厚度比例&gt;2<br>D.收缩末期非致密化心肌层与致密化心肌层厚度比例&gt;3<br>E.近心外膜处心肌回声接近正常", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-53", "title": "53. 梗阻性肥厚型心肌病病人左室流出道内射流频谱为", "front": "A.峰值后移，呈匕首状单峰充填型，峰速一般大于3m/s<br>B.峰值前移，呈匕首状单峰充填型，峰速一般大于3m/s<br>C.峰值后移，呈双峰状，峰速一般大于2m/s<br>D.峰值前移，呈双峰状，峰速一般大于2m/s<br>E.峰值前移，呈双峰状，峰速一般大于3m/s", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-54", "title": "54. 关于高血压心脏病超声表现， 不正确 的描述是", "front": "A.左心室心肌重量增加<br>B.左室壁呈非对称性肥厚<br>C.左房增大较常见，且较早出现<br>D.各型均存在左室舒张功能异常，且早于收缩功能异常<br>E.左室流出道流速正常", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-55", "title": "55. 扩张型心肌病的二维超声表现主要是", "front": "A.室壁增厚率增大<br>B.左心或全心扩大，室壁收缩运动幅度普遍减低<br>C.心室扩大，心房变小<br>D.室壁弥漫性增厚，室壁收缩运动幅度增大<br>E.左心室正常，左心房变小", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-56", "title": "56. 关于肥厚型心肌病的超声诊断， 不正确 的描述是", "front": "A.梗阻性左室流出道狭窄、阻塞<br>B.左室壁与室间隔厚径比值&gt;1.5<br>C.室间隔与左室壁厚径比值&gt;1.5<br>D.梗阻性可有 SAM 现象<br>E.室壁肥厚，绝对值常&gt;1.5cm", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-57", "title": "57. 扩张型心肌病的病理特点是", "front": "A.全心型，一般以左室型为主，偶有右室型<br>B.室壁肥厚<br>C.心脏重量增加<br>D.心肌广泛坏死<br>E.心内膜增厚", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-58", "title": "58. M型超声EPSS代表", "front": "A.二尖瓣开口前后径<br>E.A 峰间距<br>C.E 峰峰值<br>D.E 峰峰值压差<br>E.二尖瓣开放时前叶", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-59", "title": "59. 下列关于扩张型心肌病的描述， 不正确 的是", "front": "A.大心腔<br>B.小瓣口<br>C.高容量<br>D.低排血量<br>E.高排血量", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-60", "title": "60. 二尖瓣 E 峰值正常，E～F 斜率缓慢，A 峰明显增高，可见于", "front": "A.高血压性心脏病<br>B.扩张型心肌病<br>C.肥厚型心肌病<br>D.肺心病<br>E.冠心病", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-61", "title": "61. 限制型心肌病右室型，超声检查应注意鉴别的是", "front": "A.缩窄性心包炎<br>B.肺心病<br>C.扩张型心肌病右室型<br>D.三尖瓣下移畸形<br>E.房间隔缺损", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-62", "title": "62. “左室重构”常发生于", "front": "A.风湿性心脏病<br>B.心肌病<br>C.冠心病急性心梗<br>D.高血压性心脏病", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-63", "title": "63. 梗阻性肥厚型心肌病超声改变， 不可能 出现的是", "front": "A.室间隔非对称性肥厚<br>B.室间隔厚度与左室壁厚度之比大于1.3~1.5<br>C.左室流出道狭窄<br>D.收缩期二尖瓣向前运动(SAM)<br>E.二尖瓣舒张期震颤运动", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-64", "title": "64. 扩张型心肌病的心功能超声测量", "front": "A.每搏量(SV)增大<br>B.心排血量(CO)增大<br>C.收缩及舒张功能指标普遍低下(功能差)<br>D.舒张末 A 速度与正常比无变化<br>E.快速充盈分数增大", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-65", "title": "65. 关于扩张型心肌病多普勒超声表现， 不正确 的描述是", "front": "A.血流速度缓慢<br>B.心腔彩色呈明亮的红色<br>C.各瓣口不同程度的反流<br>D.瓣膜多无明显的器质性异常<br>E.收缩期二尖瓣、三尖瓣口心房侧反流信号呈蓝色为", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-66", "title": "66. 关于肥厚型心肌病超声心动图的表现， 不正确 的描述是", "front": "A.主动脉瓣反流最常见<br>B.二尖瓣前叶收缩期向前运动<br>C.室间隔增厚<br>D.主动脉瓣提前关闭<br>E.左室流出道狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-67", "title": "67. 关于扩张型心肌病左心型的病理及血流动力学改变， 不正确 的描述是", "front": "A.收缩功能减退<br>B.舒张功能损害为主<br>C.心肌收缩无力，心排量减少，心贮血量增多<br>D.两侧心室扩张，通常以左心扩大为主<br>E.两侧心室扩张，通常以右心扩大为主", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-68", "title": "68. 有关心包， 不正确 的描述是", "front": "A.由浆膜层和纤维层构成<br>B.浆膜层分为壁层和脏层<br>C.正常心包腔内没有液体<br>D.心包有限制心脏容量作用<br>E.有防止邻近器官和组织炎症向心脏蔓延作用", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-69", "title": "69. 心包积液的定义是", "front": "A.心包腔内液体超过 5 ml <br>B.心包腔内液体超过 50 ml <br>C.心包腔内液体超过 100 ml <br>D.心包腔内液体超过 150 ml <br>E.心包腔内液体超过 500 ml", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-70", "title": "70. 有关中量心包积液， 不正确 的描述是", "front": "A.心包腔内液体为500~1000ml<br>B.左室后壁心包腔内无回声宽为1.0~2.0cm<br>C.右室前壁心包腔内无回声宽为0.5~1.0cm<br>D.左房后心包腔内可有少量无回声<br>E.心尖四腔心切面，心尖部出现无回声区", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-71", "title": "71. 超声心动图显示右心房收缩期塌陷，常见于", "front": "A.心脏压塞<br>B.微量心包积液<br>C.少量心包积液<br>D.中量心包积液<br>E.大量心包积液", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-72", "title": "72. 超声心动图显示室间隔“弹跳征”或“跳跃征”，常见于", "front": "A.心包积液<br>B.扩张型心肌病<br>C.缩窄性心包炎<br>D.限制型心肌病<br>E.肥厚型心肌病", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-73", "title": "73. 不属于 心脏原发性良性肿瘤的是", "front": "A.黏液瘤<br>B.横纹肌瘤<br>C.乳头状弹力纤维瘤<br>D.血管肉瘤<br>E.畸胎瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-74", "title": "74. 发绀型先天性心脏病， 不包括", "front": "A.法洛四联症<br>B.右室双出口<br>C.完全型大动脉转位<br>D.房间隔缺损<br>E.单心室", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-75", "title": "75. 关于房间隔缺损的血流动力学改变, 描述正确的是", "front": "A.左心容量负荷加重<br>B.左心压力负荷过重<br>C.肺动脉收缩压降低<br>D.右心容量负荷加重<br>E.右心压力负荷过重", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-76", "title": "76. 室间隔缺损引起的病理改变为", "front": "A.左房左室增大<br>B.左房右室增大<br>C.右房右室增大<br>D.双房增大<br>E.左室小,右室大", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-77", "title": "77. 室间隔缺损病人 SBP 为 120 mmHg ，室缺分流速度 3 m/s ，肺动脉血流速度 2 m/s ，其肺动脉压可能为", "front": "A.84mmHg<br>B.74mmHg<br>C.68mmHg<br>D.64mmHg<br>E.58mmHg", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-78", "title": "78. 室间隔缺损类型中, 大动脉短轴切面 不能 显示的是", "front": "A.单纯膜部型<br>B.峰下型<br>C.肌部型<br>D.峰内型<br>E.干下型", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-79", "title": "79. 关于动脉导管未闭的超声表现， 不正确 的描述是", "front": "A.左肺动脉根部与降主动脉之间存在异常分流信号<br>B.持续整个心动周期的连续性左向右分流，收缩期血流峰值可达5m/s，舒张期可达4~4.5m/s<br>C.大动脉根部短轴切面肺动脉内见以红色为主的五彩高速血流信号<br>D.右房右室增大，右室壁增厚<br>E.左房左室增大", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-80", "title": "80. 先天性心脏病中，血流呈双期连续性分流的是", "front": "A.房间隔缺损<br>B.室间隔缺损<br>C.法洛四联症<br>D.艾森曼格综合征<br>E.动脉导管未闭及主动脉窦瘤破裂", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-81", "title": "81. 关于房室间隔缺损的超声表现， 不正确 的描述是", "front": "A.房间隔下部回声中断<br>B.二尖瓣前叶裂<br>C.十字交叉结构消失<br>D.二尖瓣与三尖瓣为共同房室瓣<br>E.一定合并心内其他结构异常", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-82", "title": "82. 肺动脉狭窄 不包括", "front": "A.肺动脉瓣膜狭窄<br>B.肺动脉主干狭窄<br>C.肺动脉分支狭窄<br>D.右室流出道狭窄<br>E.右室双出口", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-83", "title": "83. 关于肺动脉瓣狭窄彩色多普勒血流，正确的描述是", "front": "A.以红色为主的多彩镶嵌血流束呈喷射状<br>B.以蓝色为主的多彩镶嵌血流束呈喷射状<br>C.以绿色为主的多彩镶嵌血流束呈喷射状<br>D.为橘红色纤细血流束<br>E.为蓝色、绿色的纤细血流束", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-84", "title": "84. 若怀疑有主动脉瓣狭窄，为取得狭窄的高速湍流，取样容积应置于", "front": "A.心尖部<br>B.左室流入道<br>C.左室二尖瓣瓣尖水平<br>D.主动脉瓣下<br>E.主动脉瓣上", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-85", "title": "85. 关于主动脉瓣狭窄的超声表现， 不正确 的描述是", "front": "A.主动脉瓣叶增厚，回声增强<br>B.瓣口面积缩小<br>C.左室腔明显增大<br>D.左室壁普遍性增厚<br>E.升主动脉内探及高速射流频谱", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-86", "title": "86. 关于法洛四联症， 不正确 的描述是", "front": "A.肺动脉瓣狭窄<br>B.室间隔缺损<br>C.房间隔缺损<br>D.右心室肥厚<br>E.主动脉骑跨于室间隔", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-87", "title": "87. 关于矫正型大动脉转位， 不正确 的描述是", "front": "A.主动脉位于左前，发自右室<br>B.肺动脉位于右后，发自左室<br>C.右室位于左侧与左房相连<br>D.左室位于右侧与右房相连<br>E.均合并心内分泌畸形", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-1", "title": "88. 病人，男性，48岁。近两年来有心慌气短并进行性加重，二维超声见心脏扩大，左心增大明显，呈球形，室间隔及左室后壁似变薄，但测值属正常范围，室壁运动搏幅普遍减低，各瓣膜无增厚，EPSS明显增大，呈高容量、低动力型血流动力学表现，CDFI示：二尖瓣轻度反流，该病人心功能超声测量最常见的改变是", "front": "A.每搏输出量(SV)增大<br>B.心排血量(CO)增大<br>C.收缩及舒张功能指标普遍低下<br>D.舒张末A峰速度与正常比无明显变化<br>E.快速充盈分数增大", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-2", "title": "89. 病人，女性，54岁。胸部长期有压迫窒息感、闷胀感，疼痛常放射至左肩，心电图ST段降低，T波倒置，心脏超声检查左室前壁运动异常，测得EDV:150ml，ESV:86ml，FS:19%,SV:64ml，该病人的心功能值为", "front": "A.19%<br>B.74%<br>C.25%<br>D.34%<br>E.43%", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-3", "title": "90. 病人，女性，67岁。高血压史20年，近期头疼头晕症状加重就诊，测得血压160/75mmHg，心脏超声检查室间隔厚度12mm，左室壁厚度12～13mm，左心房（左右径）44mm，二尖瓣下测得E峰107cm/s，A峰82cm/s，DT（E峰下降时间）180毫秒，肺静脉S峰值&gt;D峰值，二尖瓣环组织多普勒e'波5.6cm/s，a'波8.1cm/s，该病人的左室舒张 能", "front": "A.左室舒张功能正常<br>B.左室弛缓功能减退<br>C.左室充盈假性正常化<br>D.左室限制性充盈异常<br>E.左室不可逆限制性充盈异常", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-4", "title": "91. 病人，男性，45岁。发热1个月，伴心悸气促半月，入院查体：T 39.5° C，心尖区闻及全收缩期杂音，呈高调吹风样。超声心动图检查发现二尖瓣前叶瓣尖可见一絮状稍强回声附着，随二尖瓣活动于左房左室之间甩动，二尖瓣口收缩期左房侧可见偏心性反流信号至房顶。该病人最可能的诊断是", "front": "A.二尖瓣赘生物形成并重度关闭不全<br>B.二尖瓣狭窄<br>C.双孔二尖瓣<br>D.二尖瓣中度关闭不全<br>E.降落伞型二尖瓣", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-5", "title": "92. 病人，男性，18 岁。胸闷气短半月余。查体：主动脉瓣听诊区闻及舒张早中期高频、叹气样递减性杂音，向心尖区传导，超声心动图显示舒张期见主动脉瓣呈吊床样脱入左室流出道，超过主动脉瓣根部附着点连线以下。该病人最可能的诊断是", "front": "A.主动脉瓣关闭不全<br>B.主动脉瓣狭窄<br>C.主动脉瓣脱垂<br>D.主动脉瓣二瓣化畸形<br>E.主动脉瓣赘生物形成", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-6", "title": "93. 超声心动图定量：主动脉瓣口面积为 0.6 cm2 ，主动脉瓣跨瓣压差为 60 mmHg ，主动脉瓣口收缩期峰值速度 3.6 m/s 。该病人最可能的诊断是", "front": "A.主动脉瓣重度关闭不全<br>B.主动脉瓣轻度狭窄<br>C.主动脉瓣中度狭窄<br>D.主动脉瓣重度狭窄<br>E.主动脉瓣出现形态学上的狭窄，但无血流动力学梗阻", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-7", "title": "94. 病人，女性，50岁。因左下肢水肿3天入院。住院期间突发剧烈胸痛与呼吸困难，急诊超声检查发现：右房、右室增大，肺动脉增宽，室间隔向左室膨出；左房、左室大小正常，未见节段性室壁运动异常，CDFI示三尖瓣重度反流。其最可能的诊断是", "front": "A.右室心肌梗死<br>B.急性肺动脉栓塞<br>C.应激性心肌病<br>D.变异型心绞痛<br>E.致心律失常型右室心肌病", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-8", "title": "95. 病人，男性，48岁。近两年来有心慌、憋气、进行性加重，二维超声见心脏扩大，左心增大明显，呈球形，室间隔及左室后壁似乎变薄，但测值属正常范围，室壁运动普遍低，各瓣膜无增厚，心尖部可见附壁血栓光团；EPSS明显增大，呈高容量，低动力型血流动力学表现；CDFI示二尖瓣轻度反流。其最可能的诊断是", "front": "A.冠心病，心肌硬化型<br>B.冠心病并左心衰<br>C.扩张型心肌病<br>D.高血压心脏病<br>E.尿毒症性心脏病", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-9", "title": "96. 病人，男性，56岁，体型肥胖。常规体检超声心动图显示：各腔室形态、大小正常，各瓣膜结构与活动无异常，未见室壁运动异常，也无异常分流及反流；于右心室前方探及一层较厚的极低回声，厚约0.5cm，多切面探查，左室后壁未见无回声区。其最可能的诊断是", "front": "A.少量心包积液<br>B.心包囊肿<br>C.心包肿瘤<br>D.心外脂肪垫<br>E.心包局限性增厚", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-10", "title": "97. 病人，女性，29岁。妊娠18周，近日频繁感觉胸闷、气急，心电图表现为窦性心律，电轴右偏，心脏听诊未见明显异常杂音；超声心动图表现为右心增大，右室流出道增宽。其最可能的诊断是", "front": "A.房间隔缺损<br>B.室间隔缺损<br>C.动脉导管未闭<br>D.法洛四联症<br>E.肺动脉瓣狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-11", "title": "98. 患儿，5岁，男性。发育差，易患呼吸道感染，体检发现胸骨左缘3~4肋间可闻及Ⅲ级以上粗糙收缩期杂音，伴有震颤。超声表现为大动脉短轴切面，CDFI高速血流自左室穿过室间隔射向右室，其最可能的诊断是", "front": "A.房间隔缺损<br>B.室间隔缺损<br>C.主动脉瓣狭窄<br>D.动脉导管未闭<br>E.肺动脉瓣狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-12", "title": "99. 28 孕周的孕妇，行胎儿超声心动图检查，初步诊断考虑房室间隔缺损，需鉴别诊断的是", "front": "A.永存动脉干<br>B.冠状静脉窦扩张<br>C.右室双出口<br>D.法洛四联症<br>E.继发孔型房间隔缺损", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-13", "title": "100. 某病人超声心动图显示主动脉瓣瓣口缩小，瓣膜增厚，回声增强，瓣叶开放受限，主动脉瓣呈二叶斜裂式，收缩期主动脉瓣口最大血流速度约 3 m/s ，主动脉瓣口及升主动脉内可见五彩镶嵌花色血流信号。其最可能的诊断是", "front": "A.主动脉瓣上狭窄<br>B.主动脉瓣下狭窄<br>C.主动脉瓣狭窄<br>D.风湿性联合心脏瓣膜病<br>E.钙化型主动脉瓣狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-14", "title": "101. 患儿，男性，6岁。出生6个月出现发绀，逐渐加重，活动后气促，行走后蹲踞。胸片提示：右心室增大，心尖上翘，肺动脉段凹陷，心影似“靴型”，肺血减少。其最可能的诊断是", "front": "A.永存动脉干<br>B.法洛四联症<br>C.巨大房间隔缺损<br>D.心内膜垫缺损<br>E.室间隔缺损", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "心脏"], "kind": "选择题", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-102-103", "title": "共用备选答案 · 第 102~103 题", "front": "<b>下列第 102~103 题共用以下备选答案:</b><br>A.二尖瓣前叶 E 峰与室间隔左心室面的距离<br>B.心排血量<br>C.室壁运动幅度及增厚率<br>D.CK 技术<br>E.应变率", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-1", "title": "102. 检测局部左室收缩功能最常用的指标为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-2", "title": "103. 检测整体左心室收缩功能常用的指标为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-104-107", "title": "共用备选答案 · 第 104~107 题", "front": "<b>下列第 104~107 题共用以下备选答案:</b><br>A.F点<br>B.E峰<br>C.DE段<br>D.BC段<br>E.A峰\nM型二尖瓣前叶曲线示意图中：", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-3", "title": "104. 左心室收缩，二尖瓣关闭所致", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-4", "title": "105. 由心房收缩引起", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-5", "title": "106. 二尖瓣前叶开放最大的位置", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-6", "title": "107. 舒张中期二尖瓣前叶活动的最低点", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-108-110", "title": "共用备选答案 · 第 108~110 题", "front": "<b>下列第 108~110 题共用以下备选答案:</b><br>A.e 点<br>B.a 波<br>C.cd 段<br>D.de 段<br>E.b 点\nM型超声肺动脉瓣曲线示意图中：", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-7", "title": "108. 右心室射血开始点为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-8", "title": "109. 舒张期开始点为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-9", "title": "110. 右心房收缩对肺动脉瓣活动的影响引起", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-111-112", "title": "共用备选答案 · 第 111~112 题", "front": "<b>下列第 111~112 题共用以下备选答案:</b><br>A.二尖瓣反流量/二尖瓣口血流量<br>B.二尖瓣口血流量/二尖瓣反流量<br>C.二尖瓣反流量/主动脉瓣口血流量<br>D.主动脉瓣口血流量-二尖瓣口血流量<br>E.二尖瓣口血流量-主动脉瓣口血流量", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-10", "title": "111. 在不存在主动脉瓣反流的情况下，利用连续性方程测量的二尖瓣反流量表示为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-113-114", "title": "共用备选答案 · 第 113~114 题", "front": "<b>下列第 113~114 题共用以下备选答案:</b><br>A.二尖瓣脱垂<br>B.二尖瓣狭窄<br>C.二尖瓣赘生物形成<br>D.主动脉瓣狭窄<br>E.主动脉瓣关闭不全", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-11", "title": "113. M型超声心动图检查探及二尖瓣前叶舒张期细颤的常见原因是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-12", "title": "114. 彩色多普勒超声心动图检查探及二尖瓣口收缩期左房侧中量偏心性反流信号的常见原因是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-115-117", "title": "共用备选答案 · 第 115~117 题", "front": "<b>下列第 115~117 题共用以下备选答案:</b><br>A.二尖瓣前叶出现舒张期震颤波<br>B.六边形开放盒明显增大<br>C.受损瓣叶呈连枷样运动<br>D.二尖瓣前叶斜率减低<br>E.舒张期主动脉瓣关闭呈双线", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-13", "title": "115. 二尖瓣狭窄", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-14", "title": "116. 主动脉瓣关闭不全", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-15", "title": "117. 腱索断裂", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-118-119", "title": "共用备选答案 · 第 118~119 题", "front": "<b>下列第 118~119 题共用以下备选答案:</b><br>A.常规二维超声心动图<br>B.M型超声心动图<br>C.TDI<br>D.负荷超声心动图<br>E.经食管超声心动图", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-16", "title": "118. 测量室壁收缩期增厚率需采用", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-17", "title": "119. 隐匿型冠心病需采用", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-120-121", "title": "共用备选答案 · 第 120~121 题", "front": "<b>下列第 120~121 题共用以下备选答案:</b><br>A.二尖瓣“城墙样”改变<br>B.二尖瓣 SAM 现象<br>C.二尖瓣吊床征<br>D.二尖瓣舒张期震颤波<br>E.二尖瓣“钻石征”", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-18", "title": "120. 扩张型心肌病的超声表现为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-19", "title": "121. 梗阻性肥厚型心肌病的超声表现为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-shared-122-124", "title": "共用备选答案 · 第 122~124 题", "front": "<b>下列第 122~124 题共用以下备选答案:</b><br>A.黏液瘤<br>B.横纹肌瘤<br>C.血管肉瘤<br>D.乳头状弹力纤维瘤<br>E.间皮瘤", "back": "", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": true, "image": "", "figcap": ""}, {"no": "2-3-20", "title": "122. 成人原发性心脏恶性肿瘤中最常见的是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-21", "title": "123. 心脏瓣膜最常发生的肿瘤是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-3-22", "title": "124. 心脏原发性良性肿瘤最常见的是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "心脏"], "kind": "共用备选答案", "page": 0, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-1", "title": "简述影响二尖瓣血流频谱的因素。", "front": "", "back": "<b>参考答案:</b><br>1. <b>呼吸</b>:呼气时E峰流速较吸气时增高。E/A值不稳定时,可用TDI测瓣环e/a比值(e/a<1提示舒张功能下降);吸气时E/A更能反映舒张功能变化。<br>2. <b>年龄</b>:E/A随年龄变化。<br>3. <b>心率</b>:过快可致E/A融合。<br>4. <b>前负荷</b>。<br>5. <b>左室顺应性/舒张功能</b>。<br>6. <b>二尖瓣病变</b>。", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-2", "title": "简述组织多普勒(TDI)评价心脏功能的原理、优势及常用衍生技术模式。", "front": "", "back": "<b>参考答案:</b><br><b>原理</b>:基于多普勒原理,通过滤波去除血流高频低振幅信号,保留心肌低频高振幅频移信号,进行彩色编码。<br><b>优势</b>:直接定量心肌运动速度,不受心脏整体运动/呼吸影响。<br><b>模式</b>:①速度模式 ②加速度模式 ③能量模式 ④应变/应变率成像。", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-3", "title": "简述彩色多普勒(CDFI)的主要作用。", "front": "", "back": "<b>参考答案:</b><br>1. <b>实时显示血流方向</b>:红色=朝向探头,蓝色=背离探头<br>2. <b>显示血流速度</b>:色彩亮度反映流速<br>3. <b>显示血流状态</b>:层流(色彩均一)/湍流(五彩镶嵌)<br>4. <b>定位异常血流</b>:分流/反流<br>5. <b>引导频谱多普勒取样</b>", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-4", "title": "试述二尖瓣狭窄程度的超声定量评估。", "front": "", "back": "<b>参考答案:</b><br>1. <b>二维直接测量瓣口面积</b>(planimetry):轻度>1.5cm²;中度1.0~1.5cm²;重度<1.0cm²<br>2. <b>压力阶差</b>(PHT):轻度<5mmHg;中度5~10mmHg;重度>10mmHg<br>3. <b>连续方程法</b>:MVA=π×(LVOT半径)²×LVOT VTI / 二尖瓣口VTI<br>4. <b>PHT法</b>:MVA=220/PHT<br>5. <b>三尖瓣反流估测肺动脉压</b>", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-5", "title": "试述MS常用定量方法及注意事项和优缺点。", "front": "", "back": "<b>参考答案:</b><br>1. <b>二维面积法</b>:最直观,但依赖切面,瓣口钙化时测值不准确<br>2. <b>PHT法</b>:不受瓣口形态影响,但受左室舒张功能/心率影响<br>3. <b>连续方程法</b>:理论准确,但需多参数测量<br>4. <b>跨瓣压差</b>:受心率/流量影响<br>注意:综合应用,避免单一指标误导", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-6", "title": "简述生理性二尖瓣反流的超声特点。", "front": "", "back": "<b>参考答案:</b><br>1. 反流束细小(<1cm或<左房面积20%)<br>2. 局限于瓣口附近<br>3. 收缩早期<br>4. 速度>2m/s<br>5. 瓣膜结构正常<br>6. 左房左室无扩大", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-7", "title": "简述主动脉瓣狭窄程度分级及鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br><b>分级</b>:①面积:轻>1.5;中1.0~1.5;重<1.0cm² ②平均压差:轻<20;中20~40;重>40mmHg<br><b>鉴别</b>:①先天性二叶瓣 ②风湿性 ③退行性钙化(老年最常见) ④感染性 ⑤梗阻性HCM(动力性梗阻)", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-8", "title": "简述主动脉瓣关闭不全超声诊断要点。", "front": "", "back": "<b>参考答案:</b><br>1. 瓣膜增厚/钙化,对合不良<br>2. 左室扩大<br>3. LVOT起源主动脉瓣口反流束<br>4. <b>反流束长度</b>:轻<二尖瓣前叶;中达乳头肌;重超乳头肌<br>5. <b>反流束宽度/LVOT宽度</b>:轻<25%;中25~64%;重≥65%<br>6. <b>PHT法</b>:PHT>500ms=轻度;<200ms=重度<br>7. 二尖瓣前叶舒张期震颤(考虑AR)", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-9", "title": "简述对室壁进行节段划分的主要目的。", "front": "", "back": "<b>参考答案:</b><br>1. <b>定位缺血/梗死区域</b>:与冠脉供血对应<br>2. <b>标准化评估</b>:便于不同操作者/不同时间的比较<br>3. <b>半定量评价</b>:计算WMSI<br>4. <b>指导治疗</b>:溶栓/PCI/CABG<br>5. <b>评估预后</b>:WMSI↑=预后差<br>6. <b>负荷超声定位</b>:识别存活心肌", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-10", "title": "简述多巴酚丁胺负荷试验结果判定标准及临床意义。", "front": "", "back": "<b>参考答案:</b><br><b>判定</b>:①室壁运动改善≥1级=心肌存活 ②原有异常节段运动恶化=缺血<br><b>分级</b>:低剂量(5~10μg/kg/min)=存活心肌;高剂量(20~40μg/kg/min)=诱导缺血<br><b>临床意义</b>:①识别存活心肌(血运重建指征) ②诊断隐匿型冠心病 ③评估心肌梗死范围 ④术前风险评估", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-11", "title": "简述缺血性与扩张型心肌病超声鉴别要点。", "front": "", "back": "<b>参考答案:</b><br>1. <b>病史</b>:缺血性有心绞痛/心梗史;扩张型无<br>2. <b>心腔形态</b>:缺血性可局限性扩大;扩张型全心扩大,左室球形<br>3. <b>室壁运动</b>:缺血性节段性运动减低,不协调;扩张型弥漫性减低,协调<br>4. <b>室壁回声</b>:缺血性回声不均;扩张型尚均匀<br>5. <b>冠脉造影</b>:缺血性狭窄;扩张型正常", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-12", "title": "试述Stanford A型主动脉夹层的超声表现。", "front": "", "back": "<b>参考答案:</b><br>1. 升主动脉不同程度扩张<br>2. M型:腔内线样回声<br>3. 二维:动脉腔被纤细膜样回声分成真腔和假腔<br>4. 假腔内可能有血栓<br>5. CDFI:收缩期血流从真腔经破口流入假腔,真腔流速快,假腔流速慢/无信号<br>6. 假腔内血流可在舒张期经破口回流真腔<br>7. 累及主动脉瓣→AR", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-13", "title": "简述梗阻性肥厚型心肌病的M型超声表现。", "front": "", "back": "<b>参考答案:</b><br>1. <b>IVS非对称性肥厚</b>,IVS/LVPW>1.5<br>2. <b>SAM现象</b>:收缩期二尖瓣C~D段呈多层弓背样前隆<br>3. <b>EF斜率减慢</b><br>4. 收缩期主动脉瓣提前关闭(M型表现:瓣呈'M'型)<br>5. LVOT狭窄(<20mm)<br>6. 左室腔小,左房增大", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-14", "title": "简述扩张型心肌病的超声表现。", "front": "", "back": "<b>参考答案:</b><br>1. 全心增大,<b>以左室为著</b>,左室球形扩大<br>2. M型室壁运动幅度<b>弥漫性减低</b><br>3. 二尖瓣<b>钻石样改变</b>,EPSS明显增大<br>4. 多瓣口轻中度反流<br>5. <b>二尖瓣血流频谱</b>:早期E/A<1;较重反流时E/A>1(假性正常化);严重心衰E/A>1.5~2.0(不可逆)<br>6. 左室收缩及舒张功能普遍减低<br>7. 心腔内血栓", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-15", "title": "简述心包积液与左侧胸腔积液的鉴别。", "front": "", "back": "<b>参考答案:</b><br>1. <b>位置</b>:心包积液在心脏周围;胸腔积液在降主动脉后方<br>2. <b>LV后壁与降主动脉距离</b>:心包积液时增大;胸腔积液不变<br>3. <b>延伸范围</b>:胸腔积液延伸至心脏以外的胸腔壁,肩胛下也可显示<br>4. <b>心脏压塞征</b>:仅心包积液可致心脏压塞<br>5. <b>随体位变化</b>:胸腔积液变化更明显", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-16", "title": "试述心腔内血栓的共同超声表现。", "front": "", "back": "<b>参考答案:</b><br>1. <b>位置</b>:多位于心尖或血流缓慢处<br>2. <b>形态</b>:团块状/条带状回声<br>3. <b>附着</b>:基底较宽,附着于心壁<br>4. <b>活动度</b>:多无活动(附壁血栓),可有蒂<br>5. <b>回声</b>:层状/均匀/不均匀<br>6. <b>附着处室壁</b>:常有运动异常(局部)<br>7. <b>多普勒</b>:内部无血流信号", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-17", "title": "试述左心房黏液瘤的超声表现。", "front": "", "back": "<b>参考答案:</b><br>1. <b>位置</b>:左房内,蒂多附着于房间隔卵圆窝<br>2. <b>形态</b>:团块状/分叶状,内部回声不均<br>3. <b>活动度</b>:随心动周期摆动,舒张期进入二尖瓣口,收缩期回到左房<br>4. <b>血流动力学</b>:部分阻塞二尖瓣口→类似MS表现<br>5. <b>CDFI</b>:舒张期二尖瓣口血流加速,瘤体影响关闭时左房侧反流<br>6. 鉴别:左房血栓(无蒂,多位于左心耳/后壁)", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-18", "title": "简述房间隔缺损的超声表现及诊断要点。", "front": "", "back": "<b>参考答案:</b><br>1. <b>二维</b>:多切面显示房间隔局部回声中断;右房右室增大;RVOT/肺动脉增宽<br>2. <b>M型</b>:右室增大;室间隔运动幅度降低/平坦,甚至与左室后壁同向运动<br>3. <b>CDFI</b>:房间隔中断处全心动周期左向右分流束<br>4. <b>频谱多普勒</b>:房间隔中断处全心动周期分流频谱,峰值流速位于舒张期,~1m/s<br>5. <b>分型</b>:继发孔型(最常见)、原发孔型、静脉窦型、冠状静脉窦型", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-19", "title": "简述室间隔缺损的超声表现及诊断要点。", "front": "", "back": "<b>参考答案:</b><br>1. <b>二维/M型</b>:室间隔局部回声失落,断端回声增强增粗<br>2. <b>膜部间隔瘤</b>:膜部缺损断端纤维组织包绕缺口,形成瘤样结构突向右室<br>3. 左房左室增大,肺动脉增宽,左室壁运动增强<br>4. <b>CDFI</b>:室间隔中断处收缩期左向右五彩镶嵌穿隔血流束<br>5. <b>频谱多普勒</b>:室间隔中断处收缩期高速湍流频谱<br>6. <b>分型</b>:膜部型/嵴下型/嵴内型/干下型/肌部型", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-20", "title": "试述动脉导管未闭时血流动力学改变。", "front": "", "back": "<b>参考答案:</b><br>1. 主动脉压力收缩期及舒张期均高于肺动脉→主动脉血液持续经未闭导管流向肺动脉(大动脉水平左向右分流)<br>2. 肺循环血流量明显增加→左心前负荷增加→左房左室扩大<br>3. 长期肺血流增加→肺血管阻力增高→肺动脉高压<br>4. 严重肺动脉高压→右向左分流→<b>艾森曼格综合征</b>(发绀)", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-21", "title": "试述房室间隔缺损的超声诊断要点。", "front": "", "back": "<b>参考答案:</b><br>1. 胸骨旁四腔心/心尖四腔心/剑下四腔心显示缺损大小与范围<br>2. 上述切面确定房室瓣解剖特征(是否独立瓣环/有无房室瓣裂)及腱索附着位置<br>3. CDFI显示房室水平分流及房室瓣反流<br>4. 伴发畸形的观察(TOF/DORV等)", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-22", "title": "试述房室间隔缺损的鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>1. <b>冠状静脉窦扩张</b>:冠状静脉窦扩张时仅见三尖瓣及左侧房室沟;原发孔型ASD心尖四腔心可同时显示二尖瓣及瓣环上方缺损;鉴别要点=多切面扫查,在其他切面观察到房间隔下部<br>2. <b>完全型AVSD与一侧房室瓣闭锁鉴别</b>:完全型AVSD共同房室瓣与一侧房室瓣闭锁鉴别", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}, {"no": "2-5-23", "title": "简述先天性主动脉狭窄分型及超声表现。", "front": "", "back": "<b>参考答案:</b><br><b>分型</b>:①瓣上型 ②瓣下型 ③主动脉瓣狭窄<br><b>超声表现</b>:<br>1. <b>主动脉瓣狭窄</b>:瓣口缩小,瓣膜增厚增强,开放受限,常二叶瓣畸形,可伴关闭不全;CDFI瓣口花色血流汇聚,升主动脉五彩镶嵌高速射流<br>2. <b>瓣上狭窄</b>:主动脉内异常隔膜/局限环状/弥漫性狭窄;CDFI瓣上花色汇聚+远端高速射流<br>3. <b>瓣下狭窄</b>:①隔膜型(瓣下2cm内圆环隔膜,中有小孔) ②纤维肌性(室间隔局部肌性嵴样突起);CDFI瓣下花色汇聚+远心端高速射流", "tags": ["简答题", "心脏"], "kind": "简答题", "page": 38, "chapter": "ch2", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

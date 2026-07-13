@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第八章 产科</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #f43f5e 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #f43f5e; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #f43f5e;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #f43f5e;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #f43f5e;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #f43f5e; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #f43f5e;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #f43f5e;
+  transition: width 0.3s; box-shadow: 0 0 8px #f43f5e;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #f43f5e;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #f43f5e;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #f43f5e;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #f43f5e; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第八章 产科</h1>
+    <p>Pages 113-137 · 胎儿/产前</p>
+    <div class="stats">
+      <span class="stat">📇 共 199 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "8-1-1", "title": "妊娠", "front": "请简述该名词的定义。", "back": "<b>妊娠</b>:<br>是指胚胎/胎儿在母体子宫内生长、发育的过程，自卵子受精开始，至胎儿及其附属物自母体排出为止，全过程平均约38周（相当于月经龄40周）。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-2", "title": "正常妊娠囊", "front": "请简述该名词的定义。", "back": "<b>正常妊娠囊</b>:<br>位于宫腔中上部，周边为一完整、厚度均匀的强回声环，厚度至少不低于2mm，这一强回声壁由正在发育的绒毛与邻近的蜕膜组成。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-3", "title": "nuchal translucency (NT)", "front": "请简述该名词的定义。", "back": "<b>nuchal translucency (NT)</b>:<br>指胎儿颈部皮下的无回声带，位于颈后皮肤高回声带与深部软组织高回声带之间。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-4", "title": "胎儿呼吸样运动（fetal breathing movement, FBM）", "front": "请简述该名词的定义。", "back": "<b>胎儿呼吸样运动（fetal breathing movement, FBM）</b>:<br>胎儿呼吸样运动（FBM）：在实时超声观察下见胎儿胸廓或腹壁节律的运动为胎儿呼吸样运动。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-5", "title": "胎动(fetal movement, FM)", "front": "请简述该名词的定义。", "back": "<b>胎动(fetal movement, FM)</b>:<br>胎动（FM）：胎动是指胎儿在宫内的活动，指躯体旋转及四肢运动。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-6", "title": "胎儿肌张力(fetal tone, FT)", "front": "请简述该名词的定义。", "back": "<b>胎儿肌张力(fetal tone, FT)</b>:<br>胎儿肌张力（FT）：正常情况下胎儿在宫内有一定张力，肌肉有一定的收缩性，肢体一般处于屈曲状态，胎体和肢体活动后又回复到原来的屈曲状态为正常的胎儿肌张力。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-7", "title": "羊水量 (amniotic fluid volume, AFV)", "front": "请简述该名词的定义。", "back": "<b>羊水量 (amniotic fluid volume, AFV)</b>:<br>羊水量（AFV）：羊水量即羊膜腔内羊水容量，最大羊水池深度 ≥ 2.0cm，并&lt;8.0cm为正常。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-8", "title": "流产", "front": "请简述该名词的定义。", "back": "<b>流产</b>:<br>流产是指妊娠不足28周、胎儿体重不足1000g而终止者，发生在妊娠12周前称早期流产，发生在妊娠12周后称晚期流产。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-9", "title": "难免流产", "front": "请简述该名词的定义。", "back": "<b>难免流产</b>:<br>宫颈内口已开，妊娠囊可部分下移至宫颈内口或宫颈管，妊娠囊变形呈葫芦状。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-10", "title": "异位妊娠", "front": "请简述该名词的定义。", "back": "<b>异位妊娠</b>:<br>孕卵在子宫腔以外着床。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-11", "title": "宫角妊娠", "front": "请简述该名词的定义。", "back": "<b>宫角妊娠</b>:<br>妊娠囊位于一侧宫角，妊娠囊与宫腔相连，子宫内膜在角部呈喇叭状，妊娠囊与内膜相连续。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-12", "title": "前置胎盘", "front": "请简述该名词的定义。", "back": "<b>前置胎盘</b>:<br>是指妊娠32周后胎盘部分或全部位于子宫下段，甚至胎盘下缘达到或覆盖宫颈内口，其位置低于胎先露部。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-13", "title": "胎盘早剥", "front": "请简述该名词的定义。", "back": "<b>胎盘早剥</b>:<br>是在妊娠20周后或分娩期胎儿娩出前，胎盘部分或全部从子宫壁分离，引起局部出血或血肿。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-14", "title": "胎盘植入", "front": "请简述该名词的定义。", "back": "<b>胎盘植入</b>:<br>是指胎盘附着异常，表现为胎盘绒毛异常植入到子宫肌层。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-15", "title": "单脐动脉", "front": "请简述该名词的定义。", "back": "<b>单脐动脉</b>:<br>正常脐带中有两条脐动脉与一条脐静脉，脐带中仅有一条脐动脉称为单脐动脉。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-16", "title": "脑膨出", "front": "请简述该名词的定义。", "back": "<b>脑膨出</b>:<br>指颅骨缺损伴脑组织和脑膜组织从缺损处膨出。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-17", "title": "脑膜膨出", "front": "请简述该名词的定义。", "back": "<b>脑膜膨出</b>:<br>指颅骨缺损并仅有脑膜组织从缺损处膨出。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-18", "title": "脑积水", "front": "请简述该名词的定义。", "back": "<b>脑积水</b>:<br>是指脑脊液过多地聚积在脑室系统内，导致脑室系统扩张和压力升高。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-20", "title": "完全性唇裂", "front": "请简述该名词的定义。", "back": "<b>完全性唇裂</b>:<br>是指唇裂从唇红一直裂到鼻底。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-21", "title": "不完全性唇裂", "front": "请简述该名词的定义。", "back": "<b>不完全性唇裂</b>:<br>是指唇裂涉及唇红或唇部皮肤，但未达鼻底。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-22", "title": "单心房", "front": "请简述该名词的定义。", "back": "<b>单心房</b>:<br>胚胎发育期，房间隔的第一隔和第二隔均未发育所致，房间隔的痕迹也不存在，有两个心耳，仅有一个共同心房腔。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-23", "title": "单心室", "front": "请简述该名词的定义。", "back": "<b>单心室</b>:<br>仅一个较大的主心腔接收来自心房血液，可以有两组房室瓣或只有一组房室瓣，房室瓣均向主心腔，可以合并附属心室腔。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-24", "title": "心内膜垫缺损", "front": "请简述该名词的定义。", "back": "<b>心内膜垫缺损</b>:<br>又称为房室间隔缺损，是一组累及房间隔、房室瓣和室间隔的复杂性先天性心脏畸形。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-25", "title": "“双泡征”", "front": "请简述该名词的定义。", "back": "<b>“双泡征”</b>:<br>在胎儿十二指肠闭锁或梗阻时，超声检查在胎儿上腹部横切面见“双泡征”，位于左侧为胃泡，右侧为扩张的十二指肠上段，两泡通过幽门相通。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-26", "title": "胎儿肾积水", "front": "请简述该名词的定义。", "back": "<b>胎儿肾积水</b>:<br>可由泌尿道梗阻或非梗阻性病变引起，临床上以肾盂前后径超过10mm为肾积水。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-27", "title": "脐膨出", "front": "请简述该名词的定义。", "back": "<b>脐膨出</b>:<br>是先天性前腹壁发育不全，在正中线处脐带周围腹壁肌肉、皮肤缺损，致使腹膜、腹腔内器官一起膨出体外，形成脐膨出。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-28", "title": "完全性海豹肢畸形", "front": "请简述该名词的定义。", "back": "<b>完全性海豹肢畸形</b>:<br>手、足直接与躯干相连称完全性海豹肢畸形。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-29", "title": "“听筒征”", "front": "请简述该名词的定义。", "back": "<b>“听筒征”</b>:<br>“听简征”：四肢长骨严重弯曲，呈听筒样改变。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-30", "title": "完全性葡萄胎的超声表现", "front": "请简述该名词的定义。", "back": "<b>完全性葡萄胎的超声表现</b>:<br>子宫大于停经时间，宫腔内充满大小不一的小囊泡回声，0.3～1cm左右，最大可达2cm，呈蜂窝状，与子宫肌层分界清晰。常合并有卵巢黄素囊肿。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-1-31", "title": "侵蚀性葡萄胎的超声特征", "front": "请简述该名词的定义。", "back": "<b>侵蚀性葡萄胎的超声特征</b>:<br>子宫轻度或明显增大，局部子宫肌层有不均质回声肿块，边界欠规整，彩色多普勒超声显示肿块血供丰富，多普勒频谱为低阻型血流，常合并动静脉瘘。", "tags": ["名词解释", "产科"], "kind": "名词解释", "page": 117, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-1", "title": "1. 胎儿血液循环是来自胎盘的有氧血通过___进入胎体，经肝静脉、门静脉及静脉导管后进入___，与来自胎儿下半身回流的含氧量低的血流一起回流入___。", "front": "", "back": "<b>答案:</b>脐静脉 下腔静脉 右心房", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-2", "title": "2. 早孕时，妊娠囊表现为子宫内膜内极小的无回声，称为___。随着妊娠囊的增大，形成特征的___或___。这一征象在妊娠囊平均内径为10mm或以上时能恒定显示。", "front": "", "back": "<b>答案:</b>蜕膜内征 双绒毛环征 双环征", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-3", "title": "3. 胎儿头颅主要采用横切面检查。最重要、最常用的横切面有 ___ 和 ___。", "front": "", "back": "<b>答案:</b>丘脑水平横切面 侧脑室水平横切面 小脑横切面", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-4", "title": "4. 胎儿心脏主要检查切面：___、___、___、___或___。", "front": "", "back": "<b>答案:</b>四腔心切面 左室流出道切面 右室流出道切面 三血管切面 三血管气管切面", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-5", "title": "5. 胎儿面部可通过矢状切面、横切面及冠状切面来检查，主要观察的结构有___、___、___等结构。", "front": "", "back": "<b>答案:</b>双眼眶 鼻 上唇", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-6", "title": "6. 流产在临床上分为___、难免流产、___、___、___。", "front": "", "back": "<b>答案:</b>先兆流产 不全流产 完全流产 稽留流产", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-7", "title": "7. 难免流产超声表现是宫颈内口 ___ ，妊娠囊可部分下移至 ___ 或 ___ 。", "front": "", "back": "<b>答案:</b>已开 宫颈内口 宫颈管", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-8", "title": "8. 先兆流产超声表现为子宫、妊娠囊、囊内胚芽或胎儿大小与停经孕周___，有胎心搏动，宫颈内口___。", "front": "", "back": "<b>答案:</b>相符 紧闭", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-9", "title": "9. 异位妊娠95%~98%发生在___, 其中80%发生在___, 有时也可以发生在___、___、___等。", "front": "", "back": "<b>答案:</b>输卵管 输卵管壶腹部 腹腔 卵巢 宫颈", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-10", "title": "10. 输卵管妊娠的共同超声表现：子宫稍___、子宫内膜___、宫内___，有时可见宫腔内积血形成___。", "front": "", "back": "<b>答案:</b>增大 明显增厚 无妊娠囊 假妊娠囊", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-11", "title": "11. 输卵管妊娠按症状轻重、结局分为4种：___、___、___、___。", "front": "", "back": "<b>答案:</b>未破裂型 流产型 破裂型 陈旧型", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-12", "title": "12. 前置胎盘的临床表现是 ___。", "front": "", "back": "<b>答案:</b>无痛性阴道流血", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-13", "title": "13. 前置胎盘的超声分类是___、___、___、___。", "front": "", "back": "<b>答案:</b>低置胎盘 边缘性前置胎盘 部分性前置胎盘 中央性或完全性前置胎盘", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-14", "title": "14. 胎盘早剥临床上分为___和___。", "front": "", "back": "<b>答案:</b>轻型 重型", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-15", "title": "15. 胎盘后方子宫肌层低回声带正常厚约 ___。", "front": "", "back": "<b>答案:</b>1.0~2.0cm", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-16", "title": "16. 胎盘植入的声像图表现是 ___。", "front": "", "back": "<b>答案:</b>胎盘内大小不等、形态不规则的无回声区", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-17", "title": "17. 脐带内血管结构包括___和___。", "front": "", "back": "<b>答案:</b>2 条脐动脉 1 条脐静脉", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-18", "title": "18. 单脐动脉横切面上呈 ___。", "front": "", "back": "<b>答案:</b>“吕”字形", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-19", "title": "19. ___的回声连续性中断是脑膨出和脑膜膨出的特征性表现。", "front": "", "back": "<b>答案:</b>颅骨", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-20", "title": "20. 侧脑后角宽度大于___mm、小于___mm，属于轻度脑室扩张。", "front": "", "back": "<b>答案:</b>10 15", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-21", "title": "21. 脊柱裂可发生在脊柱的任何一段，最常见于___和___。", "front": "", "back": "<b>答案:</b>腰骶部 颈部", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-22", "title": "22. 露脑畸形和无脑畸形的主要鉴别点是___。", "front": "", "back": "<b>答案:</b>有无完整的脑组织", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-23", "title": "23. 回声连续是可以除外牙槽突裂。", "front": "", "back": "<b>答案:</b>牙槽骨", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-24", "title": "24. I 度腭裂是指___或___。", "front": "", "back": "<b>答案:</b>悬雍垂裂 软腭裂", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-25", "title": "25. 单心室的病理可分为三型，分别为___、___及___。", "front": "", "back": "<b>答案:</b>左室型 右室型 中间型", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-26", "title": "26. 心内膜垫缺损又称为 ___ ，是一组累及 ___ 、 ___ 和 ___ 的复杂性先天性心脏畸形。", "front": "", "back": "<b>答案:</b>房室间隔缺损 房间隔 房室瓣 室间隔", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-27", "title": "27. 心内膜垫缺损分型为___和___。", "front": "", "back": "<b>答案:</b>部分型 完全型", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-28", "title": "28. 消化道闭锁可发生在消化道的 ___、___、___、___、___、___部位等。", "front": "", "back": "<b>答案:</b>食管 十二指肠 空肠 回肠 结肠 肛门", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-29", "title": "29. 食管闭锁超声表现：___，___。", "front": "", "back": "<b>答案:</b>胃泡小或不显示 晚孕期出现羊水过多", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-30", "title": "30. 十二指肠闭锁或梗阻典型的超声表现：___。", "front": "", "back": "<b>答案:</b>“双泡征”", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-31", "title": "31. 当胎儿一侧肾脏或双侧肾脏缺如时，一侧或双侧肾上腺增大，出现肾上腺___。", "front": "", "back": "<b>答案:</b>平卧征", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-32", "title": "32. 胎儿双肾缺如可导致严重的羊水过少，由于羊水过少，胎儿活动受压或受限，进一步导致典型的___征。", "front": "", "back": "<b>答案:</b>Potter 综合", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-33", "title": "33. 最常见的胎儿肾积水的原因有 ___、___、___、___、___。", "front": "", "back": "<b>答案:</b>肾盂输尿管连接处梗阻 膀胱输尿管反流 膀胱输尿管连接处梗阻 后尿道瓣膜 重复肾", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-34", "title": "34. 腹裂主要特点是___、___、___。", "front": "", "back": "<b>答案:</b>腹壁全层连续中断 腹腔脏器外翻 可见肠管漂浮羊水中且无包膜覆盖", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-35", "title": "35. 脐膨出膨出物表面有层薄的膜，其为___和___。", "front": "", "back": "<b>答案:</b>腹膜 羊膜", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-36", "title": "36. 病理上根据脐膨出的大小，将脐膨出分为___、___。", "front": "", "back": "<b>答案:</b>巨型脐膨出 小型脐膨出", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-37", "title": "37. 致死性骨发育不良四肢长骨长度低于正常孕周平均值的 ___ 标准差或以下。", "front": "", "back": "<b>答案:</b>4个", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-38", "title": "38. 常见致死性骨发育不良类型有___、___、___。", "front": "", "back": "<b>答案:</b>致死性侏儒 致死性软骨不发育 致死性成骨发育不良", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-39", "title": "39. Kay 起草的统一命名草案中，将先天性肢体缺失和截肢分为___和___两类。", "front": "", "back": "<b>答案:</b>横形肢体缺陷 纵形肢体缺陷", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-40", "title": "40. 妊娠滋养细胞疾病包括___、___、___、___。", "front": "", "back": "<b>答案:</b>葡萄胎 侵蚀性葡萄胎 绒毛膜癌 胎盘部位滋养细胞肿瘤", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-2-41", "title": "41. 绒毛膜癌继发于___、___、___。", "front": "", "back": "<b>答案:</b>足月产后 流产后 葡萄胎清宫后", "tags": ["填空题", "产科"], "kind": "填空题", "page": 119, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-1", "title": "1. 妊娠期间宫颈管会出现逐渐变短，但宫颈管长度应大于", "front": "A.2.5cm<br>B.3.0cm<br>C.3.5cm<br>D.4.0cm<br>E.4.5cm", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 121, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-2", "title": "2. 平时月经规则，3～5天/26～28天，妊娠囊平均直径约3mm，大约相当于妊娠", "front": "A.4 周<br>B.6 周<br>C.7 周<br>D.8 周<br>E.9 周", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 121, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-3", "title": "3. 关于胎儿血液循环特点， 不正确 的描述是", "front": "A.脐动脉是含氧高的血，脐静脉是含氧低的血<br>B.胎儿出生后脐静脉闭锁为肝圆韧带<br>C.胎儿出生后动脉导管闭锁为动脉韧带<br>D.胎儿肺动脉血液大部分经动脉导管流入主动脉供应胎儿下半身，仅约 10% 的血液经肺静脉回流入左心房<br>E.胎儿下腔静脉回流的血流 50% 以上通过开口正对下腔静脉的卵圆孔进入左心房", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 121, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-4", "title": "4. 胎儿颈项透明层检查的合适孕周是", "front": "A.6~9周<br>B.10~12周<br>C.11~13.6周<br>D.12~14.6周<br>E.20~23.6周", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 121, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-5", "title": "5. 早孕期，妊娠囊内最早观察到的结构是", "front": "A.卵黄囊<br>B.胚芽<br>C.羊膜囊<br>D.胎盘<br>E.羊水", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-6", "title": "6. 胚胎停止发育是指", "front": "A.在早孕期，胚芽长度 ≥ 2mm 时没有观察到胎心搏动<br>B.在早孕期，胚芽长度 ≥ 3mm 时没有观察到胎心搏动<br>C.在早孕期，胚芽长度 ≥ 4mm 时没有观察到胎心搏动<br>D.在早孕期，胚芽长度 ≥ 5mm 时没有观察到胎心搏动<br>E.在早孕期，胚芽长度 ≥ 7mm 时没有观察到胎心搏动", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-7", "title": "7. 关于早孕超声观察的内容， 不正确 的描述是", "front": "A.子宫内是否有妊娠囊<br>B.卵黄囊<br>C.胚芽<br>D.胎心搏动<br>E.胎儿心脏结构是否异常", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-8", "title": "8. 关于早孕期产科超声检查方法及内容， 不正确 的描述是", "front": "A.在宫底横切面上探头稍向左侧、右侧偏斜可以观察双侧附件的情况<br>B.主要超声检查切面为子宫系列纵切面和横切面<br>C.早孕期超声检查主要观察内容包括妊娠囊、卵黄囊、胚胎/胎儿数目、胎心搏动、胚长或头臀长等<br>D.早孕期超声诊断多胎妊娠时，应该确定羊膜囊数，而绒毛膜囊数在该时期不好确定<br>E.胎儿颈部透明层超声检查的最适检查时间在 11~13 +6 周", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-9", "title": "9. 下列异常的超生指标 不包括 颈项透明层增厚的是", "front": "A.胎儿唐氏综合征<br>B.胎儿先天性心脏畸形<br>C.一些遗传综合征<br>D.胎儿特纳综合征<br>E.胎儿消化道畸形", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-10", "title": "10. 关于中晚孕期产科超声检查方法及内容， 不正确 的描述是", "front": "A.中孕期最适检查时间是18~24孕周，此时期是检查胎儿解剖结构和筛查胎儿畸形的最佳时期，能对胎儿各个系统的重要解剖结构进行系统检查<br>B.中晚孕期产科超声能检查所有胎儿结构畸形<br>C.中晚孕期超声检查内容包括某些解剖结构的测量，如双顶径、头围、腹围、股骨长等，预测胎儿孕周大小<br>D.判断胎位、胎儿数目、估测羊水量、观察胎盘、脐带、孕妇子宫、宫颈等是中晚\n孕期超声检查的内容<br>E.中晚孕期可以通过测量双顶径、头围、腹围、股骨长等生长参数，间接评估胎儿的体重", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-11", "title": "11. 关于产科超声检查， 不正确 的描述是", "front": "A.产科超声检查常用腹部探头频率 3.0 ~ 6.0MHz，阴道探头频率 7.0 ~ 10.0MHz<br>B.孕妇一般取仰卧位，病人充分暴露下腹部，中晚孕期为了更好显示胎儿解剖结构，可根据胎儿体位调整孕妇体位，如左侧卧位、右侧卧位<br>C.检查前应告知孕妇产科超声检查的适应证、最适检查时间、该次检查内容、检查的风险、检查所需时间、孕妇所需准备等<br>D.产科超声检查前均无需在检查前做任何准备<br>E.经会阴、阴道超声检查需排空膀胱后进行", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-12", "title": "12. 胎儿腹部主要筛查的切面， 不包括", "front": "A.上腹部横切面<br>B.双肾横切面<br>C.脐孔横切面<br>D.膀胱切面<br>E.四腔心切面", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 122, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-13", "title": "13. 男性胎儿睾丸下降，在阴囊内可显示双侧睾丸回声，是在___后", "front": "A.24 周<br>B.28 周<br>C.32 周<br>D.36 周<br>E.39 周", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-14", "title": "14. 脐带构成正确的是", "front": "A.两条动脉，一条静脉<br>B.两条动脉，两条静脉<br>C.两条静脉，一条动脉<br>D.一条动脉，一条静脉<br>E.一条动脉，三条静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-15", "title": "15. 晚孕期脐动脉多普勒 S/D 正常值", "front": "A.大于2.0<br>B.小于3.0<br>C.大于3.0<br>D.小于4.0<br>E.大于4.0", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-16", "title": "16. 诊断羊水过多的最大羊水池深度是", "front": "A.大于 5.0cm<br>B.大于 6.0cm<br>C.大于 7.0cm<br>D.大于 8.0cm<br>E.大于 9.0cm", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-17", "title": "17. 诊断羊水过少的最大羊水池深度是", "front": "A.小于 1.0cm<br>B.小于 2.0cm<br>C.小于 3.0cm<br>D.小于 4.0cm<br>E.小于 5.0cm", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-18", "title": "18. 先兆流产最早出现的症状是", "front": "A.停经<br>B.子宫停止增大<br>C.持续性腹痛<br>D.妊娠试验由阳性转为阴性<br>E.少量阴道流血", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-19", "title": "19. 关于先兆流产的表现， 不正确 的描述是", "front": "A.妊娠囊大小与停经时间相符，形态正常<br>B.阴道超声妊娠囊平均内径8mm以上，卵黄囊显示<br>C.胚芽大小与停经时间相符，胎心存在<br>D.阴道超声妊娠囊平均内径16mm以上，未显示胚芽及胎心搏动<br>E.有可能继续妊娠", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-20", "title": "20. 关于不全流产的超声表现， 不正确 的描述是", "front": "A.部分妊娠物排出宫腔<br>B.子宫腔内可见不规则团状回声<br>C.CDFI 检测子宫腔内不规则团块血流信号不明显<br>D.CDFI 检测与不规则团块相邻的子宫肌层内可见局灶性血流信号<br>E.子宫腔下段可见妊娠囊", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 123, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-21", "title": "21. 关于稽留流产， 不正确 的描述是", "front": "A.妊娠囊变形，内壁毛糙<br>B.子宫较停经时间小<br>C.卵黄囊大于6mm<br>D.胎心消失<br>E.经保胎治疗，可以继续妊娠", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-22", "title": "22. 异位妊娠最常见的种植部位是", "front": "A.卵巢<br>B.腹腔内<br>C.输卵管<br>D.后腹膜间隙内<br>E.肠壁上", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-23", "title": "23. 黄体破裂和异位妊娠的最主要鉴别点是", "front": "A.停经<br>B.病史,有无妊娠<br>C.阴道流血<br>D.恶心、呕吐<br>E.头晕", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-24", "title": "24. 关于输卵管妊娠的超声表现， 不正确 的描述是", "front": "A.子宫稍增大<br>B.子宫内膜明显增厚<br>C.子宫内膜未见妊娠囊<br>D.附件区可见混合型包块<br>E.子宫一侧宫角可见妊娠囊，妊娠囊与子宫腔相通", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-25", "title": "25. 发生多胎相关并发症可能性最小的多胎类型是", "front": "A.无心胎儿<br>B.双绒毛膜双羊膜囊双胎<br>C.单绒毛膜双羊膜囊双胎<br>D.单绒毛膜单羊膜囊双胎<br>E.连体双胎", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-26", "title": "26. 胎儿生长受限的超声表现， 不包括", "front": "A.头围、腹围、股骨长低于正常平均值的两个标准差<br>B.胎儿体重低于均数的两个标准差或低于第10百分位数<br>C.常合并羊水过少<br>D.脐动脉血流阻力正常或降低<br>E.34周前孕妇子宫动脉血管阻力增高，舒张早期出现切迹", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-27", "title": "27. 与羊水过多无关的胎儿先天异常是", "front": "A.食管闭锁<br>B.关节挛缩<br>C.无脑儿<br>D.肾发育不全<br>E.肠部分闭锁", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-28", "title": "28. 羊水过少者最常见的胎儿畸形是", "front": "A.食管闭锁<br>B.脊柱裂<br>C.无脑畸形<br>D.肾发育不全<br>E.胆道异常", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 124, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-29", "title": "29. 发生前置胎盘时，阴道流血的特征是", "front": "A.有痛性阴道流血<br>B.无痛性阴道流血<br>C.阴道流血常与外伤有关<br>D.宫缩时阴道流血停止<br>E.阴道流血与贫血严重程度不相符", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-30", "title": "30. 前置胎盘最安全可靠的诊断方法是", "front": "A.阴道内诊检查<br>B.X线腹部平片<br>C.下腹部听诊胎盘杂音<br>D.B型超声检查<br>E.放射性同位素扫描", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-31", "title": "31. 超声诊断前置胎盘至少应", "front": "A.大于10周孕周<br>B.大于20周孕周<br>C.大于25周孕周<br>D.大于28周孕周<br>E.大于35周孕周", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-32", "title": "32. 超声表现为胎盘下缘位于子宫颈内口边缘的前置胎盘类型是", "front": "A.完全性前置胎盘<br>B.部分性前置胎盘<br>C.边缘性前置胎盘<br>D.低置胎盘<br>E.环形胎盘", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-33", "title": "33. 胎盘早期剥离的主要病理变化是", "front": "A.胎盘边缘血窦出血<br>B.胎盘血管痉挛<br>C.包蜕膜出血<br>D.底蜕膜出血<br>E.真蜕膜出血", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-34", "title": "34. 与胎盘早剥的发生 无关 的是", "front": "A.子宫静脉压突然升高<br>B.不协调宫缩过强<br>C.血管病变<br>D.外伤<br>E.子宫内压突然降低", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-35", "title": "35. 关于重型胎盘早剥的临床表现， 不正确 的描述是", "front": "A.恶心、呕吐、出冷汗<br>B.子宫呈板状硬、压痛<br>C.多量阴道流血<br>D.突然发生的持续性腹痛<br>E.胎心、胎位不清", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-36", "title": "36. 关于胎盘植入的声像图表现， 不正确 的描述是", "front": "A.胎盘增厚，面积增大<br>B.胎盘后间隙消失或不显示<br>C.胎盘与子宫壁间可见不规则的无回声区<br>D.子宫相邻的膀胱浆膜层强回声带消失<br>E.胎盘内血池异常丰富", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 125, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-37", "title": "37. 胎儿脐带的超声声像图特征包括：①一端连接胎盘，一端连接胎儿脐部；②横切呈“品”形；③纵切呈麻花样；④多普勒超声显示1条脐静脉和2条脐动脉", "front": "A.①②③<br>B.①③<br>C.②④<br>D.④<br>E.①②③④", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-38", "title": "38. 单脐动脉的正常声像图表现是", "front": "A.横断面上呈“品”字形<br>B.膀胱水平横切面上膀胱两侧显示两根血管<br>C.横切面上呈“吕”字形<br>D.CDFI 显示 2 个红色圆形结构<br>E.纵切面呈麻花样", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-39", "title": "39. 蛙状面容最常见于", "front": "A.脑膨出<br>B.脊柱裂<br>C.脑积水<br>D.全前脑<br>E.无脑畸形", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-40", "title": "40. 诊断无脑畸形，应在", "front": "A.8 周以后<br>B.10 周以后<br>C.12 周以后<br>D.14 周以后<br>E.16 周以后", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-41", "title": "41. 脑膨出最常见于", "front": "A.颞部<br>B.枕部<br>C.顶部<br>D.颅底<br>E.额部", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-42", "title": "42. 脑膨出和脑膜膨出的主要鉴别点在于脑膜膨出的包块内仅有", "front": "A.无回声<br>B.低回声<br>C.等回声<br>D.高回声<br>E.混合回声", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-43", "title": "43. 开放性脊柱裂的声像图表现， 不包括", "front": "A.受累脊柱连续性中断<br>B.裂口处皮肤及皮下组织连续性中断<br>C.脊柱横切面两个椎弓骨化中心向后开放，呈V形或U形改变<br>D.脊柱中断处表面囊性包块<br>E.孕妇血清甲胎蛋白水平正常", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-44", "title": "44. 出现以下哪种情况考虑有开放性脊柱裂的可能", "front": "A.颅内囊性占位<br>B.双顶径及头围明显小于孕周<br>C.后颅窝池消失，小脑弯曲呈香蕉状<br>D.胎头呈圆头形<br>E.头颅光环回声减低", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 126, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-45", "title": "45. 诊断脑室扩张，胎儿侧脑室后角宽度应", "front": "A.大于6mm<br>B.大于8mm<br>C.大于10mm<br>D.大于12mm<br>E.大于14mm", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-46", "title": "46. 中央性唇腭裂常伴发于", "front": "A.全前脑<br>B.脑积水<br>C.无脑儿<br>D.心脏畸形<br>E.脑膨出", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-47", "title": "47. 假性唇裂的原因， 不包括", "front": "A.鼻唇沟较深<br>B.切面不标准<br>C.脐带压迫唇部<br>D.子宫壁贴近唇部<br>E.羊水混浊", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-48", "title": "48. 关于单心房的超声表现， 不正确 的描述是", "front": "A.只有一个心房<br>B.含有两个心耳<br>C.房间隔消失<br>D.二、三尖瓣处于不同水平<br>E.可以合并心内其他结构异常", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-49", "title": "49. 关于单心室的超声表现， 不正确 的描述是", "front": "A.只有一组房室瓣<br>B.可以有两组房室瓣<br>C.室间隔消失<br>D.常合并大动脉异常<br>E.可合并附属腔", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-50", "title": "50. 诊断心内膜垫缺损的主要切面是", "front": "A.左室长轴切面<br>B.四腔心切面<br>C.大动脉短轴切面<br>D.五腔心切面<br>E.二腔心切面", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-51", "title": "51. 超声检查部分型心内膜垫缺损的最重要表现是", "front": "A.三尖瓣位置异常，上移或下移<br>B.室间隔缺损<br>C.二尖瓣脱垂<br>D.原发孔房间隔缺损<br>E.继发孔房间隔缺损", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-52", "title": "52. 关于部分型心内膜垫缺损的超声表现， 不正确 的描述是", "front": "A.单纯原发孔房间隔缺损<br>B.单心房<br>C.二尖瓣和三尖瓣在室间隔的附着点在同一水平上<br>D.室间隔肌部缺损<br>E.二尖瓣裂", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 127, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-53", "title": "53. 关于完全型心内膜垫缺损的超声检查所见， 不正确 的描述是", "front": "A.原发孔处房间隔缺损<br>B.室间隔膜部缺损<br>C.二尖瓣裂<br>D.三尖瓣裂<br>E.主动脉瓣二叶化畸形", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-54", "title": "54. 关于食管闭锁的超声表现， 不正确 的描述是", "front": "A.观察不到胃泡<br>B.胃泡小<br>C.羊水过多<br>D.近端食管袋征象<br>E.肠管扩张", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-55", "title": "55. 产前很难诊断的消化道畸形是", "front": "A.食管闭锁<br>B.十二指肠闭锁<br>C.肛门闭锁<br>D.空肠闭锁<br>E.回肠闭锁", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-56", "title": "56. 胎儿肾积水的原因， 不包括", "front": "A.肾盂输尿管连接处梗阻<br>B.膀胱输尿管反流<br>C.膀胱输尿管连接处梗阻<br>D.后尿道瓣膜<br>E.肾母细胞瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-57", "title": "57. 胎儿生理性脐膨出的消失时间是", "front": "A.妊娠11周<br>B.妊娠12周<br>C.妊娠13周<br>D.妊娠14周<br>E.妊娠15周", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-58", "title": "58. 胎儿脐膨出脐带插入点位置，位于", "front": "A.脐膨出物的肿块表面<br>B.脐膨出物的肿块中央顶部<br>C.脐膨出物的肿块左侧<br>D.脐膨出物的肿块右侧<br>E.脐膨出物的肿块表面、中央顶部或一侧", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-59", "title": "59. 关于致死性骨发育不良诊断标准， 不包括", "front": "A.四肢长骨长度低于正常孕周平均值的4个标准差或以下<br>B.FL/AC&lt;0.16<br>C.胸围低于正常孕周平均值的第5百分位数<br>D.心胸比值&gt;60%<br>E.胎儿肢体严重短小但不出现骨折", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-60", "title": "60. 关于致死性软骨发育不良，正确的描述是", "front": "A.胎儿胸腔狭小，腹部膨隆但不会出现腹水<br>B.胎儿椎体骨化差，回声减低，以胸腰段明显<br>C.胎儿椎体骨化差，横切时不能显示椎体及两侧椎弓内的三角形骨化中心<br>D.胎儿四肢长骨极短，低于正常孕周平均值的2个标准差或以下<br>E.胎儿虽四肢长骨骨化差，但其后方声影可显示", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 128, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-61", "title": "61. 关于致死性成骨发育不全Ⅱ型的超声特点， 不正确 的描述是", "front": "A.胎儿四肢严重短小，弯曲，且有骨折声像改变<br>B.胸部变形，但不是肋骨骨折改变造成<br>C.因胎儿颅骨骨化差，近场脑组织常可清晰显示<br>D.胎头骨化较差，加压可变形<br>E.胎儿颜面及眼眶各骨也可因骨化差，而呈低回声", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-62", "title": "62. 关于完全性葡萄胎， 不正确 的描述是", "front": "A.宫腔内充满多个大小不一的囊泡<br>B.宫腔内囊泡血供丰富<br>C.常合并卵巢黄素囊肿<br>D.子宫大于停经时间<br>E.血 β -hCG异常升高", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-63", "title": "63. 完全性葡萄胎与部分性葡萄胎的鉴别要点是", "front": "A.子宫大于停经时间<br>B.血 β -hCG 异常升高<br>C.常合并卵巢黄素囊肿<br>D.有不规则阴道出血<br>E.宫腔内除了多个小囊性结构外，见部分胎儿", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-64", "title": "64. 侵蚀性葡萄胎继发于", "front": "A.足月产后<br>B.流产后<br>C.葡萄胎清宫后<br>D.异位妊娠手术后<br>E.子宫肌瘤剥出术后", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-65", "title": "65. 关于绒毛膜癌， 不正确 的描述是", "front": "A.发生于足月分娩后<br>B.发生于流产后<br>C.不规则阴道出血<br>D.子宫肌层内局灶性回声紊乱区，血供丰富<br>E.血 β -hCG 正常", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-1", "title": "66. 孕妇，35岁，G1P0，12周妊娠，来院超声检查，宫内妊娠，头臀长6.5cm，可见胎心 搏动，NT 厚约 0.5cm。其最可能的诊断是", "front": "A.NT 增厚<br>B.NT 正常<br>C.唐氏综合征<br>D.先天性心脏畸形<br>E.18 三体综合征", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-2", "title": "67. 孕妇，26岁，G1P0，32周妊娠，来医院行超声检查，胎儿大小相当于32周5天，臀位，羊水指数为28cm。其最可能的诊断是", "front": "A.羊水正常<br>B.羊水过少<br>C.羊水过多<br>D.胎儿过大<br>E.胎儿宫内生长受限", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-3", "title": "68. 胎盘绒毛膜板深达基底膜；胎盘实质内出现环状回声和不规则点状和团块状强回声，后方伴声影。胎盘的诊断是", "front": "A.胎盘Ⅰ级<br>B.胎盘Ⅱ级<br>C.胎盘0级<br>D.胎盘Ⅲ级<br>E.胎盘Ⅳ级", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 129, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-4", "title": "69. 女，29 岁，停经 49 天，尿 hCG (+) ，血压 110/70 mmHg，腹痛、大量阴道流血 3 天并排出不规则组织物半天到医院就诊。B 超检查：宫内未见妊娠囊；宫腔下段至宫颈内可见不规则混合性回声团，CDFI 检查未见明显血流信号；双侧附件区未见明显异常肿块声像。其最可能的诊断是", "front": "A.先兆流产<br>B.不全流产<br>C.难免流产<br>D.完全流产<br>E.稽留流产", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-5", "title": "70. 女，27岁，婚后3年，以往月经规律。现停经48天，少量阴道流血5天，伴右下腹隐痛。经检查为异位妊娠。最可能的妊娠部位是", "front": "A.输卵管间质部<br>B.输卵管峡部<br>C.子宫颈<br>D.输卵管壶腹部<br>E.卵巢", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-6", "title": "71. 35 岁，G3P0，孕 32 周，阴道少量流血 3 天，无腹痛。曾自然流产、过期流产各一次。入院检查，枕左前位，胎头浮、胎心好，耻骨联合上方可闻及胎盘杂音。其最可能的诊断是", "front": "A.胎盘早期剥离<br>B.前置胎盘<br>C.先兆流产<br>D.先兆子宫破裂<br>E.胎盘边缘血窦破裂", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-7", "title": "72. 25岁初孕妇，妊娠35周，自觉头痛眼花5日，经治疗3日未见显效。今晨7时突然出现腹痛并逐渐加重，呈持续性，经超声检查显示胎盘与子宫壁间可见不规则的无回声区，CDFI未见明显血流信号。其最可能的诊断是", "front": "A.妊娠合并急性阑尾炎<br>B.胎盘早剥<br>C.先兆子宫破裂<br>D.前置胎盘<br>E.先兆早产", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-8", "title": "73. 一产妇胎儿娩出后 1 小时，胎盘未娩出，阴道未见流血，超声检查显示胎盘位于前壁，厚 38mm，胎盘与子宫肌层间隙消失。其最可能的诊断是", "front": "A.胎盘植入<br>B.子宫卒中<br>C.胎盘剥离<br>D.低置胎盘<br>E.前置胎盘", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-9", "title": "74. 孕妇，28岁，孕5个月，来院行胎儿超声畸形筛查。超声显示左下腹见清晰的颅骨光环，双顶径：46mm，头围：18mm，脑中线居中，侧脑室未见扩张，唇线连续完整，心胸比例正常，膀胱水平横切面上显示膀胱两侧只有一条血管，横切脐带呈“吕”字形。其最可能的诊断是", "front": "A.单脐静脉<br>B.单脐动脉<br>C.边缘性脐带<br>D.脐带帆状附着<br>E.脐带缠绕", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-10", "title": "75. 孕22周，胎儿正中矢状面声像图表现如下图所示。其最可能的诊断是", "front": "A.脑积水<br>B.无脑畸形<br>C.露脑畸形<br>D.全前脑<br>E.唇腭裂", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "image/8-75.png", "figcap": "图8-75"}, {"no": "8-3-11", "title": "76. 出现下图声像图表现时，应考虑", "front": "A.全前脑<br>B.脑膨出<br>C.无脑畸形<br>D.脊柱裂<br>E.小头畸形", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 130, "chapter": "ch8", "static": false, "image": "image/8-76.png", "figcap": "图8-76"}, {"no": "8-3-12", "title": "77. 孕22周，胎儿三维声像图表现如下图所示。其最可能的诊断是", "front": "A.左侧Ⅱ度唇裂<br>B.左侧Ⅲ度唇裂<br>C.右侧Ⅰ度唇裂<br>D.右侧Ⅱ度唇裂<br>E.右侧Ⅲ度唇裂", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "image/8-77.png", "figcap": "图8-77"}, {"no": "8-3-13", "title": "78. 出现下图声像图表现时，应考虑", "front": "A.左侧Ⅱ度唇裂<br>B.左侧Ⅲ度唇裂<br>C.右侧Ⅰ度唇裂<br>D.右侧Ⅱ度唇裂<br>E.右侧Ⅲ度唇裂", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "image/8-78.png", "figcap": "图8-78"}, {"no": "8-3-14", "title": "79. 25 孕周的孕妇，行胎儿超声心动图检查，初步诊断考虑单心房，需鉴别诊断的是", "front": "A.永存动脉干<br>B.单心室<br>C.巨大房间隔缺损<br>D.心内膜垫缺损<br>E.室间隔缺损", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-15", "title": "80. 26 孕周的孕妇，行胎儿超声心动图检查，表现为：心脏位置正常，心尖朝向左侧，静脉-心房连接正常，房间隔及卵圆孔显示，两组房室瓣，心房血液均流入主心腔，另可见一个较小心室腔，主心腔发出主动脉，较小心室腔发出肺动脉。其最可能的诊断是", "front": "A.巨大室间隔缺损<br>B.单心室<br>C.心内膜垫缺损<br>D.单心房<br>E.心室发育不良", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-16", "title": "81. 孕妇，24岁，孕7个月，来院行胎儿产前超声检查。超声显示右上腹完整的颅骨光环，双顶径：69mm，头围：26mm，脑中线居中，侧脑室未见扩张，唇线连续完整，心胸比例正常，胎儿四腔心切面上显示房间隔下部连续性中断。其最可能的诊断是", "front": "A.房间隔继发孔缺损<br>B.室间隔膜部缺损<br>C.完全型心内膜垫缺损<br>D.部分型心内膜垫缺损<br>E.卵圆孔未闭", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-17", "title": "82. 孕妇，30岁，妊娠26周，超声检查在胎儿腹围平面发现左上腹胃泡大小为 27mm × 18mm ，右上腹见一无回声区 26mm × 15mm ，与胃泡之间相通，最大羊水池深度85mm。其最可能的诊断是", "front": "A.十二指肠闭锁或梗阻<br>B.食管闭锁<br>C.空肠闭锁<br>D.回肠闭锁<br>E.肛门闭锁", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-18", "title": "83. 孕26周胎儿，双侧肾区未见肾脏组织回声，未见双侧腹主动脉双肾动脉分支，双侧肾上腺平躺，羊水过少。其最可能的诊断为", "front": "A.双肾萎缩<br>B.双肾缺如<br>C.双侧异位肾<br>D.左肾缺如<br>E.右肾缺如", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-19", "title": "84. 胎儿头臀径 46mm，其腹壁见 6mm×5mm 包块，可见脐血管包绕走行，以下诊断意见最合理的是", "front": "A.胎儿脐膨出<br>B.胎儿腹裂<br>C.泄殖腔外翻<br>D.畸胎瘤<br>E.胎儿生理性脐膨出", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 131, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-20", "title": "85. 孕28周，胎儿声像图表现如下图，超声诊断是", "front": "A.致死性侏儒<br>B.软骨发育不良<br>C.致死性成骨发育不良<br>D.特纳综合征<br>E.非致死性骨发育不良", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 132, "chapter": "ch8", "static": false, "image": "image/8-85.png", "figcap": "图8-85"}, {"no": "8-3-21", "title": "86. 孕18周，行产前超声检查，发现胎儿双上肢上臂、前臂均未探及，胎儿手掌直接与躯干连接。其最可能的诊断为", "front": "A.完全截肢<br>B.部分截肢<br>C.双上肢海豹肢畸形<br>D.前臂纵行缺陷<br>E.上臂纵行缺陷", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 132, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-22", "title": "87. 病人，女性。19岁，已婚，停经2个半月，少量不规则阴道出血，尿妊娠试验（+）。超声检查：子宫大小相当于妊娠3个月，宫腔内充满大小不一的囊性结构，内部未见彩色血流，未见胚胎结构。其最可能的诊断是", "front": "A.完全性葡萄胎<br>B.部分性葡萄胎<br>C.绒毛膜癌<br>D.不全流产<br>E.稽留流产", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 132, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-23", "title": "88. 病人，女性。已婚已育，足月顺产后3个月，不规则阴道出血伴咳嗽2周，血 β -hCG 40 000IU/ml，妇科检查发现阴道后壁蓝紫色结节2cm大小。超声检查：子宫大小 70mm×70mm×56mm ，宫腔内膜厚7mm，宫腔内未见异常回声。左宫底突起回声紊乱区 28mm×25mm×20mm ，彩色血流呈团块状，PI:0.40，RI:0.32。其最可能的诊断是", "front": "A.胎盘残留<br>B.再次妊娠<br>C.绒毛膜癌<br>D.葡萄胎<br>E.月经失调", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "产科"], "kind": "选择题", "page": 132, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-89-90", "title": "共用备选答案 · 第 89~90 题", "front": "<b>下列第 89~90 题共用以下备选答案:</b><br>A.临床上以月经龄计算，孕12周末前<br>B.临床上以月经龄计算，孕13周末前<br>C.临床上以月经龄计算，孕第13周开始至第27周末<br>D.临床上以月经龄计算，孕第14周开始至第27周末<br>E.临床上以月经龄计算，孕第14周开始至第28周末", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-1", "title": "89. 早期妊娠", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-2", "title": "90. 中期妊娠", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-91-92", "title": "共用备选答案 · 第 91~92 题", "front": "<b>下列第 91~92 题共用以下备选答案:</b><br>A.8分<br>B.6分<br>C.≤4 分<br>D.2分<br>E.0~2分", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-3", "title": "91. 胎儿生物物理评分，无明显缺氧改变为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-4", "title": "92. 胎儿生物物理评分，胎儿情况不良为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-5", "title": "92. 胎儿生物物理评分，胎儿情况不良为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-93-94", "title": "共用备选答案 · 第 93~94 题", "front": "<b>下列第 93~94 题共用以下备选答案:</b><br>A.先兆流产伴宫内积血<br>B.双胎妊娠<br>C.宫颈妊娠<br>D.异位妊娠<br>E.葡萄胎", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-6", "title": "93. 女，20岁。停经45天，尿hCG(+)，超声检查：宫腔内可见两个妊娠囊声像，呈强回声环，形态规则，每个妊娠囊内均可见卵黄囊及胚芽。该诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-7", "title": "94. 女，32 岁。停经 52 天，血 hCG 160 000 μ g/L，超声检查：子宫体积增大，宫腔内蜂窝状回声，CDFI 检查可见丰富血流信号。该诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-95-96", "title": "共用备选答案 · 第 95~96 题", "front": "<b>下列第 95~96 题共用以下备选答案:</b><br>A.先兆流产<br>B.难免流产<br>C.不全流产<br>D.完全流产<br>E.稽留流产", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-8", "title": "95. 女，26岁。平时月经规则，4~5天/28天，目前停经48天，下腹隐痛，少量阴道出血。超声检查：宫腔内见妊娠囊，胚芽长8mm，胎心搏动存在，卵黄囊见。最可能的诊断是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-9", "title": "96. 女，38 岁。平时月经规则，停经 65 天，尿妊娠试验阳性。两周前因少量阴道出血一直保胎治疗。超声检查：宫腔内见妊娠囊，张力低，妊娠囊内未见胚芽及卵黄囊。最可能的诊断是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-97-98", "title": "共用备选答案 · 第 97~98 题", "front": "<b>下列第 97~98 题共用以下备选答案:</b><br>A.先兆流产<br>B.黄体破裂<br>C.难免流产<br>D.异位妊娠<br>E.宫角妊娠", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-10", "title": "97. 女，29岁，平时月经规则，无停经史，突然剧烈腹痛，超声表现：子宫稍增大，子宫内膜增厚，子宫内未见妊娠囊，右侧卵巢增大，可见不规则混合回声包块，盆、腹腔可见积液。血与尿hCG阴性。最可能的诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-11", "title": "98. 女, 停经 52 天, 血 hCG 320 μ g/L , 腹痛, 少量阴道流血, 超声表现: 妊娠囊形态不规则, 无明显双环征, 囊内可见变形的卵黄囊, 卵黄囊直径为 7 mm, 双附件区无明显包块声像。最可能的诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-99-102", "title": "共用备选答案 · 第 99~102 题", "front": "<b>下列第 99~102 题共用以下备选答案:</b><br>A.双绒毛膜双羊膜囊双胎<br>B.单绒毛膜双羊膜囊双胎<br>C.单绒毛膜单绒毛囊双胎<br>D.连体双胎<br>E.绒毛膜性及羊膜性不明", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-12", "title": "99. 女，35岁，继发不孕8年，本次妊娠为IVF妊娠，2月前移植受精卵2枚，早孕期超声检查：子宫宫腔内见2个妊娠囊，该双胎最可能的类型是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-13", "title": "100. 女，26岁，自然妊娠，停经13周超声检查提示：子宫宫腔内见2个胎儿，胎心搏动存在。双胎间见羊膜分隔，未见双胎峰，该双胎最可能的类型是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-14", "title": "101. 女，35岁，自然妊娠，停经 13+ 周超声检查提示：子宫宫腔内见2个胎儿，胎心搏动存在。双胎间见羊膜分隔，见双胎峰，该双胎最可能的类型是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-15", "title": "102. 女，28岁，自然妊娠，目前妊娠20周，超声检查提示，双胎位于同一羊膜腔内，双胎胸腹部相连，该双胎最可能的类型是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-103-104", "title": "共用备选答案 · 第 103~104 题", "front": "<b>下列第 103~104 题共用以下备选答案:</b><br>A.无痛性反复阴道流血<br>B.阴道流血性黏液<br>C.阴道出血量与贫血程度不一致<br>D.出现病理性缩复环后突感下腹部撕裂样剧痛<br>E.无腹痛突然出现大量阴道流液", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-16", "title": "103. 胎膜早剥的临床特点", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-17", "title": "104. 前置胎盘的临床特点", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-105-106", "title": "共用备选答案 · 第 105~106 题", "front": "<b>下列第 105~106 题共用以下备选答案:</b><br>A.中脑导水管<br>B.第四脑室正中孔和侧孔水平以下<br>C.室间孔<br>D.右侧侧脑室脉络丛<br>E.左侧侧脑室脉络丛", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-18", "title": "105. 胎儿脑积水：双侧侧脑室和第三脑室增宽，梗阻部位位于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-19", "title": "106. 胎儿脑积水：侧脑室、第三脑室和第四脑室均增宽，梗阻部位位于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-20", "title": "106. 胎儿脑积水：侧脑室、第二脑室和第四脑室均增宽，梗阻部位位于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-107-108", "title": "共用备选答案 · 第 107~108 题", "front": "<b>下列第 107~108 题共用以下备选答案:</b><br>A.平卧征<br>B.平行征<br>C.马蹄征<br>D.双叶征<br>E.肾盂前后径大于10mm", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-21", "title": "107. 胎儿肾积水呈", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-22", "title": "108. 胎儿肾脏缺如时肾上腺呈", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-shared-109-110", "title": "共用备选答案 · 第 109~110 题", "front": "<b>下列第 109~110 题共用以下备选答案:</b><br>A.生育年龄妇女，有停经史<br>B.血 β -hCG异常升高<br>C.宫腔内充满大小不一多个小囊泡<br>D.宫腔内多个小囊泡外，部分胎儿胎盘组织<br>E.宫腔内占位未见明显彩色血流", "back": "", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": true, "image": "", "figcap": ""}, {"no": "8-3-23", "title": "109. 完全性葡萄胎最特征性表现", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-3-24", "title": "110. 部分性葡萄胎最特征性表现", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "产科"], "kind": "共用备选答案", "page": 0, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-4-1", "title": "1. 简述胎儿血液循环特点。", "front": "", "back": "<b>参考答案:</b><br>胎儿来自胎盘的有氧血通过脐静脉进入胎体，经肝静脉、门静脉及静脉导管后进入下腔静脉，与来自胎儿下半身回流的含氧量低的血流一起回流入右心房；下腔静脉回流的血流50%以上通过开口正对下腔静脉的卵圆孔进入左心房，供应胎儿上半身；上腔静脉回流入右心房的血流及小部分下腔静脉回流血流通过三尖瓣进入右心室后流入肺动脉；肺动脉血液大部分经动脉导管流入主动脉供应胎儿下半身，仅约10%的血液经肺静脉回流入左心房；流入主动脉的血除了供应胎儿下半身，大部分通过脐动脉流向胎盘进行气血交换。", "tags": ["简答题", "产科"], "kind": "简答题", "page": 137, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-4-2", "title": "2. 超声观察胎盘的内容包括哪些方面？", "front": "", "back": "<b>参考答案:</b><br>超声观察的内容包括胎盘着床位置、大小、数目、内部回声、成熟度、与宫颈内口关系、胎盘后方回声以及胎盘内多普勒血流情况等。", "tags": ["简答题", "产科"], "kind": "简答题", "page": 137, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-4-3", "title": "3. 简述胎盘早剥的超声表现。", "front": "", "back": "<b>参考答案:</b><br>胎盘早剥的超声表现：①胎盘剥离早期：胎盘剥离时胎盘与子宫壁间见边缘粗糙、形态不规则的无回声区，随着时间的推移，胎盘后方呈不匀质团块状高回声；CDFI无明显血流信号，也可表现为胎盘异常增厚，呈不均匀高回声；凝血块突入羊膜腔，可形成羊膜腔内肿块，为重型胎盘早剥的声像。②胎盘剥离后期：胎盘剥离出血不多自行停止后，胎盘后血肿于数天后逐渐液化，内部呈无回声，与子宫壁分界清楚；血肿机化后，呈不匀质高回声团，该处胎盘明显增厚，胎盘的胎儿可向羊膜腔内膨出。③胎盘边缘血窦破裂：如果胎盘边缘与子宫壁剥离，胎盘边缘胎膜与子宫壁分离、隆起，胎膜下出血表现为不匀质低回声，不形成胎盘后血肿。", "tags": ["简答题", "产科"], "kind": "简答题", "page": 137, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-4-4", "title": "4. 简述胎儿开放性脊柱裂的脑部改变。", "front": "", "back": "<b>参考答案:</b><br>①小脑异常（香蕉形小脑，小脑发育不良甚至缺如）；②后颅窝池消失；③双侧额骨内陷，柠檬头征；④脑室扩大或脑积水。", "tags": ["简答题", "产科"], "kind": "简答题", "page": 137, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-4-5", "title": "5. 简述胎儿单纯唇裂和单纯腭裂的分度。", "front": "", "back": "<b>参考答案:</b><br>（1）单纯唇裂的分度：Ⅰ度（唇裂仅限于唇红，未达皮肤）；Ⅱ度（唇裂抵达唇部皮肤，但未达鼻底）、Ⅲ度（唇裂达鼻底）。\n\n（2）单纯腭裂的分度：Ⅰ度（指悬雍垂裂或软腭裂）；Ⅱ度（全软腭裂或部分硬腭裂，但未及牙槽突）；Ⅲ度（软腭、硬腭全部裂开且达牙槽突）。", "tags": ["简答题", "产科"], "kind": "简答题", "page": 137, "chapter": "ch8", "static": false, "image": "", "figcap": ""}, {"no": "8-4-6", "title": "6. 简述完全性葡萄胎与稽留流产的鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>（1）完全性葡萄胎病人血β-hCG异常高于正常妊娠，稽留流产病人血β-hCG低于正\n常妊娠。葡萄胎超声表现为子宫大于停经时间，宫腔内充满多个小囊泡，未见正常胎儿胎盘组织，内部彩色血流不明显。\n\n（2）稽留流产子宫略小于停经时间，宫腔内胚囊变形，未见胚芽或见胚芽但胎心消失。稽留流产也可表现为宫腔内团状实性回声与无回声混杂的回声紊乱区，子宫肌层血供较丰富。\n\n（任芸芸 李胜利 田家玮 邓学东 赵博文 栗河舟 熊奕 姚远 孙立涛 潘美）", "tags": ["简答题", "产科"], "kind": "简答题", "page": 137, "chapter": "ch8", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

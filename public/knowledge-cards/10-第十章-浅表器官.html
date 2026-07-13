@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第十章 浅表器官</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #a855f7 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #a855f7; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #a855f7;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #a855f7;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #a855f7;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #a855f7; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #a855f7;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #a855f7;
+  transition: width 0.3s; box-shadow: 0 0 8px #a855f7;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #a855f7;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #a855f7;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #a855f7;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #a855f7; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第十章 浅表器官</h1>
+    <p>Pages 165-204 · 眼/涎腺/甲状腺/乳腺/阴囊/淋巴结</p>
+    <div class="stats">
+      <span class="stat">📇 共 291 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "10-1-1", "title": "视网膜脱离", "front": "请简述该名词的定义。", "back": "<b>视网膜脱离</b>:<br>是视网膜色素上皮层与神经上皮层之间的分离，而非视网膜与脉络膜之间的分离。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-2", "title": "sialolithiasis", "front": "请简述该名词的定义。", "back": "<b>sialolithiasis</b>:<br>即涎腺结石，是指涎腺导管内形成结石的病症，多发生于颌下腺，腮腺少见，单发或多发，常伴发涎腺炎症。结石早期多无症状，结石阻塞时，唾液淤滞，引起局部胀痛，进餐时症状加重，并反复发作。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-3", "title": "良性淋巴上皮病", "front": "请简述该名词的定义。", "back": "<b>良性淋巴上皮病</b>:<br>亦称干燥综合征，自身免疫性疾病，早期腺小叶受淋巴细胞广泛浸润，后期腺泡萎缩、严重者消失。临床主要表现为双侧腮腺无痛性肿大，当其他涎腺也受累时，口腔干燥明显，同时伴有眼干、鼻干等症状。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-4", "title": "sialadenosis", "front": "请简述该名词的定义。", "back": "<b>sialadenosis</b>:<br>即涎腺肥大，又称涎腺症，是一种非肿瘤性、非免疫性、非炎性的涎腺良性病变，主要发生于腮腺，颌下腺少见，病理表现为涎腺腺泡肿大，腺小叶间质可见脂肪细胞沉积，无炎症细胞浸润。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-5", "title": "涎腺囊肿", "front": "请简述该名词的定义。", "back": "<b>涎腺囊肿</b>:<br>是指发生于涎腺的囊性肿块，以舌下腺多见，颌下腺、腮腺少见。临床表现为无痛性肿块，质软，边界清楚；伴发感染时，肿块明显触痛。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-6", "title": "腮腺混合瘤", "front": "请简述该名词的定义。", "back": "<b>腮腺混合瘤</b>:<br>腮腺实质内主要由腺样上皮和间充质组织构成的实质性肿瘤，有的瘤体呈囊性变，或含有软骨样组织，临床表现为无痛性肿块，缓慢生长，以单发为主。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-7", "title": "Warthin 瘤", "front": "请简述该名词的定义。", "back": "<b>Warthin 瘤</b>:<br>即乳头状淋巴囊腺瘤，以中老年男性多见，好发于腮腺，在腮腺良性肿瘤中仅次于混合瘤，也可发生于多个涎腺。临床表现为无痛性肿块，病程长，多发生于腮腺后下极。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-8", "title": "“冲洗过”征", "front": "请简述该名词的定义。", "back": "<b>“冲洗过”征</b>:<br>亚急性甲状腺炎时，超声检查显示甲状腺实质内见边界模糊的散在性或融合性片状低回声，称为“冲洗过”征。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-9", "title": "“火海征”", "front": "请简述该名词的定义。", "back": "<b>“火海征”</b>:<br>桥本甲状腺炎或毒性弥漫性甲状腺肿，当腺体内血供比较丰富时，彩色多普勒检查显示腺体内布满搏动性彩色血流信号，密集如一片火的海洋，称之为“火海征”。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-10", "title": "甲状腺结节性病变", "front": "请简述该名词的定义。", "back": "<b>甲状腺结节性病变</b>:<br>临床上甲状腺结节被描述为正常大小或弥漫性肿大的腺体内单发或多个肿块性病变，包括结节性甲状腺肿、甲状腺腺瘤、甲状腺癌、局限性炎性结节。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-11", "title": "thyroglossal cysts", "front": "请简述该名词的定义。", "back": "<b>thyroglossal cysts</b>:<br>即甲状舌管囊肿，在胚胎发育过程甲状舌管退化停滞，可在出生后有不同程度的保留，部分扩张形成的囊性病灶称为甲状舌管囊肿。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-12", "title": "Graves 病", "front": "请简述该名词的定义。", "back": "<b>Graves 病</b>:<br>即毒性弥漫性甲状腺肿，又称原发性甲状腺功能亢进症、突眼性甲状腺肿，是一种伴甲状腺激素分泌增多的器官特异性自身免疫病。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-13", "title": "腺瘤样增生", "front": "请简述该名词的定义。", "back": "<b>腺瘤样增生</b>:<br>是单纯性甲状腺肿发展至后期的表现。在甲状腺弥漫性肿大的基础上，滤泡上皮细胞反复增生和不均匀的复原，形成增生性结节，又称为腺瘤样增生。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-14", "title": "单纯性弥漫性甲状腺肿", "front": "请简述该名词的定义。", "back": "<b>单纯性弥漫性甲状腺肿</b>:<br>是单纯性甲状腺肿的早期阶段，甲状腺两侧叶呈对称性弥漫性肿大，一般不伴有甲状腺功能变化和全身症状。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-15", "title": "甲状腺腺瘤", "front": "请简述该名词的定义。", "back": "<b>甲状腺腺瘤</b>:<br>系良性肿瘤，起自腺上皮组织，可分为滤泡型腺瘤、乳头状腺瘤和混合型三种。多见于中青年女性。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-16", "title": "末梢导管小叶单位", "front": "请简述该名词的定义。", "back": "<b>末梢导管小叶单位</b>:<br>末梢导管和小叶共同构成末梢导管小叶单位，此处是各种乳腺增生性病变及乳腺癌的主要发生部位。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-17", "title": "库柏韧带", "front": "请简述该名词的定义。", "back": "<b>库柏韧带</b>:<br>与皮肤垂直的纤维束，一端连于皮肤和浅筋膜浅层，一端连于浅筋膜深层，称乳腺悬韧带或库柏韧带。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-18", "title": "乳腺增生症", "front": "请简述该名词的定义。", "back": "<b>乳腺增生症</b>:<br>是一组以乳腺主质和间质不同程度增生为主要病理表现的最常见的乳腺良性病变。表现为乳腺小导管增生、扩张形成囊腔，导管及腺泡周围纤维组织增生及淋巴细胞浸润。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-19", "title": "乳腺导管内乳头状瘤", "front": "请简述该名词的定义。", "back": "<b>乳腺导管内乳头状瘤</b>:<br>从广义上可分为位于乳晕区的中央型（大导管）乳头状瘤及起源于末梢导管小叶单位的外周型乳头状瘤。基本病变是导管上皮和间质增生，形成有纤维脉管束的乳头状结构。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-20", "title": "乳腺炎", "front": "请简述该名词的定义。", "back": "<b>乳腺炎</b>:<br>细菌通过伤口或乳头裂缝进入乳腺导管或乳腺导管阻塞而引起的乳腺\n炎性改变。临床表现有不同程度发热、患处乳腺红肿、疼痛、乳腺肿块及患侧腋下淋巴结肿大。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-21", "title": "乳腺纤维腺瘤", "front": "请简述该名词的定义。", "back": "<b>乳腺纤维腺瘤</b>:<br>是常见于生育年龄的妇女的乳腺良性肿瘤。通常表现为无痛、实性、边界清楚的孤立性或多发性结节，触之可移动。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-22", "title": "乳腺纤维腺瘤病理改变", "front": "请简述该名词的定义。", "back": "<b>乳腺纤维腺瘤病理改变</b>:<br>肿瘤呈实性，质地较硬，可呈分叶状，常有完整包膜。腺体成分较多者，质地软，呈浅红色；纤维成分较多者，质地硬。病程长的纤维腺瘤可发生玻璃样变、黏液变性和钙化。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-23", "title": "乳腺癌", "front": "请简述该名词的定义。", "back": "<b>乳腺癌</b>:<br>是起源于乳腺上皮的恶性肿瘤，最常见的是起源于末梢导管-小叶单位的上皮细胞，已成为我国妇女发病率最高的恶性肿瘤。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-24", "title": "微小钙化", "front": "请简述该名词的定义。", "back": "<b>微小钙化</b>:<br>肿瘤组织坏死的基础上产生的钙盐沉积，多为簇状分布、直径范围0.2~0.5mm的点状强回声，其后方无声影。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-25", "title": "肿块纵横比&gt;1", "front": "请简述该名词的定义。", "back": "<b>肿块纵横比&gt;1</b>:<br>指肿块生长不平行或垂直于乳腺腺体轴向，即高大于宽。该征象尤其常见于小乳腺癌。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-26", "title": "超声引导下乳腺肿块穿刺活检", "front": "请简述该名词的定义。", "back": "<b>超声引导下乳腺肿块穿刺活检</b>:<br>活检的主要取材方法有细针穿刺抽吸活检和组织切割活检，后者能更好地区分乳腺病变的良恶性，使用广泛。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-27", "title": "“钟摆”式睾丸", "front": "请简述该名词的定义。", "back": "<b>“钟摆”式睾丸</b>:<br>正常睾丸的后侧缘无鞘膜覆盖而附着于阴囊壁上，当睾丸完全被鞘膜包绕时，则形成“钟摆”式睾丸，在阴囊过度收缩或剧烈运动时容易发生扭转。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-28", "title": "隐睾", "front": "请简述该名词的定义。", "back": "<b>隐睾</b>:<br>指睾丸在下降过程中受其他因素影响停留于同侧腹股沟皮下环以上的腹股沟内或腹膜后。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-29", "title": "淋巴门", "front": "请简述该名词的定义。", "back": "<b>淋巴门</b>:<br>正常淋巴结呈豆形，凹陷的一侧含有输出淋巴管、动静脉和神经，称为淋巴门。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-30", "title": "淋巴结炎", "front": "请简述该名词的定义。", "back": "<b>淋巴结炎</b>:<br>是由淋巴结引流区域组织细菌、病毒及真菌等感染引起的急性炎症，临床表现为淋巴结肿大，局部皮肤红肿热痛，有时周边可见到淋巴管炎所致的“红线”，严重者伴有发热及白细胞增高。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-31", "title": "淋巴结反应性增生", "front": "请简述该名词的定义。", "back": "<b>淋巴结反应性增生</b>:<br>因免疫性疾病或组织器官受细菌、病毒等病原感染而导致引流区域的淋巴结发生免疫反应。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-1-32", "title": "淋巴结转移癌", "front": "请简述该名词的定义。", "back": "<b>淋巴结转移癌</b>:<br>是指癌细胞从原发癌经淋巴系统而转移到淋巴结，往往导致相应的引流区域的淋巴结肿大，肿大的淋巴结有与原发癌相似的病理特征。", "tags": ["名词解释", "浅表"], "kind": "名词解释", "page": 172, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-1", "title": "1. 眼分为___、___、___三个部分。", "front": "", "back": "<b>答案:</b>眼球 视路 附属器", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-2", "title": "2. 眼球壁包括三层膜：外层为 ___、中层为 ___、内层为 ___。眼内容物包括房水、___ 和玻璃体。", "front": "", "back": "<b>答案:</b>纤维膜 葡萄膜 视网膜 晶状体", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-3", "title": "3. 腮腺呈不规则楔形，位于___前下方，咬肌后缘，下颌后窝内，___穿行于腮腺，将其分为___。由腮腺浅叶前缘发出___，斜穿颊肌而开口于___，全长5~6cm，外径约3mm。", "front": "", "back": "<b>答案:</b>外耳道 面神经 深浅两叶 腮腺主导管 口腔颊黏膜", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-4", "title": "4. 颌下腺呈椭圆形或哑铃形，位于下颌骨___，如鸽蛋大小。由颌下腺内面发出___，开口于___，全长约5cm，外径约3mm。颌下腺导管长而弯曲，而且导管开口较大，异物容易进入，而诱发___形成。", "front": "", "back": "<b>答案:</b>内侧 颌下腺导管 舌下肉阜 结石", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-5", "title": "5. 舌下腺形如杏仁，位于口腔黏膜___下方。由舌下腺上缘发出5~15条小导管，开口于___。", "front": "", "back": "<b>答案:</b>舌下襞 舌下皱襞的表面", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-6", "title": "6. 涎腺的炎症，主要发生于___，其次为颌下腺，舌下腺罕见。根据病因可分为___、病毒性及特异性感染，根据病程则分为___、慢性及复发性。", "front": "", "back": "<b>答案:</b>腮腺 细菌性 急性", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-7", "title": "7. 良性淋巴上皮病又称___，多见于___，属于___疾病，", "front": "", "back": "<b>答案:</b>干燥综合征 中老年女性 自身免疫性 淋巴细胞 非霍奇金淋巴瘤", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-8", "title": "8. 涎腺肥大称涎腺症，是一种___、非免疫性、非炎性的涎腺良性病变，主要发生于___。常与___有关，如肥胖、糖尿病、高血压及营养代谢异常等。病理改变为涎腺腺泡肿大，可达正常腺泡的___倍，腺小体间质可见___沉积，无炎症细胞浸润，导管系统多无明显变化。", "front": "", "back": "<b>答案:</b>非肿瘤性 腮腺 全身性疾病 2~3 倍 脂肪细胞", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-9", "title": "9. 涎腺囊肿好发于___人群，以___多见，临床表现为无痛性肿块，伴发___时，肿块明显触痛，涎腺囊肿可自行破溃，但易复发。", "front": "", "back": "<b>答案:</b>青少年 舌下腺 感染", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-10", "title": "10. 混合瘤又称___，好发于腮腺，其次为颌下腺，在舌下腺中极少见，在涎腺良性肿瘤中占首位。大多数的瘤体由___和___构成而呈实性，有的瘤体呈囊性变，或含有___组织，___组织包绕瘤体，形态圆滑，大的瘤体可呈分叶状。", "front": "", "back": "<b>答案:</b>多形性腺瘤 腺样上皮 间充质组织 软骨样 纤维", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-11", "title": "11. 乳头状淋巴囊腺瘤亦称___瘤，以___人群多见，好发于腮腺，多发生于腮腺___。乳头状淋巴囊腺瘤可呈多发性，瘤体形态呈圆形、椭圆形或呈分叶状，瘤体内含有大小不等的囊腔，呈囊状或囊实性，内含___液体，囊壁有___。", "front": "", "back": "<b>答案:</b>Warthin 中老年男性 后下极 黏液样 乳头状结构", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-12", "title": "12. 黏液表皮样癌好发于___，腺样囊性癌好发于___。临床表现肿块生长___，病程后期肿块质硬、触痛、界限不清。黏液表皮样癌多无___，瘤内含有大小不等的囊腔；腺样囊性癌呈实性，常有___灶。", "front": "", "back": "<b>答案:</b>腮腺 颌下腺 缓慢 包膜 出血", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-13", "title": "13. 甲状腺是成年人体内最大的___,由左右两侧叶和连接两侧叶的峡部组成,呈H形横跨于___。颈部肌群较为发达,甲状腺前方为___,外前方为___,两侧叶后方为___。", "front": "", "back": "<b>答案:</b>内分泌腺 气管上段 胸骨舌骨肌及胸骨甲状肌 胸锁乳突肌 颈长肌", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-14", "title": "14. 甲状腺疾病大致可分为___和甲状腺结节，前者包括毒性弥漫性甲状腺肿、单纯性甲状腺肿、___、___及原发性恶性淋巴瘤等，大多数是___，一般不需外科手术治疗；而后者需重视鉴别诊断，若是恶性结节一般需要___。", "front": "", "back": "<b>答案:</b>甲状腺弥漫性肿大 亚急性甲状腺炎 桥本甲状腺炎 良性疾病 外科手术治疗", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-15", "title": "15. 异位甲状腺是一种___的疾病，是由于某种原因使甲状腺部分或全部___所致。异位甲状腺常常合并___，少数与正常解剖部位甲状腺___。异位的甲状腺腺体绝大多数(90%)位于___，其功能与腺体的发育相关，可无临床症状，或表现为甲状腺功能减退。", "front": "", "back": "<b>答案:</b>胚胎发育异常 未下降到颈部正常解剖位置 正常解剖部位甲状腺缺如 并存 舌根部", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-16", "title": "16. 桥本甲状腺炎和亚急性甲状腺炎均好发于女性，前者又称为___，是一种___；后者是一种___，发病初期常有___病史，之后出现受累甲状腺局部疼痛，可放射至下颌、耳部或枕骨部，病程可持续___个月，一般可自行缓解。", "front": "", "back": "<b>答案:</b>慢性淋巴细胞性甲状腺炎 自身免疫性疾病 局限性非化脓性炎性疾病 上呼吸道感染 2~3 个月", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-17", "title": "17. 毒性弥漫性甲状腺肿，又称___、___或___，是一种伴甲状腺激素分泌增多的器官特异性自身免疫病，甲状腺的主要病理变化是实质组织的___和___。", "front": "", "back": "<b>答案:</b>原发性甲状腺功能亢进症 突眼性甲状腺肿 Graves 病 增生 肥大", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-18", "title": "18. 甲状腺淋巴瘤罕见，约占所有甲状腺癌的1%~3%，一般为___，常见于", "front": "", "back": "<b>答案:</b>非霍奇金淋巴瘤 质硬的无痛性", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-19", "title": "19. 甲状腺腺瘤系良性肿瘤，起自腺上皮组织，可分为 ___、___ 和 ___ 三种。", "front": "", "back": "<b>答案:</b>滤泡型腺瘤 乳头状腺瘤 混合型", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-20", "title": "20. 甲状腺癌好发年龄 40 ~ 50 岁，女性多见。通常分为 ___、___、___和___四种。", "front": "", "back": "<b>答案:</b>乳头状癌 滤泡癌 髓样癌 未分化癌", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-21", "title": "21. 甲状旁腺可分泌___，调节机体的钙和磷的代谢，引起血___升高，血___降低。", "front": "", "back": "<b>答案:</b>甲状旁腺素 钙 磷", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-22", "title": "22. 甲状旁腺常见疾病包括___、___等。", "front": "", "back": "<b>答案:</b>甲状旁腺增生 甲状旁腺腺瘤", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-23", "title": "23. 乳腺小叶是构成乳腺的基本单位，由 ___、___ 和 ___ 组成。", "front": "", "back": "<b>答案:</b>小叶内末梢导管 腺泡 小叶内间质", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-24", "title": "24. 高分辨力超声能够清晰显示乳腺解剖结构，5层结构从浅至深依次为：___、___、___、___和___。", "front": "", "back": "<b>答案:</b>皮肤 皮下组织 乳腺腺体 乳腺腺体后脂肪 胸大肌", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-25", "title": "25. 由末梢导管和小叶共同构成___, 是乳腺增生性病变及乳腺癌的主要发生部位。", "front": "", "back": "<b>答案:</b>末梢导管小叶单位", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-26", "title": "26. 超声造影通过显示乳腺肿瘤的___和___, 能够更好地辅助诊断乳腺癌。", "front": "", "back": "<b>答案:</b>微血管灌注形态 动态曲线", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-27", "title": "27. 病人的年龄、所处的生理期对乳腺超声图像有影响，腺体厚度最厚的时期是___。", "front": "", "back": "<b>答案:</b>哺乳期", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-28", "title": "28. 乳腺增生症的病理组织学表现为___、___、___。", "front": "", "back": "<b>答案:</b>乳腺小导管增生 导管及腺泡周围纤维组织增生 淋巴细胞浸润", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-29", "title": "29. 乳腺纤维腺瘤病程长时可发生变性，包括___、___、___。", "front": "", "back": "<b>答案:</b>玻璃样变 黏液性变 钙化", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-30", "title": "30. 乳腺导管内乳头状瘤可分为乳晕区的___乳头状瘤和末梢导管的___乳头状瘤。", "front": "", "back": "<b>答案:</b>中央型 外周型", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-31", "title": "31. 乳腺纤维腺瘤 ___ 成分较多时，质地软； ___ 成分较多时，质地硬。", "front": "", "back": "<b>答案:</b>腺体 纤维", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-32", "title": "32. 导管内乳头状瘤最常见的临床症状是___。", "front": "", "back": "<b>答案:</b>乳头溢液", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-33", "title": "33. ___是乳腺癌最为常见的表现，是诊断乳腺癌敏感性最高的超声征象。", "front": "", "back": "<b>答案:</b>肿块形态不规则", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-34", "title": "34. ___和___是乳腺癌向周围组织浸润生长的典型特征。", "front": "", "back": "<b>答案:</b>周边毛刺征 强回声晕", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-35", "title": "35. 肿块纵横比 &gt;1 尤其常见于___。", "front": "", "back": "<b>答案:</b>小乳腺癌", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-36", "title": "36. 超声对微小钙化的显示不如___。", "front": "", "back": "<b>答案:</b>乳腺 X 线摄影术", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-37", "title": "37. 不能作为定位微小钙化灶的常规方法。", "front": "", "back": "<b>答案:</b>超声", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-38", "title": "38. 阴囊内精索由___、___及___等组成。", "front": "", "back": "<b>答案:</b>输精管 动脉 蔓状静脉丛", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-39", "title": "39. 输出小管连接___和___。", "front": "", "back": "<b>答案:</b>睾丸网 附睾管", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-40", "title": "40. 正常淋巴结呈豆形，隆凸的一侧接入数条输入淋巴管，凹陷的一侧为___。淋巴结被膜下为___，淋巴结的中央及门部为___，内有___，窦腔含有大量的___。", "front": "", "back": "<b>答案:</b>淋巴门 皮质区 髓质区 髓索和髓窦 淋巴细胞和巨噬细胞", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-41", "title": "41. 淋巴结收集 ___ 淋巴液，并经输入淋巴管流入 ___ ，再通过 ___ 汇入输出淋巴管。淋巴结是人体重要的免疫器官，其主要功能是 ___ ，产生淋巴细胞和浆细胞，参与机体的 ___ 。", "front": "", "back": "<b>答案:</b>引流区域 皮质淋巴窦 髓窦 滤过淋巴液 免疫反应", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-42", "title": "42. 正常浅表淋巴结纵切呈 ___ ，横切呈 ___ ，包膜薄而光滑，呈", "front": "", "back": "<b>答案:</b>扁椭圆形 椭圆形 高 皮质 髓质（淋巴门）", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-43", "title": "43. 淋巴结炎由引流区域组织___、病毒或真菌等感染引起，急性淋巴结炎的特点是___和引流区域的淋巴结肿大并存，局部皮肤有___的急性炎症表现，有时周边可见到淋巴管炎所致的___，严重者伴有发热及___。", "front": "", "back": "<b>答案:</b>细菌 局部感染 红肿热痛 “红线” 白细胞增高", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-44", "title": "44. 淋巴结结核可分为___和继发性，___淋巴结是淋巴结结核的好发部位，早期可无明显症状，晚期淋巴结___形成，甚至向皮肤破溃，形成窦道，严重病例可有低热、盗汗和消瘦等___。", "front": "", "back": "<b>答案:</b>原发性 颈部 寒性脓肿 全身症状", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-45", "title": "45. 淋巴瘤分为___和霍奇金淋巴瘤，非霍奇金淋巴瘤发生于___，霍奇金淋巴瘤主要发生于___。病理表现为正常淋巴结为肿瘤细胞所替代，非霍奇金淋巴瘤为___的瘤细胞，霍奇金淋巴瘤为___的瘤细胞。", "front": "", "back": "<b>答案:</b>非霍奇金淋巴瘤 淋巴结或结外淋巴组织 淋巴结 单一形态 Reed-sternberg", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-2-46", "title": "46. 原发癌相应引流区域的淋巴结是癌细胞转移的 ___ ，口腔、鼻咽、甲状腺等的原发癌转移到 ___ 淋巴结；肺、纵隔、上消化道原发癌转移到 ___ 淋巴结；乳癌转移到 ___ 淋巴结；盆腔、生殖器官、会阴部及下肢的原发癌转移到 ___ 淋巴结。", "front": "", "back": "<b>答案:</b>第一站 颈部 锁骨上 腋窝 腹股沟", "tags": ["填空题", "浅表"], "kind": "填空题", "page": 174, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-1", "title": "1. 典型脉络膜黑色素瘤的形态特点为", "front": "A.钙斑<br>B.蕈状<br>D.不规则形<br>E.内回声均匀", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 178, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-2", "title": "2. 关于视网膜母细胞瘤的描述， 不正确 的描述是", "front": "A.是儿童时期常见的眼内恶性肿瘤之一<br>B.“钙斑”为其典型的超声诊断特征<br>C.为儿童期常见的眼内良性肿瘤之一<br>D.“白瞳”为其临床表现特点之一<br>E.病变内可见与视网膜动脉相延续的血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 178, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-3", "title": "3. 涎腺 不包括", "front": "A.腮腺<br>B.副腮腺<br>C.颌下腺<br>D.甲状腺<br>E.舌下腺", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 178, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-4", "title": "4. 关于腮腺的解剖， 不正确 的描述是", "front": "A.腮腺呈不规则楔形<br>B.腮腺位于外耳道前下方，咬肌后缘，下颌后窝内<br>C.面神经穿行于腮腺，将其分为深浅两叶<br>D.颈外动脉的分支营养腮腺，面后静脉收纳腮腺血液<br>E.腮腺浅叶前缘发出腮腺主导管，斜穿颊肌而开口于舌下肉阜", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 178, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-5", "title": "5. 关于颌下腺， 不正确 的描述是", "front": "A.颌下腺呈椭圆形或哑铃形<br>B.颌下腺位于下颌骨内侧，如鸡蛋大小<br>C.颌下腺导管由颌下腺内面发出，开口于舌下肉阜<br>D.颌下腺导管长而弯曲，而且导管开口较大<br>E.异物容易进入颌下腺导管，而诱发结石形成", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-6", "title": "6. 关于涎腺超声检查， 不正确 的描述是", "front": "A.病人仰卧，检查一侧腮腺，头部转向另一侧<br>B.检查颌下腺、舌下腺，头部后仰，暴露下颌区<br>C.腮腺超声一般选用高频线阵探头进行检查<br>D.颌下腺超声一般选用低频弧形探头进行检查<br>E.检查颌下腺、舌下腺时，声束朝向口底", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-7", "title": "7. 关于正常涎腺超声表现，正确的描述是", "front": "A.颌下腺纵切或横切，形态呈倒三角形<br>B.以下颌骨表面延长线为标志，可把腺体分为深浅两叶，浅叶边界清晰，深叶后缘清晰显示<br>C.舌下腺左右两侧或有相连，形似马蹄，腺体深部边界不易完整显示<br>D.涎腺实质为均匀高回声，导管可清晰显示<br>E.副腮腺实质回声与腮腺一致，在腮腺周缘常可见到数个副腮腺", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-8", "title": "8. 关于涎腺大小， 不正确 的描述是", "front": "A.腮腺长径为5.0~6.0cm<br>B.腮腺宽径为4.0~5.0cm<br>C.腮腺厚径为1.5~2.0cm<br>D.颌下腺长径为5.0~6.0cm<br>E.颌下腺厚径为1.5~2.0cm", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-9", "title": "9. 关于腮腺炎， 不正确 的描述是", "front": "A.急性腮腺炎发作时，局部红肿、疼痛，饮食时加剧，导管口充血肿胀<br>B.腮腺急性化脓性炎症较常见，双侧为主<br>C.双侧腮腺急性炎症主要见于流行性腮腺炎，流行病学、血液检查有助于鉴别<br>D.慢性腮腺炎常因导管梗阻引起，如结石、外伤、异物等<br>E.慢性腮腺炎，挤压腺体时，口腔内导管口有胶冻状液体或脓液溢出", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-10", "title": "10. 关于急性涎腺炎超声表现， 不正确 的描述是", "front": "A.急性涎腺炎时腺体中度至重度肿大，边界不清晰，实质回声不均匀，血流信号明显减少<br>B.急性涎腺炎脓肿形成时，腺体实质出现含有点状回声漂浮的液性区，边界不规则<br>C.急性涎腺炎形成的脓肿可单发也可多发，单发大脓腔后方回声增强，腔内无血流信号显示<br>D.急性细菌性涎腺炎以单侧多见<br>E.流行性腮腺炎以双侧多见，双侧腺体多同时发生，也可先后发生", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-11", "title": "11. 涎腺慢性炎症超声表现， 不正确 的描述是", "front": "A.腺体明显肿大<br>B.腺体边界不光滑<br>C.腺实质回声增粗，分布不均匀<br>D.呈弥漫性或局灶性，后者边界不清晰，腺体内血流信号轻度至中度增多<br>E.慢性阻塞性炎症，可见到腺导管扩张，内或含有结石", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-12", "title": "12. 关于涎腺结石， 不正确 的描述是", "front": "A.涎腺结石位于腺导管内，单发或多发，常伴发涎腺炎症<br>B.大约80%的涎腺结石发生于颌下腺，腮腺少见<br>C.涎腺结石多见于老年人<br>D.涎腺结石早期多无症状<br>E.涎腺结石阻塞时，唾液淤滞，引起局部胀痛，进餐时症状", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 179, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-13", "title": "13. 有关良性淋巴上皮病的临床特征， 不正确 的描述是", "front": "A.多见于中老年女性<br>B.临床主要表现为双侧腮腺无痛性肿大<br>C.大多数为弥漫性、少数为不对称局灶性肿大<br>D.触诊腺体质地较软，表面平整<br>E.当其他涎腺也受累时，口腔干燥明显，同时伴有", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-14", "title": "14. 关于良性淋巴上皮病的病理特征， 不正确 的描述是", "front": "A.属于自身免疫性疾病<br>B.良性淋巴上皮病早期，腺小叶受淋巴细胞广泛浸润，但一般不超过小叶间的结缔组织<br>C.良性淋巴上皮病早期，小叶内导管扩张，腺小叶外形存在<br>D.良性淋巴上皮病后期，腺泡萎缩，严重者消失<br>E.良性淋巴上皮病不可能进展为淋巴瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-15", "title": "15. 与良性淋巴上皮病 无关 的超声表现是", "front": "A.双侧腮腺弥漫性肿大<br>B.双侧颌下腺或舌下腺肿大<br>C.腺体内回声不均,可见散在小低回声区,呈“网格”样改变<br>D.大多数病灶表现为团块状,内部回声不均匀<br>E.大多数受累腺体血流信号明显增多", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-16", "title": "16. 有关涎腺肥大的描述， 不正确 的描述是", "front": "A.以中老年人多见<br>B.主要发生于颌下腺，腮腺少见<br>C.常与全身性疾病有关，如肥胖、糖尿病、高血压及营养代谢异常等<br>D.为一种非肿瘤性、非免疫性、非炎性的涎腺良性病变<br>E.涎腺沿其外形逐渐肿大", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-17", "title": "17. 关于涎腺肥大的描述， 不正确 的描述是", "front": "A.涎腺无痛性、弥漫性及双侧对称性肿大<br>B.导管口无红肿，分泌物无异常<br>C.涎腺腺泡肿大，可达正常腺泡的2~3倍<br>D.腺小体间质可见脂肪细胞沉积<br>E.可见单核细胞浸润", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-18", "title": "18. 与涎腺肥大有关的超声特征是", "front": "A.以颌下腺多见<br>B.多为单侧性肿大<br>C.肿大的腺体边界不清<br>D.实质回声均匀增强，腺导管扩张<br>E.腺体内可见少量血流信号，大多数呈点状分布", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-19", "title": "19. 关于涎腺囊肿的临床特征,正确的是", "front": "A.以腮腺多见，颌下腺、舌下腺少见<br>B.肿块质硬、无痛<br>C.伴发感染时，肿块明显触痛<br>D.舌下腺囊肿好发于老年人<br>E.可自行破溃，不易复发", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 180, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-20", "title": "20. 关于混合瘤， 不正确 的描述是", "front": "A.混合瘤在涎腺良性肿瘤中占首位<br>B.大约20%的混合瘤可进展为恶性混合瘤<br>C.临床表现为无痛性肿块，缓慢生长，以单发为主<br>D.大多数的瘤体由腺样上皮和间充质组织构成而呈实性<br>E.好发于腮腺，其次为颌下腺，在舌下腺中极少见", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-21", "title": "21. 关于涎腺多形性腺瘤的超声特征，正确的是", "front": "A.瘤体大多数呈分叶状，有的瘤体为圆形或椭圆形<br>B.瘤内回声多样性，以均质高回声多见<br>C.有的瘤内可见到无回声区或钙化灶<br>D.瘤体边界清晰，瘤体后方腺体实质常出现回声衰减<br>E.瘤体内常常不能检测到血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-22", "title": "22. 关于乳头状淋巴囊腺瘤， 不正确 的描述是", "front": "A.以中青年女性多见<br>B.好发于腮腺，在腮腺良性肿瘤中仅次于混合瘤，也可发生于多个涎腺<br>C.无痛性肿块，病程长，多发生于腮腺后下极<br>D.瘤体形态呈圆形或椭圆形，或呈分叶状，有包膜<br>E.瘤体含有大小不等的囊腔，或呈囊状，内含黏液样液体，囊壁有乳头状", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-23", "title": "23. 关于乳头状淋巴囊腺瘤的超声表现， 不正确 的描述是", "front": "A.大多数瘤体的形态为圆形或椭圆形，少数瘤体呈分叶状<br>B.瘤内多呈囊实性，表现为多分隔的液性区<br>C.瘤体边界清晰，瘤体后方腺体实质常伴有回声增强效应<br>D.多数表现为单发，少数可呈多发性、多个涎腺分布<br>E.瘤内实性区域可见到少量血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-24", "title": "24. 关于涎腺恶性肿瘤临床特征，正确的描述是", "front": "A.黏液表皮样癌在涎腺恶性肿瘤中居首位，好发于颌下腺<br>B.腺样囊性癌也较多见，好发于腮腺<br>C.黏液表皮样癌可分为低度、中度和高度恶性，低度恶性不易与良性区别<br>D.黏液表皮样癌多有包膜，瘤内含有大小不等的囊腔<br>E.腺样囊性癌多呈囊性，并常有出血灶", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-25", "title": "25. 关于涎腺恶性肿瘤超声特征， 不正确 的描述是", "front": "A.肿瘤形态不规则，边缘不清晰<br>B.黏液表皮样癌，内多呈囊实性，含有液性区，后方可伴回声增强<br>C.腺样囊性癌，内部为不均匀低回声，后方常伴声衰减<br>D.瘤体内血供丰富，PW 检测多为低速动脉血流频谱<br>E.同侧颈部Ⅱ区淋巴结肿大", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-26", "title": "26. 成年人体内最大的内分泌腺是", "front": "A.肝脏<br>B.胰腺<br>C.脾脏<br>D.甲状腺<br>E.腮腺", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-27", "title": "27. 关于甲状腺的血管， 不正确 的描述是", "front": "A.甲状腺的血供非常丰富<br>B.甲状腺主要由双侧的甲状腺上、下动脉供血<br>C.多数人存在的甲状腺最下动脉<br>D.甲状腺的静脉起自甲状腺腺体的表面和气管前面的静脉丛<br>E.甲状腺的静脉可分为上、中、下3对", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 181, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-28", "title": "28. 通常甲状腺超声检查所使用的探头及频率是", "front": "A.2~5MHz 相控阵探头<br>B.3~5MHz 凸阵探头<br>C.3~5MHz 线阵探头<br>D.5~10MHz 扇扫探头<br>E.5~10MHz 线阵探头", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-29", "title": "29. 关于成年人甲状腺的数值， 不正确 的描述是", "front": "A.甲状腺重量为15~30g<br>B.甲状腺侧叶长3~6cm，宽2~3cm，厚1~2cm<br>C.峡部长1.2~1.5cm，厚0.2~0.4cm<br>D.甲状腺上动脉的平均内径约5mm<br>E.甲状腺上动脉收缩期峰值流速为30~50cm/s", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-30", "title": "30. 关于正常甲状腺超声表现， 不正确 的描述是", "front": "A.甲状腺实质为分布均匀的细而密集的中等回声<br>B.甲状腺实质回声水平低于邻近的胸锁乳突肌回声<br>C.甲状腺被膜为一薄而规整的高回声带<br>D.正常甲状腺侧叶前后径的个体差异相对较小<br>E.甲状腺上动脉的平均内径约2mm", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-31", "title": "31. 关于甲状旁腺超声， 不正确 的描述是", "front": "A.由于甲状旁腺位置更深，可选择频率更低的探头进行检查<br>B.甲状旁腺常见异位于甲状腺内、颈动脉鞘内、食管后和胸骨上窝，应仔细扫查<br>C.由于正常甲状旁腺体积过小，且与周围组织不能形成良好的反射界面，超声很难显示<br>D.正常甲状旁腺回声水平高于甲状腺<br>E.正常甲状旁腺多为边界清楚的卵圆形或圆形的均匀低回声，内部一般无明显的血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-32", "title": "32. 亚急性甲状腺炎", "front": "A.是一种自身免疫性疾病<br>B.多见于 20~50 岁的男性<br>C.一般无明确病史<br>D.中晚期可出现甲状腺局部疼痛，可放射至下颌、耳部或枕骨部<br>E.一般不可自行缓解消失", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-33", "title": "33. 关于亚急性甲状腺炎超声表现， 不正确 的描述是", "front": "A.患侧甲状腺可以表现肿大<br>B.腺体病灶常表现为边界模糊的散在性或融合性片状高回声<br>C.被膜下病灶常使甲状腺与颈前肌之间的间隙模糊或消失<br>D.病灶回声随病程而改变，恢复期回声增强、不均，低回声区缩小甚至消失，恢复为正常腺体回声<br>E.病灶内显示原有甲状腺血管穿行，周边无明显环绕血管", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-34", "title": "34. 桥本氏甲状腺炎", "front": "A.镜检见病变甲状腺组织中淋巴细胞和浆细胞呈弥漫性浸润<br>B.是一种自限性非化脓性炎性疾病<br>C.好发于30~50岁的青中年男性<br>D.一般有较为明确的病史<br>E.甲状腺体积增大", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 182, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-35", "title": "35. 关于桥本甲状腺炎超声特征， 不正确 的描述是", "front": "A.腺体可弥漫性肿大，回声减低，伴有许多条状高回声<br>B.腺体内可见许多散在细小低回声而呈网络状改变<br>C.腺体可呈弥漫性萎缩，回声不均匀<br>D.病变可局限在某一区域<br>E.CDFI 一定显示腺体内血流增多，而呈“火海征”", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-36", "title": "36. Graves 病的超声特征是", "front": "A.甲状腺弥漫增大，内部为低回声，血流较丰富<br>B.甲状腺弥漫增大，内部呈中-低回声，血流呈“火海征”<br>C.甲状腺弥漫增大，内部为低回声，血流不丰富<br>D.甲状腺不对称性肿大，内部呈低回声，血流呈“火海征”<br>E.甲状腺正常大小，内部为低回声，血流正常", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-37", "title": "37. 与毒性甲状腺肿的声像图 无关 的是", "front": "A.甲状腺火海征<br>B.甲状腺海岛征<br>C.甲状腺上、下动脉增宽<br>D.甲状腺上、下动脉为高阻高速频谱，峰值速度&gt;70cm/s<br>E.血流速度的增加随 T_{3} 、 T_{4} 的升高而加快", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-38", "title": "38. 关于单纯性甲状腺肿的声像图特征， 不正确 的描述是", "front": "A.早期甲状腺均匀性显著肿大，压迫气管和颈部血管<br>B.有的可见散在性边界模糊或清晰的小结节<br>C.后期可形成多个薄壁的液性暗区<br>D.腺体中常发生液化、血块机化及钙化<br>E.甲状腺实质回声增粗，内呈单个或多个回声", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-39", "title": "39. 与结节性甲状腺肿 无关 的是", "front": "A.甲状腺不规则,非对称性增大<br>B.实质回声增粗,内呈多个中等偏强回声结节<br>C.结节内可见液性暗区,强光点<br>D.CDFI 示血流丰富,血流呈花环状包绕结节,并有细小分支伸入结节内<br>E.“冲洗过”征", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-40", "title": "40. 甲状腺腺瘤的声像图特征是", "front": "A.圆形或椭圆形肿物，边界清，无包膜，呈低回声<br>B.圆形或椭圆形肿物，边界清，有包膜，呈低回声，周围有晕征<br>C.圆形或椭圆形肿物，边界不光滑，无包膜，呈低回声<br>D.圆形或椭圆形肿物，边界不光滑，有包膜，呈强回声<br>E.圆形或椭圆形肿物，边界清，无包膜，呈强回声", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-41", "title": "41. 与甲状腺腺瘤 无关 的是", "front": "A.圆形或椭圆形肿物，边界光滑，有包膜，周围有晕征<br>B.内部为实性低回声，增强回声或等回声<br>C.囊性变或出现时呈混合性回声，甚至无回声，乳头状囊腺瘤的囊壁可见乳突状或团块状突起<br>D.肿物后方回声明显衰减<br>E.肿物周边声晕处可见丰富的动静脉血流，内部乳头上可见少量血流分布", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 183, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-42", "title": "42. 关于甲状腺癌， 不正确 的描述是", "front": "A.肿块形态不规则，以单发性为多，多无包膜和晕环，呈蟹足样向周围组织浸润<br>B.内部以实性不均质强回声为主<br>C.髓样癌常表现为均质低回声，边缘清晰<br>D.滤泡状腺癌常见后方衰减<br>E.部分可发生囊变，其囊变部分所占比例较小，囊壁不光滑常有钙化", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-43", "title": "43. 甲状腺对称性重度肿大，回声不均匀，CDFI 血流信号极丰富，应考虑", "front": "A.毒性甲状腺肿<br>B.单纯性甲状腺肿<br>C.亚急性甲状腺炎<br>D.桥本甲状腺炎<br>E.结节性甲状腺肿", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-44", "title": "44. 关于结节性甲状腺肿超声表现， 不正确 的描述是", "front": "A.正常甲状腺结构<br>B.甲状腺多个结节<br>C.甲状腺囊实性结节<br>D.甲状腺结节血流丰富<br>E.甲状腺结节有钙化点", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-45", "title": "45. 关于原发性甲状腺功能亢进的超声表现， 不正确 的描述是", "front": "A.均匀性肿大<br>B.内部回声粗糙<br>C.一般无结节<br>D.无血流信号<br>E.两叶呈对称性", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-46", "title": "46. 不属于 甲状旁腺腺瘤的超声表现的是", "front": "A.单发多见<br>B.形态规则,边界清晰,有包膜<br>C.瘤体长轴与身体矢状面垂直<br>D.肿瘤与甲状腺之间可见双层中强回声带<br>E.肿瘤前缘常有血管绕行", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-47", "title": "47. 甲状旁腺占位的恶性超声征象 不包括", "front": "A.肿瘤较大,形态不规则或呈分叶状<br>B.内部呈均匀低回声,有包膜<br>C.边界不清,侵犯邻近器官组织<br>D.内部及周边血供丰富,分布不规则<br>E.同侧颈部淋巴结转移", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-48", "title": "48. 甲状腺恶性肿瘤最常见的病理类型是", "front": "A.乳头状癌<br>B.未分化癌<br>C.滤泡状癌<br>D.髓样癌<br>E.鳞状细胞癌", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-49", "title": "49. 正常乳腺由浅入深依次为", "front": "A.皮肤、腺体层、腺体后脂肪层、胸大肌<br>B.皮肤、皮下脂肪层、腺体层、胸大肌<br>C.皮肤、皮下脂肪层、腺体层、腺体后脂肪层、肋骨<br>D.皮肤、皮下脂肪层、腺体层、腺体后脂肪层、胸大肌<br>E.皮肤、腺体层、胸大肌", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 184, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-50", "title": "50. 对乳腺实质起支撑作用的解剖结构是", "front": "A.深筋膜<br>B.胸肌<br>C.Cooper 韧带<br>D.浅筋膜<br>E.脂肪组织", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-51", "title": "51. 乳腺增生性病变和乳腺癌的主要发生部位是", "front": "A.乳腺小叶<br>B.输乳管<br>C.乳腺结缔组织<br>D.末梢导管小叶单位<br>E.乳腺大导管内", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-52", "title": "52. 正常乳腺的乳头下方大导管的内径 不应超过", "front": "A.1mm<br>B.2mm<br>C.2.5mm<br>D.3mm<br>E.5mm", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-53", "title": "53. 以乳腺内脂肪小叶为参照物，正常乳腺腺体的回声为", "front": "A.等回声<br>B.高回声<br>C.中等偏高回声<br>D.低回声<br>E.无回声", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-54", "title": "54. 关于乳腺内脂肪小叶回声，正确的描述是", "front": "A.回声不均、边缘不清<br>B.高回声、边缘光滑<br>C.中低回声、边缘光滑<br>D.强回声组织带<br>E.中低回声、边界不清", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-55", "title": "55. 可能发生恶变的良性乳腺病灶是", "front": "A.纤维腺瘤<br>B.复杂性囊肿<br>C.错构瘤<br>D.叶状肿瘤<br>E.单纯囊肿", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-56", "title": "56. 男性乳腺实质异常增大，最常见的病因是", "front": "A.乳腺炎<br>B.副乳<br>C.错构瘤<br>D.男性乳腺发育<br>E.乳腺癌", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 185, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-57", "title": "57. 有助于检出&lt;1cm 的乳腺肿块的超声仪器调节方法， 不包括", "front": "A.图像深度不超过 4cm<br>B.聚焦位于病灶处<br>C.适当提高图像增益<br>D.组织谐波<br>E.提高彩色增益", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-58", "title": "58. 超声检查发现了乳腺病灶,对其准确的描述内容 不包括", "front": "A.左侧/右侧<br>B.时钟方向显示肿块所在方向<br>C.肿块距乳头的距离<br>D.肿块的大小<br>E.肿块质地", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-59", "title": "59. 乳腺增生症临床表现 不包括", "front": "A.经前乳房胀痛<br>B.月经后疼痛缓解<br>C.乳腺肿块<br>D.腋下淋巴结肿大<br>E.好发年龄是30~50岁", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-60", "title": "60. 乳腺增生症的典型临床表现是", "front": "A.乳房周期性胀痛<br>B.乳房可移动性肿块<br>C.乳头溢液<br>D.腋下淋巴结肿大<br>E.乳头凹陷", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-61", "title": "61. 乳腺纤维腺瘤常见于", "front": "A.生育期妇女<br>B.哺乳期妇女<br>C.青春期女性<br>D.绝经期妇女<br>E.更年期妇女", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-62", "title": "62. 关于乳腺纤维腺瘤， 不正确 的描述是", "front": "A.无痛<br>B.明显触痛<br>C.可移动<br>D.质硬<br>E.质软", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-63", "title": "63. 乳腺纤维腺瘤发生黏液样变和钙化时，需与之鉴别的疾病是", "front": "A.乳腺增生症<br>B.乳腺囊肿<br>C.乳腺癌<br>D.乳腺炎<br>E.乳腺脓肿", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-64", "title": "64. 乳腺炎的鉴别诊断 不包括", "front": "A.乳腺血肿<br>B.乳腺癌<br>C.乳腺积乳<br>D.乳腺结核<br>E.乳腺纤维腺瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 186, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-65", "title": "65. 乳腺炎的主要易感因素是", "front": "A.乳腺导管阻塞<br>B.内分泌紊乱<br>C.病毒感染<br>D.哺乳<br>E.雌激素增高", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-66", "title": "66. 乳腺导管内乳头状瘤基本病变是", "front": "A.腺体实质和间质增生<br>B.导管上皮和间质增生<br>C.上皮细胞和纤维组织增生<br>D.导管上皮及腺泡上皮增生<br>E.以上都不是", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-67", "title": "67. 关于乳腺导管内乳头状瘤， 不正确 的描述是", "front": "A.血性乳头溢液<br>B.触及质硬肿块<br>C.部分可见丰富血流信号<br>D.需要与乳腺导管内乳头状癌鉴别<br>E.需要与乳腺增生症鉴别", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-68", "title": "68. 关于乳腺纤维腺瘤的二维超声， 不正确 的描述是", "front": "A.肿块呈圆形、椭圆形或分叶状<br>B.边界清晰，有完整包膜<br>C.内部回声均匀，与乳腺实质相比为低回声<br>D.后方无衰减<br>E.肿块纵横比&gt;1", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-69", "title": "69. 乳腺癌最常见的内部回声是", "front": "A.无回声<br>B.低回声<br>C.等回声<br>D.高回声<br>E.混合回声", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-70", "title": "70. 关于乳腺癌， 不正确 的描述是", "front": "A.起源于乳腺上皮的恶性肿瘤<br>B.最常见起源于末梢导管-小叶单位的上皮细胞<br>C.在不同年龄组的分布有差异<br>D.只见于老年女性<br>E.可以不伴有临床症状", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-71", "title": "71. 乳腺癌二维超声表现 不包括", "front": "A.内部低回声<br>B.形态不规则<br>C.微小钙化<br>D.边缘毛刺状<br>E.椭圆形", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 187, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-72", "title": "72. 关于微小钙化, 正确的描述是", "front": "A.组织坏死基础上产生的钙盐沉积<br>B.直径大于1mm<br>C.超声显示优于X线<br>D.乳腺癌内不可见<br>E.后方伴声影", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-73", "title": "73. 乳腺癌的超声间接征象 不包括", "front": "A.库柏韧带连续性中断<br>B.后方回声衰减<br>C.皮肤水肿增厚<br>D.乳头凹陷<br>E.腋窝淋巴结肿大", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-74", "title": "74. 下面说法正确的是", "front": "A.乳腺癌常见于年轻女性<br>B.大多数乳腺癌为混合回声<br>C.形态不规则是诊断乳腺癌敏感性最高的征象<br>D.大多数乳腺癌呈椭圆形<br>E.超声检测病灶内微小钙化敏感性高", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-75", "title": "75. 良、恶性乳腺肿瘤的鉴别要点包括", "front": "A.形态<br>B.边界<br>D.微钙化<br>E.以上都是", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-76", "title": "76. 超声引导下乳腺肿块穿刺活检的优势不包括", "front": "A.操作迅速<br>B.并发症少<br>C.可实时观察<br>D.有电离辐射<br>E.多方位准确取样", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-77", "title": "77. 关于超声引导定位的叙述,正确的是", "front": "A.实时超声引导<br>B.并发症多<br>C.有电离辐射<br>D.能够显示所有微钙化<br>E.操作时间很长", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-78", "title": "78. 关于超声引导下乳腺肿物穿刺的表述,正确的是", "front": "A.可行性不高<br>B.需要专用的设备<br>C.创伤小<br>D.超声引导不能进行术前定位<br>E.不适用于临床触诊不清的肿物", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-79", "title": "79. 阴囊壁的结构， 不包括", "front": "A.肉膜<br>B.精索外筋膜<br>C.提睾肌<br>D.精索内筋膜<br>E.睾丸鞘膜脏层", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 188, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-80", "title": "80. 关于正常睾丸附睾的超声表现， 不正确 的描述是", "front": "A.睾丸纵切呈卵圆形，横切呈近圆形<br>B.睾丸纵隔纵切呈卵圆形，横切呈近圆形<br>C.睾丸纵隔呈高回声<br>D.附睾纵切头尾部膨大、体部狭小，横切呈扁圆形<br>E.附睾头部、体尾部回声不一致", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-81", "title": "81. 正常成人的浅表淋巴结有", "front": "A.50~100 个<br>B.100~200 个<br>C.200~300 个<br>D.300~400 个<br>E.400~500 个", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-82", "title": "82. 浅表淋巴结比较集中的区域， 不包括", "front": "A.颈部<br>B.锁骨上<br>C.腋下<br>D.腹股沟<br>E.腘窝", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-83", "title": "83. 关于淋巴结解剖， 不正确 的描述是", "front": "A.正常淋巴结凹陷的一侧接入数条输入淋巴管，隆凸的一侧为淋巴门，含有输出淋巴管、动静脉和神经<br>B.淋巴结的被膜伸入淋巴结内形成小梁<br>C.被膜下为皮质区，内有淋巴小结、弥散淋巴组织和皮质淋巴窦<br>D.淋巴结的中央及门部为髓质区，内有髓索和髓窦<br>E.窦腔含有大量的淋巴细胞和巨噬细胞", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-84", "title": "84. 关于淋巴结的功能， 不正确 的描述是", "front": "A.淋巴结收集引流区域淋巴液<br>B.淋巴结主要功能是滤过淋巴液<br>C.淋巴液经输入淋巴管流入皮质淋巴窦<br>D.淋巴液通过皮质淋巴窦汇入输出淋巴管<br>E.淋巴结是人体重要的免疫器官", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-85", "title": "85. 下列叙述， 不正确 的是", "front": "A.口腔、咽等疾病，应重点扫查颏下淋巴结(IA区)、颌下淋巴结(IB区)及颈\n上深淋巴结(Ⅱ区)<br>B.甲状腺疾病，应重点扫查颈中(Ⅲ区)、颈下深淋巴结(Ⅳ区)及气管周围淋巴结(Ⅵ区)<br>C.腹腔疾病，应重点扫查右侧锁骨上窝淋巴结<br>D.乳房疾病，应重点扫查腋窝淋巴结、胸小肌深面淋巴结、锁骨下淋巴结、锁骨上淋巴结及胸骨旁淋巴结<br>E.盆腔及下肢疾病，应重点扫查腹股沟淋巴结", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-86", "title": "86. 关于正常浅表淋巴结灰阶超声表现， 不正确 的描述是", "front": "A.纵切呈扁椭圆形，横切呈椭圆形<br>B.包膜薄而光滑，呈高回声<br>C.包膜下均匀低回声为皮质，中央条带状高回声为髓质<br>D.髓质与淋巴结门部及包膜相延续<br>E.大多数淋巴结的门部位于淋巴结凹陷的一侧，少数位<br>E.大多数淋巴结的门部位于淋巴结凹陷的一侧，少数位于淋巴结隆凸的一侧", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 189, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-87", "title": "87. 关于正常浅表淋巴结多普勒超声表现， 不正确 的描述是", "front": "A.皮质血流不容易显示<br>B.皮质血流呈点状或条状<br>C.髓质血流信号呈点状或条状<br>D.淋巴门血流信号呈点状或条状<br>E.淋巴结动脉血流为低速低阻型", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-88", "title": "88. 正常淋巴结长径厚径之比", "front": "A.&gt;1<br>B.&gt;2<br>C.&gt;3<br>D.&gt;4<br>E.&gt;5", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-89", "title": "89. 甲状腺癌淋巴结转移, 常见的区域是", "front": "A.ⅠA区<br>B.ⅠB区<br>C.ⅡA区<br>D.ⅡB区<br>E.Ⅵ区", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-90", "title": "90. 关于淋巴门， 不正确 的描述是", "front": "A.正常淋巴结凹陷的一侧为淋巴门<br>B.淋巴门含有输出淋巴管、动静脉和神经<br>C.淋巴结门与包膜相延续<br>D.淋巴门一般呈低回声<br>E.淋巴液由淋巴门汇入输出淋巴管", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-91", "title": "91. 关于急性淋巴结炎的临床特征， 不正确 的描述是", "front": "A.引流区域组织细菌、病毒及真菌等感染引起<br>B.局部感染和引流区域的淋巴结肿大并存<br>C.有时周边可见到淋巴管炎所致的“红线”<br>D.严重者伴有发热及白细胞增高<br>E.局部反复肿胀，肿大的淋巴结质中等，可有轻微压痛", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-92", "title": "92. 关于急性淋巴结炎的超声特征， 不正确 的描述是", "front": "A.包膜光滑，淋巴结之间分界不清<br>B.多呈椭圆形或圆形，长径厚径之比&gt;2<br>C.皮质增厚、回声低，髓质增厚呈高回声<br>D.淋巴结明显肿大<br>E.淋巴结内血流信号明显增多，沿门部、髓质、皮质呈放射状分布", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-93", "title": "93. 慢性淋巴结炎与淋巴结反应性增生主要鉴别点是", "front": "A.淋巴结的长径<br>B.淋巴结的厚径<br>C.淋巴结的形态<br>D.淋巴结门的形态<br>E.病史", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-94", "title": "94. 关于淋巴结结核的描述， 不正确 的描述是", "front": "A.可分为原发性和继发性<br>B.腹股沟是淋巴结结核的最好发部位<br>C.主要表现为颈部一侧或双侧多个淋巴结肿大<br>D.早期可无疼痛<br>E.晚期淋巴结相互融合成团", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 190, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-95", "title": "95. 淋巴结结核长径厚径之比", "front": "A.&lt;1<br>B.&lt;2<br>C.&lt;3<br>D.&lt;4<br>E.&lt;5", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-96", "title": "96. 关于淋巴结结核的超声特征， 不正确 的描述是", "front": "A.淋巴结不同程度肿大，包膜清晰或不清，多呈椭圆形，常融合成串珠状<br>B.髓质偏心或显示不清，结内回声不均匀，以高回声为主<br>C.脓肿形成时，出现不规则无回声区，含有细点状或絮状回声、加压时可见漂动现象，有的结内可见呈斑片状强回声的钙化灶<br>D.脓肿破溃，淋巴结形态不清晰，周围组织回声不均匀，含有不规则无回声区<br>E.淋巴结内血流信号增多，往往分布于皮质边缘，干酪样坏死、脓肿区则无血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-97", "title": "97. 关于淋巴结结核的超声特征， 不正确 的描述是", "front": "A.髓质增大，并且呈中央型<br>B.淋巴结回声不均匀，以低回声为主<br>C.脓肿形成时，出现不规则无回声区<br>D.脓肿形成时，无回声区内可见细点状或絮状回声<br>E.有的结内可见呈斑片状强回声的钙化灶", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-98", "title": "98. 关于淋巴结反应性增生， 不正确 的描述是", "front": "A.受细菌、病毒等病原感染而导致引流区域的淋巴结发生的免疫反应<br>B.淋巴结内淋巴细胞、巨噬细胞大量增生<br>C.皮、髓质结构无明显改变<br>D.临床主要表现为局部或全身性浅表淋巴结肿大，往往伴随红、肿、热、痛<br>E.本病预后好，肿大的淋巴结可随局部或全身性疾病痊愈而回缩", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-99", "title": "99. 关于淋巴结反应性增生的超声特征，正确的描述是", "front": "A.淋巴结肿大，以单发为主<br>B.多呈椭圆形，长径厚径之比&lt;2<br>C.包膜光滑<br>D.淋巴结皮质无明显增厚，呈均匀低回声<br>E.髓质增厚、居中，呈高回声", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-100", "title": "100. 关于淋巴结反应性增生的血流特征,正确的描述是", "front": "A.血流信号减少<br>B.血流信号呈点状<br>C.血流主要分布于髓质<br>D.动脉血流速度减慢<br>E.阻力指数增高", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-101", "title": "101. 关于淋巴瘤的临床特征， 不正确 的描述是", "front": "A.淋巴瘤分为非霍奇金淋巴瘤和霍奇金淋巴瘤<br>B.表现为浅表淋巴结迅速肿大<br>C.早期淋巴结质地较软、活动<br>D.晚期淋巴结广泛肿大，质硬、固定、融合<br>E.晚期可有发热、消瘦等症状", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 191, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-102", "title": "102. 关于非霍奇金淋巴瘤与霍奇金淋巴瘤的差别，正确的描述是", "front": "A.非霍奇金淋巴瘤发生于淋巴结<br>B.霍奇金淋巴瘤主要发生于结外淋巴组织<br>C.非霍奇金淋巴瘤为多形性及特征性 Reed-sternberg 的瘤细胞<br>D.霍奇金淋巴瘤为单一形态的瘤细胞<br>E.二者均表现为正常淋巴结结构被破坏，为肿瘤细胞所替代", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-103", "title": "103. 关于淋巴瘤的灰阶超声特征， 不正确 的描述是", "front": "A.淋巴结明显肿大，以多发为主<br>B.呈椭圆形、圆形或融合成不规则形，长径厚径之比&lt;2<br>C.包膜清晰或不清晰<br>D.淋巴结皮质明显增厚，呈低回声，可有液化或钙化<br>E.髓质受压变形或显示不清，当髓质消失时淋巴结内近", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-104", "title": "104. 关于淋巴瘤的多普勒超声特征， 不正确 的描述是", "front": "A.血流信号轻度或明显增多<br>B.血管分支扭曲，分布杂乱<br>C.血流呈点状<br>D.动脉血流速度明显加快<br>E.动脉阻力指数正常或偏高", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-105", "title": "105. 关于淋巴结转移癌的病理特征， 不正确 的描述是", "front": "A.癌细胞先出现于淋巴结的髓窦<br>B.癌细胞可浸润和破坏整个淋巴结<br>C.癌细胞可穿透淋巴结的被膜<br>D.侵犯周围组织及淋巴结<br>E.淋巴结内新生血管走行迂曲", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-106", "title": "106. 关于淋巴结转移癌的超声特征， 不正确 的描述是", "front": "A.淋巴结不同程度肿大，以多发为主<br>B.淋巴结呈椭圆形、圆形，长径厚径之比&lt;2<br>C.淋巴结包膜圆滑或局部隆起，结与结可融合成团<br>D.淋巴结皮质弥漫性或局限性增厚，但不向外隆起<br>E.淋巴结髓质变形、偏心或消失", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-107", "title": "107. 关于淋巴结转移癌的超声特征， 不正确 的描述是", "front": "A.淋巴结内回声因原发癌不同而异<br>B.大多数呈均匀性低回声<br>C.可有液化<br>D.可有钙化<br>E.甲状腺乳头状癌转移的淋巴结内可见簇状分布的点状钙化", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-108", "title": "108. 关于淋巴结转移癌的多普勒超声特征， 不正确 的描述是", "front": "A.淋巴结内血管走行迂曲、杂乱<br>B.淋巴结内血流信号可呈边缘(局部)型<br>C.淋巴结内血流信号可呈中央型<br>D.淋巴结内血流信号可呈混合型<br>E.淋巴结内血流信号可呈高速低阻型", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "浅表"], "kind": "选择题", "page": 192, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-1", "title": "109. 病人，男性。35岁，主诉右眼眼前固定黑影伴视力下降1天。既往有高度近视病史。眼底检查在视神经盘颞侧可见膜状病变，表面可见血管结构。超声检查显示：右眼玻璃体内可见带状中强回声，与视神经盘及周边球壁回声相连，运动试验(+)，CDFI其上可见与视网膜中央动脉、静脉相延续的血流信号。其最可能的诊断是", "front": "A.玻璃体后脱离<br>B.玻璃体机化膜<br>C.脉络膜脱离<br>D.玻璃体积血<br>E.视网膜脱离", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-2", "title": "110. 病人，女性。16岁，1月前重感冒，现两侧耳前软组织肿胀、发红、压痛；超声显示两侧腮腺肿大，后方边界显示欠清，实质回声减低，分布欠均匀，CDFI显示血流信号丰富。其最可能的诊断是", "front": "A.复发性腮腺炎<br>B.慢性腮腺炎<br>C.阻塞性腮腺炎<br>D.急性腮腺炎<br>E.化脓性腮腺炎", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-3", "title": "111. 一中年妇女，超声检查发现，右侧颌下腺回声增粗、不均匀，边界不光滑，颌下腺导管扩张，内见多个强回声，后伴声影，CDFI 显示腺体内血流信号稍增多。其最可能的诊断是", "front": "A.急性颌下腺炎<br>B.亚急性颌下腺炎<br>C.良性淋巴上皮病<br>D.复发性颌下腺炎<br>E.阻塞性颌下腺炎", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-4", "title": "112. 病人，女性。69岁，口腔干燥2个月余，查体发现耳前肿胀；超声显示两侧腮腺肿大，腺体内回声不均，可见多个散在小的低回声区，呈“网格”样改变，CDFI显示血流信号丰富。其最可能的诊断是", "front": "A.急性腮腺炎<br>B.慢性腮腺炎<br>C.良性淋巴上皮病<br>D.涎腺症<br>E.黏液表皮样癌", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-5", "title": "113. 一中年妇女，糖尿病30年，超声检查发现两侧腮腺明显肿大，边界清晰，内部回声增强，呈细点状，分布均匀，导管无扩张，CDFI显示两侧腮腺内血流偏少，呈点状分布。其最可能的诊断是", "front": "A.急性腮腺炎<br>B.慢性复发性腮腺炎<br>C.慢性阻塞性腮腺炎<br>D.腮腺肥大<br>E.腮腺良性淋巴上皮病", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-6", "title": "114. 病人，男性。40岁，自述发现右侧下颌处肿块2周，查体：右侧下颌处触及一蚕 豆大小肿块，质中，无压痛；超声检查示右侧颌下腺内见一椭圆形低回声，大小 1.8 cm × 1.5 cm ，边界清晰，内部回声较均匀，CDFI内部可见较丰富血流信号。余颈部未见明显异常回声。其最可能的诊断是", "front": "A.颌下腺良性淋巴上皮病<br>B.颌下腺囊肿<br>C.颌下腺混合瘤<br>D.颌下腺乳头状淋巴囊腺瘤<br>E.颌下腺转移癌", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-7", "title": "115. 病人，女性。60岁，发现左侧耳下肿块4个月，生长缓慢，无疼痛。超声检查显示左侧腮腺内一混合性回声，大小 1.5 cm × 1.2 cm ，形态不规则，边缘不清晰，后方可伴回声增强，CDFI显示内部可见较丰富的血流信号。附近可见多枚肿大的淋巴结，大者 6 mm × 4 mm 。其最可能的诊断是", "front": "A.乳头状淋巴囊肿瘤<br>B.混合瘤<br>C.黏液表皮样癌<br>D.腺样囊性癌<br>E.转移癌", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-8", "title": "116. 病人，女性。36岁，1个月前重感冒，现颈前轻度压痛，超声显示甲状腺右叶偏大，实质内上极、中部各见一处片状低回声，大小分别为 2.1cm×1.5cm 和 1.6cm×1.1cm ，边界欠清，病灶内血流信号稍增多。其最可能的诊断是", "front": "A.甲状腺癌<br>B.化脓性甲状腺炎<br>C.亚急性甲状腺炎<br>D.桥本甲状腺炎<br>E.结节性甲状腺肿", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 193, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-9", "title": "117. 病人，女性。45岁，无明确病史，体检发现颈部肿大，超声显示甲状腺肿大，左、右叶前后径分别为2.4cm和2.2cm，峡部厚度0.7cm，内部回声不均匀，可见许多条索状高回声呈网络状分布。其最可能的诊断是", "front": "A.甲状腺癌<br>B.甲状腺淋巴瘤<br>C.亚急性甲状腺炎<br>D.桥本甲状腺炎<br>E.化脓性甲状腺炎", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-10", "title": "118. 一中年妇女，超声检查发现，甲状腺普遍性肿大，边缘规则，内回声中等强度，无结节，CDFI 显示腺体内血管增多，血流加速。其最可能的诊断是", "front": "A.结节性甲状腺肿<br>B.单纯性甲状腺肿<br>C.毒性甲状腺肿<br>D.甲状腺功能减退<br>E.亚临床甲状腺功能减退", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-11", "title": "119. 一老年妇女，右颈部包块1个月，超声检查：甲状腺右侧叶不规则增大，内可见2cm×3cm×2cm实性低回声肿物，边缘不规则，呈蟹足样，无包膜，无晕环，内部可见粗糙不规则钙化，肿物后方回声衰减，CDFI显示肿物内部血供丰富，可测及高速的动脉血流频谱。其最可能的诊断是", "front": "A.侵袭性甲状腺炎<br>B.结节性甲状腺肿<br>C.甲状腺癌<br>D.桥本氏甲状腺炎<br>E.弥漫性甲状腺肿", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-12", "title": "120. 病人，女性。40岁，查体发现严重骨质疏松，双肾多发结石，超声检查示甲状腺左叶中下部后方见椭圆形均质低回声，大小 1.5 cm × 0.8 cm × 0.6 cm ，可见完整高回声包膜，CDFI 周边及内部可见丰富规则血流信号。余颈部未见明显异常回声。其最可能的诊断是", "front": "A.甲状腺腺瘤<br>B.结节性甲状腺肿<br>C.甲状旁腺增生<br>D.甲状旁腺腺瘤<br>E.颈部淋巴结肿大", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-13", "title": "121. 病人，女性。60岁。发现颈部肿块4个月，生长快，无疼痛。超声检查显示甲状腺右侧叶内可见一直径3cm的低回声肿物，质硬，边界不清。查体时发现吞咽时活动度 小。其最可能的诊断是", "front": "A.甲状腺腺瘤<br>B.结节性甲状腺肿<br>C.甲状旁腺增生<br>D.甲状腺癌<br>E.颈部淋巴结肿大", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-14", "title": "122. 病人，女性。35岁。发现左颈部前侧无痛性肿块1年，约1cm大小，近1月来出现声音嘶哑。超声显示：甲状腺左侧叶可见一质硬的低回声结节，大小 1.5cm × 1.7cm ，其内可见点状强回声，随吞咽活动，颈部未触及肿大淋巴结。其最可能的诊断是", "front": "A.甲状腺腺瘤<br>B.结节性甲状腺肿<br>C.甲状腺癌<br>D.甲状旁腺增生<br>E.甲状舌骨囊肿", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-15", "title": "123. 病人，女性。45岁，三个月前发现右乳肿物，无疼痛等不适，后肿块进行性增大，质地较硬，活动度差，超声提示：右乳实性肿块，右腋下实性肿块，考虑淋巴结。其最可能的诊断是", "front": "A.乳腺纤维腺瘤<br>B.乳腺囊肿<br>C.乳腺脓肿<br>D.乳腺癌<br>E.乳腺增生症", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 194, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-16", "title": "124. 病人，女性。25岁，发现左乳肿物一个月，无疼痛等不适，表面光滑，质韧，活动度大，超声提示：左乳实性肿块，边界清晰，周边可见环形血流。其最可能的诊断是", "front": "A.乳腺囊肿<br>B.乳腺癌<br>C.乳腺纤维腺瘤<br>D.导管内乳头状瘤<br>E.乳腺炎", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-17", "title": "125. 病人，女性。34岁，乳头出现血性溢液一周，超声检查：乳晕处导管扩张，内可见乳头状等回声，CDFI显示等回声内丰富血流信号。其最可能的诊断是", "front": "A.导管内乳头状瘤<br>B.乳腺癌<br>C.乳腺增生症<br>D.乳腺脓肿<br>E.乳腺纤维腺瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-18", "title": "126. 病人，女性。31岁，双乳肿块半年，胀痛，尤其经前明显，月经后疼痛减轻，肿块变小、变软。其最可能的诊断是", "front": "A.乳腺纤维腺瘤<br>B.乳腺增生症<br>C.乳腺炎<br>D.乳腺癌<br>E.以上都不是", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-19", "title": "127. 病人，女性。50岁，扪及左乳肿物6个月，无局部发热及疼痛不适。对病人进行超声检查，发现左乳肿物， 不属于 肿物超声表现直接征象的是", "front": "A.低回声<br>B.形态不规则<br>C.微小钙化<br>D.腋窝淋巴结肿大<br>E.纵横比&gt;1", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-20", "title": "128. 病人，女性。60岁，乳腺病灶超声图像出现低回声，形态不规则，纵横比&gt;1，病灶内见微小钙化。其最可能的诊断是", "front": "A.乳腺囊肿<br>B.乳腺纤维腺瘤<br>C.乳腺癌<br>D.乳腺错构瘤<br>E.纤维囊性乳腺病", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-21", "title": "129. 除常规超声外，乳腺肿物进一步诊断时，还可进行的操作是", "front": "A.乳腺 X 线检查<br>B.超声弹性成像检查<br>C.超声造影检查<br>D.超声引导下肿物活检<br>E.以上都正确", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-22", "title": "130. 病人，男性，14岁。左侧睾丸疼痛10天，查体：左侧阴囊红肿，阴囊内触及一 3.5cm×3.5cm×2.5cm 的肿物，质硬，压痛(+)。超声检查显示：左侧睾丸肿大，回声不均，内未见血流信号，精索末段肿大扭曲，回声增强，周边见血流信号。其最可能的诊断是", "front": "A.睾丸炎<br>B.睾丸恶性肿瘤<br>C.睾丸良性肿瘤<br>D.睾丸扭转<br>E.睾丸结核", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-23", "title": "131. 病人，男性。52岁，右侧颈部疼痛1周，伴轻度发热，右侧颈部扪及多个大小不等的质中肿块，表面光滑，有一定的活动性，血常规显示白细胞增高，超声检查显示右侧颈部多个大小不等的淋巴结声像，形态饱满，边界清，皮髓质分界清，CDFI显示内部血流信号丰富，呈放射状分布。其最可能的诊断是", "front": "A.急性淋巴结炎<br>B.慢性淋巴结炎<br>C.淋巴结结核<br>D.淋巴结反应性增生<br>E.淋巴瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 195, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-24", "title": "132. 病人，女性。25岁，于1周前拔牙，发现右侧颌下多个大小不等的质中肿块，无明显不适，超声检查发现右侧颌下多个大小不等的淋巴结，多呈椭圆形，长径厚径之比＞2，包膜光滑，皮髓质分界清，CDFI显示内部血流信号稍增多。其最可能的诊断是", "front": "A.急性颌下腺炎<br>B.慢性颌下腺炎<br>C.急性淋巴结炎<br>D.慢性淋巴结炎<br>E.淋巴结反应性增生", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 196, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-25", "title": "133. 病人，男性。69岁，无意中发现双侧颈部多个大小不等的肿块，超声检查显示双侧颈部、腋窝、腹股沟和腹膜后多发淋巴结，长径厚径之比&lt;2，内部呈不均匀低回声，部分包膜不清晰，呈融合状，CDFI显示内血流信号较丰富，血管分支扭曲，分布杂乱。其最可能的诊断是", "front": "A.淋巴结转移癌<br>B.淋巴瘤<br>C.慢性淋巴结炎<br>D.淋巴结结核<br>E.淋巴结反应性增生", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 196, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-26", "title": "134. 病人，男性。79岁，右侧乳腺癌根治术后4年，超声检查发现右侧腋下、锁骨上多发淋巴结，边界清，多数呈椭圆形，部分形态欠规则，长径厚径之比＜2，CDFI显示内部血流信号分布异常，血管走行迂曲、杂乱。其最可能的诊断是", "front": "A.急性淋巴结炎<br>B.慢性淋巴结炎<br>C.淋巴结转移癌<br>D.淋巴瘤<br>E.淋巴结反应性增生", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 196, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-27", "title": "135. 病人，男性。67岁，自述发现右侧颈部无痛性肿块2周，超声检查示右侧颈部多个大小不等的低回声、混合性回声肿块，多呈椭圆形，长径厚径之比&lt;2，部分呈常融状，部分内部可见强回声钙化灶，混合性回声肿块无回声区见点状回声漂浮，CDFI显示实质性肿块边缘可见点状血流信号。其最可能的诊断是", "front": "A.急性淋巴结炎<br>B.慢性淋巴结炎<br>C.淋巴结反应性增生<br>D.淋巴结结核<br>E.淋巴结转移癌", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "浅表"], "kind": "选择题", "page": 196, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-136-137", "title": "共用备选答案 · 第 136~137 题", "front": "<b>下列第 136~137 题共用以下备选答案:</b><br>A.腮腺回声增强，分布均匀<br>B.腮腺实质回声增粗，分布不均匀<br>C.腮腺散在小低回声区，呈“网格”样改变<br>D.腮腺内单个低回声肿块，边界清晰<br>E.腮腺内单个低回声肿块，边界不清", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-1", "title": "136. 良性淋巴上皮病", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-2", "title": "137. 慢性腮腺炎", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-138-139", "title": "共用备选答案 · 第 138~139 题", "front": "<b>下列第 138~139 题共用以下备选答案:</b><br>A.腮腺内分叶状低回声，边界清晰，内部见多个强回声伴声影，血流信号较丰富<br>B.腮腺内椭圆形无回声，边界清晰，内部透声可，无血流信号<br>C.腮腺内椭圆形低回声，边界清晰，中央部分高回声，可见分支状血流信号<br>D.腮腺内多个椭圆形低回声、混合性回声，边界清晰，后方回声增强，实质部分可见少量血流信号<br>E.腮腺内不规则形低回声，边界欠清，内部回声不均匀，可见较丰富血流信号", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-3", "title": "138. 多形性腺瘤", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-4", "title": "139. Warthin 瘤", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-140-141", "title": "共用备选答案 · 第 140~141 题", "front": "<b>下列第 140~141 题共用以下备选答案:</b><br>A.腮腺内椭圆形低回声，边界清晰，中央部分高回声，可见分支状血流信号<br>B.腮腺内圆形低回声，边界清晰，内部见多个强回声伴声影，血流信号较丰富<br>C.腮腺内混合性回声，边界不清，后方回声增强，实质部分区域血流信号丰富<br>D.腮腺内椭圆形无回声，边界清晰，内部透声可，无血流信号<br>E.腮腺内不规则形低回声，边界欠清，内部为不均匀，后方常伴声衰减，内部较丰富血流信号", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-5", "title": "140. 黏液表皮样癌", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-6", "title": "141. 腺样囊性癌", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-142-143", "title": "共用备选答案 · 第 142~143 题", "front": "<b>下列第 142~143 题共用以下备选答案:</b><br>A.20~50岁女性<br>B.甲状腺局部疼痛<br>C.血沉降低<br>D.中性粒细胞升高<br>E.甲状腺微粒体抗体和", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-7", "title": "142. 亚急性甲状腺炎除超声表现外，最常见的临床症状是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-8", "title": "143. 桥本甲状腺炎除超声表现外，最常见的临床依据是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-144-145", "title": "共用备选答案 · 第 144~145 题", "front": "<b>下列第 144~145 题共用以下备选答案:</b><br>A.甲状腺单个结节，外周绕有声晕，周边见环状血流<br>B.甲状腺内见多个结节，无包膜，虽有血流，多呈棒状或条状<br>C.甲状腺单个低回声结节，形态不规则，内外均有较丰富的血流<br>D.甲状腺对称性肿大，光点增粗增强，血流信号呈“火海征”<br>E.甲状腺肿大，实质回声普遍减低", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-9", "title": "144. 甲状腺腺瘤", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-10", "title": "145. 甲状腺癌", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-146-147", "title": "共用备选答案 · 第 146~147 题", "front": "<b>下列第 146~147 题共用以下备选答案:</b><br>A.乳头状腺癌<br>B.滤泡状腺癌<br>C.未分化癌<br>D.髓样癌<br>E.转移癌", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-11", "title": "146. 分泌大量降钙素的甲状腺癌是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-12", "title": "147. 恶性程度最高的甲状腺癌是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-148-150", "title": "共用备选答案 · 第 148~150 题", "front": "<b>下列第 148~150 题共用以下备选答案:</b><br>A.高频探头<br>B.组织谐波成像<br>C.三维超声技术<br>D.弹性成像<br>E.超声造影", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-13", "title": "148. 可改善组织边界的技术是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-14", "title": "149. 可获得乳腺冠状面图像的技术是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-15", "title": "150. 可获得微血管灌注形态和动态曲线的技术是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-151-153", "title": "共用备选答案 · 第 151~153 题", "front": "<b>下列第 151~153 题共用以下备选答案:</b><br>A.生育期妇女<br>B.哺乳期妇女<br>C.青春期女性<br>D.绝经期妇女<br>E.更年期妇女", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-16", "title": "151. 乳腺纤维腺瘤最常发生于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-17", "title": "152. 乳腺炎好发于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-18", "title": "153. 乳腺增生症好发于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-154-156", "title": "共用备选答案 · 第 154~156 题", "front": "<b>下列第 154~156 题共用以下备选答案:</b><br>A.无特异性<br>B.血流丰富<br>C.周边环形血流信号<br>D.无血流信号<br>E.较丰富血流，血流速度增快", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-19", "title": "154. 乳腺炎的彩色多普勒表现", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-20", "title": "155. 乳腺纤维腺瘤的彩色多普勒表现", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-21", "title": "156. 导管内乳头状瘤彩色多普勒表现", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-157-159", "title": "共用备选答案 · 第 157~159 题", "front": "<b>下列第 157~159 题共用以下备选答案:</b><br>A.壁厚，规则，内部透声良好<br>B.壁厚，不规则，内部回声不均匀<br>C.囊状扩张，内可见乳头状等回声<br>D.壁薄，后方回声增强，内透声良好<br>E.壁厚，后方回声增强，内透声良好", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-22", "title": "157. 乳腺增生症的囊肿表现为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-23", "title": "158. 乳腺炎发生脓肿时表现为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-24", "title": "159. 导管内乳头状瘤表现为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-160-163", "title": "共用备选答案 · 第 160~163 题", "front": "<b>下列第 160~163 题共用以下备选答案:</b><br>A.低回声<br>B.形态不规则<br>C.周边毛刺征<br>D.纵横比&gt;1<br>E.微小钙化", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-25", "title": "160. 诊断乳腺癌敏感性最高的超声征象是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-26", "title": "161. 超声显示率不如乳腺 X 线摄影术的乳腺癌特征是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-27", "title": "162. 最常见于小乳腺癌的征象是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-28", "title": "163. 乳腺癌向周围组织浸润生长的典型特征是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-164-166", "title": "共用备选答案 · 第 164~166 题", "front": "<b>下列第 164~166 题共用以下备选答案:</b><br>A.睾丸外伤<br>B.睾丸扭转<br>C.睾丸鞘膜积液<br>D.睾丸微小结石<br>E.睾丸结核", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-29", "title": "164. 睾丸包膜下少量积液，考虑", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-30", "title": "165. 睾丸肿大，回声不均匀，内无血流信号显示，考虑", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-167-168", "title": "共用备选答案 · 第 167~168 题", "front": "<b>下列第 167~168 题共用以下备选答案:</b><br>A.肿大的淋巴结可随局部或全身性疾病痊愈而回缩<br>B.肿大淋巴结的局部皮肤有红、肿、热、痛<br>C.肿大的淋巴结质中等，活动，可有轻微压痛<br>D.肿大淋巴结的局部皮肤破溃，窦道形成<br>E.肿大的淋巴结质硬、固定、融合，并有发热、消瘦等症状", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-31", "title": "167. 急性淋巴结炎", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-32", "title": "168. 慢性淋巴结炎", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-169-170", "title": "共用备选答案 · 第 169~170 题", "front": "<b>下列第 169~170 题共用以下备选答案:</b><br>A.肿大的淋巴结呈椭圆形或圆形，皮质增厚、回声低，髓质增厚呈高回声，包膜光滑，淋巴结之间分界清楚<br>B.淋巴结明显肿大，以多发为主，呈椭圆形、圆形或融合成不规则形，长径厚径之比&lt;2，部分肿大的淋巴结近似无回声，但可见分布杂乱血流信号<br>C.肿大的淋巴结出现不规则无回声区，含有细点状或絮状回声、加压时可见漂动现象<br>D.肿大的淋巴结，以多发为主，长径厚径之比&gt;2，皮质增厚，髓质居中，无明显增厚，血流信号轻度或明显增多，呈树杈状分布<br>E.淋巴结不同程度肿大，长径厚径之比&lt;2，包膜圆滑或局部隆起，部分淋巴结融合成团。皮质弥漫性或局限性增厚，也可向外隆起，髓质变形、偏心或消失", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-33", "title": "169. 淋巴结结核", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-34", "title": "170. 淋巴结反应性增生", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-171-172", "title": "共用备选答案 · 第 171~172 题", "front": "<b>下列第 171~172 题共用以下备选答案:</b><br>A.淋巴结呈扁椭圆形，长径厚径之比＞4，包膜薄而光滑，皮质为均匀性低回声，中央髓质呈条带状高回声<br>B.淋巴结呈椭圆形，长径厚径之比＞2，皮质增厚、回声低，髓质增厚呈高回声，包膜光滑，淋巴结之间分界清楚<br>C.淋巴结呈椭圆形，长径厚径之比＜2，内见规则无回声区，含有细点状或絮状回声、加压时可见漂动现象，并向皮肤破溃<br>D.淋巴结呈类圆形，部分融合成不规则形，长径厚径之比＜2，内部呈低回声，髓质显示不清<br>E.淋巴结呈椭圆形、圆形，长径厚径之比＜2，包膜圆滑或局部隆起，皮质弥漫性或局限性增厚，并可见多个砂砾样强回声", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-35", "title": "171. 淋巴瘤", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-36", "title": "172. 淋巴结转移癌", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-shared-173-174", "title": "共用备选答案 · 第 173~174 题", "front": "<b>下列第 173~174 题共用以下备选答案:</b><br>A.颈部<br>B.左侧锁骨上<br>C.右侧锁骨上<br>D.腋下<br>E.腹股沟", "back": "", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": true, "image": "", "figcap": ""}, {"no": "10-3-37", "title": "173. 乳腺癌淋巴结转移的常见部位", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-3-38", "title": "174. 胃癌淋巴结转移的常见部位", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "浅表"], "kind": "共用备选答案", "page": 0, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-1", "title": "1. 简述急性腮腺炎的临床特征和超声诊断要点。", "front": "", "back": "<b>参考答案:</b><br>急性腮腺炎多发生于成年人，年老体弱者易于发病，腮腺部位局部红肿、疼痛，饮食时加剧，导管口充血肿胀，有的可见脓液排出。双侧腮腺急性炎症主要见于流行性腮腺炎，流行病学、血液检查有助于鉴别。超声表现为腮腺肿大，边界不清晰，实质回声不均匀，血流信号明显增多。脓肿形成时，腺体实质出现含有点状回声漂浮的液性区，边界不规则。脓肿单发，也可多发，单发大脓腔后方回声增强，腔内无血流信号显示。流行性腮腺炎，多为双侧腺体同时发生，也可先后发生。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-2", "title": "2. 简述良性淋巴上皮病的超声诊断要点。", "front": "", "back": "<b>参考答案:</b><br>良性淋巴上皮病亦称干燥综合征，多见于中老年女性。临床主要表现为双侧腮腺无痛性肿大，大多数为弥漫性、少数为不对称局灶性肿大。触诊腺体质地较硬，表面不平。当其他涎腺也受累时，口腔干燥明显，同时伴有眼干、鼻干等症状。超声表现为双侧腮腺\n弥漫性肿大，颌下腺及舌下腺也可同时受累及；腺体内回声不均，可见散在小低回声区，呈“网格”样改变；少数病灶表现为团块状，内部回声不均匀；CDFI显示大多数受累腺体血流信号明显增多。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-3", "title": "3. 简述涎腺囊肿的主要种类和超声表现。", "front": "", "back": "<b>参考答案:</b><br>涎腺囊肿以舌下腺多见，颌下腺、腮腺少见。涎腺囊肿有以下几种：外渗性黏液囊肿、潴留性黏液囊肿和淋巴上皮囊肿等。超声表现为圆形无回声，少数舌下腺外渗性黏液囊肿呈哑铃形，两端分别位于舌下区和颌下区，部分囊内可见细点状回声漂浮，伴发感染时尤为明显；囊壁薄，边界清楚，后方回声增强。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-4", "title": "4. 简述颌下腺混合瘤与腺样囊性癌的超声鉴别诊断要点。", "front": "", "back": "<b>参考答案:</b><br>混合瘤大多数为圆形或椭圆形，有的瘤体呈分叶状；瘤内回声多样性，以均质低回声多见，有的瘤内可见到无回声区或钙化灶；瘤体边界清晰，瘤体后方腺体实质常出现回声增强；CDFI显示体积大的瘤体常显示较丰富的血流信号，PW检测多为低速动脉血流频谱；一般不伴引流区域淋巴结肿大。腺样囊性癌多为不规则形，边缘不清晰；内部为不均匀低回声，后方常伴声衰减；瘤体内血供丰富，PW检测多为高速动脉血流频谱；常可见同侧颈部Ⅱ区淋巴结肿大。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-5", "title": "5. 简述涎腺疾病超声检查的临床价值。", "front": "", "back": "<b>参考答案:</b><br>X线涎腺造影、超声检查、CT、MRI和同位素 99m 锝等检查对涎腺疾病的诊断都有一定的价值，但目前应用较多的方法是超声检查，它在囊实性病变、炎症及结石等疾病的诊断较其他影像学检查更具优势。但也有不足之处，如超声检查容易发现涎腺主导管的扩张，而对小叶间导管、末梢导管的显示则不如X线造影检查。识别深部肿瘤与周围组织（尤其是骨组织）关系的能力逊于CT、MRI。超声引导下涎腺组织细针吸取细胞学检查，操作简单，有助于明确诊断。但要注意的是，涎腺肿瘤的组织活检可能导致肿瘤沿切割针道种植。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-6", "title": "6. 简述甲状腺疾病的超声诊断步骤。", "front": "", "back": "<b>参考答案:</b><br>（1）首先定位鉴别诊断，需与甲状腺病变鉴别的疾病有：甲状旁腺肿物，周围淋巴结疾病和食管肿瘤等。\n\n（2）区分甲状腺弥漫性肿大与甲状腺结节，一般来说超声能很好地区分甲状腺弥漫性肿大与甲状腺结节，当甲状腺结节很大几乎占据整叶腺体或均匀等回声结节时，有可能误诊为弥漫性肿大或遗漏结节，观察结节周边晕环或环绕血流信号有助于发现结节。\n\n（3）区分哪一种疾病引起甲状腺弥漫性肿大或甲状腺结节。\n\n（4）检测颈部有无肿大淋巴结以及鉴别淋巴结的良恶性。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-7", "title": "7. 简述亚急性甲状腺炎、局限性桥本甲状腺炎与甲状腺癌的超声鉴别诊断要点。", "front": "", "back": "<b>参考答案:</b><br>&lt;table border=1 style='margin: auto; word-wrap: break-word;'&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;甲状腺癌&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;局限性桥本甲状腺炎&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;亚急性甲状腺炎&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;数量&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;单发多见&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;单发多见&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;多发多见，分布于双侧叶&lt;/td&gt;&lt;/tr&gt;...", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-8", "title": "8. 简述甲状腺功能亢进症的超声表现。", "front": "", "back": "<b>参考答案:</b><br>（1）甲状腺呈对称性、均匀性肿大，被膜规则。\n\n（2）腺体回声可分为两种类型：弥漫回声减低型与散在回声减低型。前者表现为双侧腺体弥漫性回声减低、不均，腺体弹性好；后者可见于年龄较大者，表现为双侧腺体多发散在、局灶性回声减低，边界模糊。\n\n（3）CDFI：弥漫回声减低型表现为整个腺体内布满搏动性的彩色血流信号，密集如一片火的海洋，称之为火海征。散在回声减低型表现为回声减低处血流信号尤为丰富，其内动脉流速加快。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-9", "title": "9. 简述甲状腺癌与甲状腺腺瘤的超声鉴别诊断要点。", "front": "", "back": "<b>参考答案:</b><br>&lt;table border=1 style='margin: auto; word-wrap: break-word;'&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;甲状腺癌&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;甲状腺腺瘤&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;数量&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;单发多见&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;单发多见&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;形态&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;不规则&lt;/td&gt;&lt;td style='te...", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-10", "title": "10. 简述甲状旁腺腺瘤的超声表现。", "front": "", "back": "<b>参考答案:</b><br>甲状旁腺腺瘤形态规则，边界清晰，其长轴与身体矢状面平行；有高回声包膜，周边可\n见规整的薄晕环；内部呈均匀等回声或低回声，可合并囊性变、出血或坏死；内部可见丰富血流信号，周边常见较为完整的环绕血管。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-11", "title": "11. 简述超声弹性成像对乳腺病灶的诊断价值。", "front": "", "back": "<b>参考答案:</b><br>传统的临床医师触诊是利用手指的触觉定性地判断乳腺内有无肿块以及肿块的良恶性。超声弹性成像技术发展迅速，为判断乳腺病灶的硬度提供了一种新的定量方法，与常规超声联合应用，提高了对乳腺良恶性病变的诊断准确性，具有较好的临床应用前景。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-12", "title": "12. 简述乳腺纤维腺瘤的声像图特征。", "front": "", "back": "<b>参考答案:</b><br>（1）肿块呈圆形、椭圆形或分叶状。\n\n（2）边界清晰，包膜完整。\n\n（3）常为低回声，内部回声均匀，后方无衰减。\n\n（4）肿块可有侧方声影。\n\n（5）与周围组织无粘连，加压时，可被轻度压缩。\n\n（6）彩色多普勒，部分肿块可有血流信号，走行规则。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-13", "title": "13. 简述乳腺增生症的声像图特征。", "front": "", "back": "<b>参考答案:</b><br>（1）一侧或双侧腺体结构紊乱，小叶结构体积增大，数目增多。\n\n（2）腺体内可见多个大小不等无回声区，边界清，后方回声增强。\n\n（3）腺体内有时可见中等或低回声实性结节，边界清，体积小，常无血流信号。\n\n（4）可出现细小点状钙化。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-14", "title": "14. 简述导管内乳头状瘤的声像图特征。", "front": "", "back": "<b>参考答案:</b><br>（1）导管囊状扩张呈无回声，内可见乳头状低回声或中等回声。\n\n（2）中央型乳头状瘤表现为乳晕处导管扩张，管腔内见边界清楚的低回声实性小结节。\n\n（3）外周型乳头状瘤表现为低回声实性结节，需与乳腺其他良性肿瘤鉴别。\n\n（4）彩色多普勒实性结节可见丰富血流信号。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-15", "title": "15. 简述导管内乳头状瘤的鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>导管内乳头状瘤需与乳腺增生症鉴别，后者也可见导管扩张，但通常导管内无乳头状实性回声。较大的导管内乳头状瘤需与导管内乳头状癌相鉴别，尤其是发生囊内乳头状癌，后者病变通常较大（平均2cm），实性成分多，形态不规则。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-16", "title": "16. 简述乳腺癌的二维超声表现。", "front": "", "back": "<b>参考答案:</b><br>（1）病灶内部呈低回声，部分伴有肿块后方回声衰减。\n\n（2）形态不规则。\n\n（3）边界不清与毛刺状边缘。\n\n（4）纵横比 &gt;1 （5）微小钙化。\n\n（6）间接征象：库柏韧带连续性中断，皮肤水肿增厚和腋窝淋巴结肿大、形态失常。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-17", "title": "17. 简述乳腺癌与其他乳腺良性病变的鉴别诊断要点。", "front": "", "back": "<b>参考答案:</b><br>首先要注意病人的年龄、症状和体征，考虑不同年龄病人发生乳腺癌的危险性；其次要对乳腺肿块的超声声像图进行鉴别诊断，分析肿块的形态、边界、回声、是否伴有钙化、血流是否丰富以及血流形态等，仔细寻找病变有无恶性征象；值得注意的是，良、恶性肿瘤\n声像图可能重叠，必须综合考虑。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-18", "title": "18. 简述超声引导下肿块穿刺活检的内容和优势。", "front": "", "back": "<b>参考答案:</b><br>活检的主要取材方法有细针穿刺抽吸活检和组织切割活检，后者能更好地区分乳腺病变的良恶性。超声引导乳腺经皮穿刺活检创伤小、操作迅速、并发症少，尤其是可以实时观察穿刺的位置、多方位准确取样，同时具有无电离辐射、不需要专用的设备、花费低廉等优点。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-19", "title": "19. 简述鞘膜积液的超声表现。", "front": "", "back": "<b>参考答案:</b><br>鞘膜积液包括：①睾丸鞘膜积液，单侧或双侧，少量积液位于睾丸上极、下极周围，中至大量积液可三面环绕睾丸。②精索鞘膜积液，以单侧为主，积液包绕精索。③混合型鞘膜积液，以单侧多见，睾丸鞘膜腔内中～大量积液，并扩展至精索周围。④交通性鞘膜积液，以单侧多见，睾丸鞘膜腔内中等量以上积液，改变体位或挤压阴囊时积液量明显减少，可合并斜疝。阴囊外伤积血或炎症时，积液内含有点状、带状或絮状高回声。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-20", "title": "20. 简述不同部位疾病导致浅表淋巴结肿大应重点扫查的相应区域。", "front": "", "back": "<b>参考答案:</b><br>浅表淋巴结可根据临床要求进行检查，口腔、咽等疾病，重点扫查颏下淋巴结（ⅠA区）、颌下淋巴结（ⅠB区）及颈上深淋巴结（Ⅱ区）；甲状腺疾病，重点扫查颈中（Ⅲ区）、颈下深淋巴结（Ⅳ区）及气管周围淋巴结（Ⅵ区）；胸腔、腹腔疾病分别重点扫查右侧、左侧锁骨上窝淋巴结；乳房疾病，重点扫查腋窝淋巴结、胸小肌深面淋巴结、锁骨下淋巴结、锁骨上淋巴结及胸骨旁淋巴结；盆腔及下肢疾病重点扫查腹股沟淋巴结。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-21", "title": "21. 简述急性淋巴结炎的临床与超声特征。", "front": "", "back": "<b>参考答案:</b><br>急性淋巴结炎是由引流区域组织细菌、病毒及真菌等感染引起的急性炎症，局部感染和引流区域的淋巴结肿大并存，肿大淋巴结的局部皮肤有红、肿、热、痛的急性炎症表现，有时周边可见到淋巴管炎所致的“红线”，严重者伴有发热及白细胞增高。超声表现为淋巴结明显肿大，多呈椭圆形或圆形，长径厚径之比&gt;2。皮质增厚、回声低，髓质增厚呈高回声，包膜光滑，淋巴结之间分界清楚。淋巴结内血流信号明显增多，沿门部、髓质、皮质呈放射状分布。多普勒检测，动脉血流为低阻型频谱，收缩期峰值流速加快。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-22", "title": "22. 简述淋巴结结核的超声特征。", "front": "", "back": "<b>参考答案:</b><br>淋巴结结核超声表现为淋巴结不同程度肿大，多呈椭圆形，长径厚径之比&lt;2，常融合成串珠状。包膜完整，也可不清楚；髓质偏心或显示不清，结内回声不均匀，以低回声为主；脓肿形成，出现不规则无回声区，含有细点状或絮状回声、加压时可见漂动现象，脓肿破溃时，淋巴结形态不清晰，周围组织回声不均匀，含有不规则无回声区；有的结内可见呈斑片状强回声的钙化灶；淋巴结内血流信号增多，往往分布于皮质边缘，干酪样坏死、脓肿区则无血流信号。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-23", "title": "23. 简述淋巴瘤的超声特征。", "front": "", "back": "<b>参考答案:</b><br>淋巴瘤超声表现为淋巴结明显肿大，以多发为主，呈椭圆形、圆形或融合成不规则形，长径厚径之比&lt;2，包膜清晰或不清晰；淋巴结皮质明显增厚，呈低回声，无液化或钙化，髓质受压变形或显示不清；当髓质消失时，淋巴结内近似无回声。淋巴结内血流信号轻度或明显增多，血管分支扭曲，分布杂乱；淋巴结内动脉血流速度明显加快，阻力指数正常或偏高。", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}, {"no": "10-4-24", "title": "24. 简述淋巴结疾病超声检查的价值。", "front": "", "back": "<b>参考答案:</b><br>高频超声对浅表淋巴结的检出率高于临床触诊或其他影像技术检查。在一般情况下，高频超声有助于良恶性淋巴结疾病的鉴别诊断，对于不典型的病例，需要结合临床病史进行诊断，必要时可在超声引导下穿刺，进行细胞学及组织学检查。超声检查方便、快捷，随访对比图像的变化，也有助于指导临床的治疗。临床研究表明，三维彩色多普勒超声对浅表淋巴结内部血流的显示更完整，对走行迂曲的血流判断更明晰。淋巴结超声造影，转移癌表现为癌组织、坏死区的造影剂不规则分布、非均匀性增强和充盈缺损，不同于良性的均匀性增强，能够提高超声鉴别良恶性淋巴结的能力。淋巴结超声造影引导下进行淋巴结异常灌注区穿刺活检，更能提高穿刺活检的成功率。\n\n（杨文利 詹维伟 罗葆明 李建初 杜国庆 王亚红 朱庆莉 冷晓萍 陈林 薛恩生）", "tags": ["简答题", "浅表"], "kind": "简答题", "page": 204, "chapter": "ch10", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

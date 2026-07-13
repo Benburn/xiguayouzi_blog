@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第一章 总论</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #0ea5e9; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #0ea5e9;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #0ea5e9;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #0ea5e9;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #0ea5e9; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #0ea5e9;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #0ea5e9;
+  transition: width 0.3s; box-shadow: 0 0 8px #0ea5e9;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #0ea5e9;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #0ea5e9;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #0ea5e9;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #0ea5e9; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第一章 总论</h1>
+    <p>Pages 6-15 · 超声诊断基础原理</p>
+    <div class="stats">
+      <span class="stat">📇 共 74 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "1-1-1", "title": "压电效应", "front": "请简述该名词的定义。", "back": "<b>压电效应</b>:<br>在力的作用下(压力或负压力),压电材料的一对面上会产生电场,其符号(正、负)相反。外力越大,电场强度越大;反之则小。或者,在电场的作用下,压电材料的厚度会发生改变,所加电场强度越大,压电材料厚薄的变化越大。加力后产生电场的变化称<b>正压电效应</b>,加电场后发生厚度变化称<b>逆压电效应</b>。", "tags": ["名词解释", "总论", "第1题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-2", "title": "声学界面", "front": "请简述该名词的定义。", "back": "<b>声学界面</b>:<br>两种特性声阻抗不同的物质(组织)的接触面称声学界面。尺寸大于入射声波波长的称<b>大界面</b>,小于波长的称<b>小界面</b>。", "tags": ["名词解释", "总论", "第2题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-3", "title": "散射", "front": "请简述该名词的定义。", "back": "<b>散射</b>:<br>小界面对入射超声产生散射现象,使入射超声的部分能量向各个空间方向分散辐射。其返回至声源的回声能量甚低,但散射回声来自脏器内部的细小结构,其临床意义十分重要。", "tags": ["名词解释", "总论", "第3题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-4", "title": "Doppler效应", "front": "请简述该名词的定义。", "back": "<b>Doppler效应</b>:<br>当一定频率的超声波由声源发射并在介质中传播时,如遇到与声源做相对运动的界面,则其反射的超声波频率随界面运动的情况而发生改变,称为Doppler效应,是彩色多普勒超声成像的基础。", "tags": ["名词解释", "总论", "第4题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-5", "title": "旁瓣伪像", "front": "请简述该名词的定义。", "back": "<b>旁瓣伪像</b>:<br>超声束旁瓣分布于超声束主瓣旁,遇被检物体界面时也可产生反射、散射成像,但由于能量弱,常在主瓣回声的两侧有低回声延长线,模糊不清,称为旁瓣伪像。", "tags": ["名词解释", "总论", "第5题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-6", "title": "部分容积效应", "front": "请简述该名词的定义。", "back": "<b>部分容积效应</b>:<br>声像图上表现为一定厚度范围内体层容积中回声信息在厚度方面的叠加,扫查声束越宽则图像叠加越严重。病灶尺寸小于声束束宽,或者虽大于束宽但部分处于声束内时,病灶回声与周围正常组织回声重叠。多见于小型液性病灶。", "tags": ["名词解释", "总论", "第6题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-7", "title": "折射声影", "front": "请简述该名词的定义。", "back": "<b>折射声影</b>:<br>在圆弧形界面两侧,由于入射超声与界面几乎平行,超过临界角产生全反射,其后方产生声影,称为折射声影。", "tags": ["名词解释", "总论", "第7题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-1-8", "title": "尼奎斯特(Nyquist)频率极限", "front": "请简述该名词的定义。", "back": "<b>尼奎斯特(Nyquist)频率极限</b>:<br>超声探头在单位时间内发射脉冲波的次数称为脉冲重复频率(PRF)。PRF的一半即为<b>Nyquist频率极限</b>,多普勒频移值超过这一极限,脉冲多普勒所检测出的频移改变就会出现频率失真(<b>频谱混叠</b>)。", "tags": ["名词解释", "总论", "第8题"], "kind": "名词解释", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-2-1", "title": "声学界面的存在,说明该界面两侧介质的________不同。", "front": "", "back": "<b>答案:</b>声阻抗", "tags": ["填空题", "总论"], "kind": "填空题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-2-2", "title": "大界面与小界面不是从界面的绝对尺寸,而是用界面尺寸与________之间比较确定。小界面对入射声波呈________现象,大界面对入射声波呈________现象。", "front": "", "back": "<b>答案:</b>入射声波的波长、散射、反射", "tags": ["填空题", "总论"], "kind": "填空题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-2-3", "title": "若声波在病灶组织与周围正常组织中的衰减系数存在较大差异,则在二维声像图上,病灶后方回声会出现________或________。", "front": "", "back": "<b>答案:</b>增强、减弱", "tags": ["填空题", "总论"], "kind": "填空题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-2-4", "title": "超声波进入人体组织后可产生三大生物学效应,即:________、________、________。", "front": "", "back": "<b>答案:</b>空化效应、热效应、机械效应", "tags": ["填空题", "总论"], "kind": "填空题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-2-5", "title": "超声造影采用连续滴注触发式成像时,其时间-强度曲线的峰值回声强度(PI)反映________,上升斜率反映________,斜率与PI的乘积反映________。", "front": "", "back": "<b>答案:</b>毛细血管数量或横截面积、造影剂的补充速度即毛细血管平均流速、局部组织的血流量", "tags": ["填空题", "总论"], "kind": "填空题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-2-6", "title": "血液在人体心血管腔内流动的状态可分为:________、________、________。", "front": "", "back": "<b>答案:</b>层流、湍流、涡流", "tags": ["填空题", "总论"], "kind": "填空题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-1", "title": "1. 超声波指?", "front": "A.频率&gt;2Hz的声波<br>B.频率&gt;20Hz的声波<br>C.频率&gt;2000Hz的声波<br>D.频率&gt;20000Hz的声波<br>E.频率&gt;200000Hz的声波", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-2", "title": "2. 超声在人体软组织内的平均传播速度约为?", "front": "A.1054m/s<br>B.1540m/s<br>C.4510m/s<br>D.5140m/s<br>E.5410m/s", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-3", "title": "3. 声波在下列介质中传播速度最快的是?", "front": "A.空气<br>B.水<br>C.血液<br>D.骨<br>E.脂肪", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-4", "title": "4. 关于频率的描述,错误的是?", "front": "A.频率是单位时间内质点完成振动过程的次数<br>B.频率与波长的乘积等于声速<br>C.频率越高,声波穿透力越强<br>D.频率与声像图纵向分辨力相关<br>E.检查浅表器官多采用较高频率探头", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-5", "title": "5. 声阻抗为?", "front": "A.组织厚度×声速<br>B.组织密度×声速<br>C.探头频率×声速<br>D.超声波长×声速<br>E.界面间距离", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-6", "title": "6. 结石过小(&lt;2mm)时其后方可无声影,基本声学原理是?", "front": "A.反射<br>B.散射<br>C.绕射<br>D.折射<br>E.相干", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-7", "title": "7. 镜面反射时反射波强弱取决于?", "front": "A.两侧介质密度之差<br>B.两侧介质声速之差<br>C.两侧介质弹性之差<br>D.两侧介质声学阻抗之差<br>E.两侧介质蛋白含量之差", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-8", "title": "8. 反映声功率输出大小及生物学效应安全性的常用指标是?", "front": "A.机械指数(MI)<br>B.热指数(TI)<br>C.频率(f0)<br>D.阻力指数(RI)<br>E.搏动指数(PI)", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-9", "title": "9. 微泡声学造影实时检查,MI通常应设置为?", "front": "A.0.1或更低<br>B.0.1~0.5<br>C.0.5~0.8<br>D.0.8~1.0<br>E.&gt;1.0", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-10", "title": "10. 下列描述不正确的是?", "front": "A.宫内避孕环彗星尾征——多次反射伪像<br>B.结石后方暗影——声影伪像<br>C.囊肿后方回声增强——后方回声增强<br>D.乳腺纤维腺瘤侧方声影——旁瓣伪像<br>E.肝内血管瘤膈上对称——镜面伪像", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-11", "title": "11. 薄壁囊肿侧壁不能显示的可能原因是?", "front": "A.声波的反射现象<br>B.声波的散射现象<br>C.声波的绕射现象<br>D.声波发散所致<br>E.角度依赖,致回声失落", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-12", "title": "12. 关于超声衰减一般规律,不正确的是?", "front": "A.骨&gt;肝&gt;血液<br>B.组织中含水越多衰减越多<br>C.含胶原越多衰减越多<br>D.含钙越多衰减越多<br>E.液体含蛋白越多衰减越多", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-13", "title": "13. 组织回声不正确的描述是?", "front": "A.分级:强/高/等/低/弱/无回声<br>B.脂肪组织为强回声<br>C.钙化/结石为强回声伴声影<br>D.血管为无回声管状结构<br>E.回声强度:胰腺&gt;肝脏&gt;血液&gt;尿液", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-14", "title": "14. 超声检查使用耦合剂的目的是?", "front": "A.去除旁瓣效应<br>B.去除容积效应<br>C.使探头与皮肤接触良好,防止空气<br>D.提高纵向分辨力<br>E.提高横向分辨力", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-15", "title": "15. 医用超声仪器探头发射声波的基本原理是?", "front": "A.正压电效应<br>B.逆压电效应<br>C.空化效应<br>D.机械效应<br>E.热效应", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-16", "title": "16. 关于探头不正确的描述是?", "front": "A.主体是换能器<br>B.逆压电发射,正压电接收<br>C.电子凸阵用于腹部/妇产科<br>D.电子扇形用于心脏<br>E.腔内探头扫查深度大、视野开阔", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-17", "title": "17. 关于二维图像分辨力不正确的是?", "front": "A.频率越高,纵向分辨力越好<br>B.声束越细,侧向分辨力越好<br>C.A/D位数越高,灰阶级差越小<br>D.阵元数/A/D采样频率与空间分辨力无关<br>E.成像帧速率决定速度分辨力", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-18", "title": "18. 关于分辨力不正确的是?", "front": "A.分纵向/横向/侧向<br>B.纵向取决于发射频率<br>C.横向取决于声束宽度<br>D.同一探头不同深度分辨力相同<br>E.目前不能检测单细胞", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-19", "title": "19. 关于CDFI原理不正确的是?", "front": "A.颜色亮暗表示流速高低<br>B.颜色均一性表示离散度<br>C.五色镶嵌代表湍流<br>D.颜色均一表示层流<br>E.红色动脉,蓝色静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-20", "title": "20. 正常情况下血液在血管内为?", "front": "A.湍流<br>B.涡流<br>C.层流<br>D.反流<br>E.分流", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "总论"], "kind": "选择题", "page": 7, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-21", "title": "21. CDFI正确的描述是?", "front": "A.红色动脉,蓝色静脉<br>B.辉度越亮流速越慢<br>C.红色背离探头,蓝色朝向探头<br>D.CDFI能实时显示方向/速度/状态<br>E.入射角接近90°时频移最大", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-22", "title": "22. PRF=10kHz时,导致混叠失真的频移是?", "front": "A.2kHz<br>B.3kHz<br>C.4kHz<br>D.5kHz<br>E.6kHz", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-23", "title": "23. 与CDFI相比能量多普勒的优点是?", "front": "A.可定位血流速度<br>B.可测最大流速<br>C.对微弱多普勒信号更敏感<br>D.清晰显示血流方向<br>E.更准确测血流速度", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-24", "title": "24. TDI不正确的描述是?", "front": "A.主要用于观察心肌血流灌注<br>B.采用低通滤波器滤除红细胞信号<br>C.TDI色彩反映组织运动方向<br>D.TDI亮度反映运动幅度<br>E.易受呼吸运动影响", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-25", "title": "25. 首选超声检查的是?", "front": "A.胆囊结石<br>B.肺炎<br>C.胃炎<br>D.肺炎性假瘤<br>E.骨肿瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-26", "title": "26. 成人腹部脏器检查的探头频率范围?", "front": "A.1.0~2.5MHz<br>B.2.0~2.5MHz<br>C.3.0~3.5MHz<br>D.5.0~10.0MHz<br>E.7.5~10.0MHz", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-27", "title": "27. 多普勒方程中与频移大小无关的因素是?", "front": "A.血流速度<br>B.运动红细胞数量<br>C.发射声波频率<br>D.入射角<br>E.声波传播速度", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-28", "title": "28. 声束与血流夹角不应超过?", "front": "A.15°<br>B.30°<br>C.45°<br>D.60°<br>E.75°", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 10, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-29", "title": "29. 频移为零时声束与血流方向夹角为?", "front": "A.0°<br>B.45°<br>C.90°<br>D.135°<br>E.180°", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-30", "title": "30. CW/PW/HPRF不正确的描述?", "front": "A.CW能测量高速血流<br>B.CW常用于定点测量<br>C.PW具有距离选通能力<br>D.PW速度范围受PRF限制<br>E.HPRF牺牲距离分辨力", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-31", "title": "31. PRF正确的描述?", "front": "A.单位时间发射脉冲波次数<br>B.探头中心频率<br>C.脉冲声波频率<br>D.相邻脉冲时间间隔<br>E.PRF越小可测流速越高", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-32", "title": "32. 简化伯努利方程为?", "front": "A.ΔP≈3V<br>B.ΔP≈4V<br>C.ΔP≈3V²<br>D.ΔP≈4V²<br>E.ΔP≈4V³", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-33", "title": "33. 彩色编码参数是?", "front": "A.平均血流速度<br>B.最高血流速度<br>C.血流加速度<br>D.平均血流速度平方<br>E.血细胞散射信号振幅平方(能量)", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-34", "title": "34. 显示微小血管低速血流较适合?", "front": "A.CDFI<br>B.能量多普勒<br>C.组织多普勒<br>D.脉冲多普勒<br>E.高重复频率脉冲多普勒", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-35", "title": "35. 镜像伪像出现在?", "front": "A.肝脏周围<br>B.肾脏周围<br>C.胆囊周围<br>D.脾脏周围<br>E.膈肌周围", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-36", "title": "36. 宫内金属节育环后方'彗尾征'的声学原理?", "front": "A.多次反射<br>B.旁瓣效应<br>C.部分容积效应<br>D.空化效应<br>E.机械效应", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-37", "title": "37. 不正确的描述是?", "front": "A.含液性病变后方回声增强<br>B.结石后方伴声影<br>C.胰头肿瘤不引起胆管扩张<br>D.恶性肿瘤边界不规则<br>E.良性肿瘤可探及彩色血流", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-38", "title": "38. 正确的描述是?", "front": "A.频率越高分辨力穿透力都强<br>B.PW量程随频率升高而增大<br>C.浅表器官应选高频探头<br>D.凸阵心脏/线阵腹部<br>E.探头直接接触皮肤", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-39", "title": "39. 不正确的描述是?", "front": "A.心血管多用长轴/短轴/心尖四腔<br>B.声像图测量与解剖大小基本一致<br>C.可对软组织作定位定性诊断<br>D.可引导穿刺活检<br>E.耦合剂为保证探头移动顺利", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-40", "title": "40. 应除外?", "front": "A.病变部位<br>B.病变形态/结构<br>C.病变物理性质<br>D.病变病理学诊断信息<br>E.病变血供情况", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-41", "title": "41. 不正确的描述是?", "front": "A.多为内含不同气体微泡<br>B.直径多在10~20mm<br>C.可团注或连续滴注<br>D.可用于肝/前列腺/肾<br>E.可评价心肌灌注", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-42", "title": "42. 50岁女性,膀胱前壁下条带状低回声,最可能?", "front": "A.膀胱前壁局限性增厚<br>B.膀胱肿瘤<br>C.旁瓣伪像<br>D.混响伪像<br>E.部分容积效应", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-43", "title": "43. 43岁风心病人,左房条状低回声最可能是?", "front": "A.左房内隔膜<br>B.左房血栓<br>C.旁瓣伪像<br>D.混响伪像<br>E.部分容积效应", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-44", "title": "44. 胸骨旁左室长轴,左房内薄沙状弧形条带弱回声伪像,原因是?", "front": "A.混响伪像<br>B.旁瓣效应<br>C.部分容积效应<br>D.空化效应<br>E.镜像伪像", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-45", "title": "45. 经腹壁膀胱前壁下条带状弱回声伪像,原因是?", "front": "A.混响伪像<br>B.旁瓣效应<br>C.部分容积效应<br>D.空化效应<br>E.镜像伪像", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-46", "title": "46. 小肝囊肿内细小点状回声伪像原因是?", "front": "A.混响伪像<br>B.旁瓣效应<br>C.部分容积效应<br>D.空化效应<br>E.镜像伪像", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-47", "title": "47. 声波界面两侧传播速度不等,入射角&gt;0°,透射声波发生?", "front": "A.反射<br>B.散射<br>C.绕射<br>D.折射<br>E.相干", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-48", "title": "48. 入射到小界面(小于波长)会发生?", "front": "A.反射<br>B.散射<br>C.绕射<br>D.折射<br>E.相干", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-49", "title": "49. 入射到大界面(大于波长)会发生?", "front": "A.反射<br>B.散射<br>C.绕射<br>D.折射<br>E.相干", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-50", "title": "50. 反射频率随反射体运动改变的现象称为?", "front": "A.Doppler效应<br>B.折射<br>C.机械效应<br>D.散射<br>E.空化效应", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-51", "title": "51. 声束穿过两介质时方向变化的现象称为?", "front": "A.Doppler效应<br>B.折射<br>C.机械效应<br>D.散射<br>E.空化效应", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-52", "title": "52. 彩色多普勒能量图彩色编码参数?", "front": "A.平均血流速度<br>B.最高血流速度<br>C.血流加速度<br>D.平均血流速度平方<br>E.血细胞散射信号振幅平方", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-53", "title": "53. CDFI彩色编码参数?", "front": "A.平均血流速度<br>B.最高血流速度<br>C.血流加速度<br>D.平均血流速度平方<br>E.血细胞散射信号振幅平方", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-54", "title": "54. 显示肾脏血流灌注最好选用?", "front": "A.CDFI<br>B.PW<br>C.CW<br>D.能量多普勒<br>E.组织多普勒", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-55", "title": "55. 定性观察室壁运动情况宜选用?", "front": "A.CDFI<br>B.PW<br>C.CW<br>D.能量多普勒<br>E.组织多普勒", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-56", "title": "56. 风心病二尖瓣狭窄测舒张期最高流速应选?", "front": "A.CDFI<br>B.PW<br>C.CW<br>D.能量多普勒<br>E.组织多普勒", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-57", "title": "57. 甲状腺超声检查适宜选用?", "front": "A.线阵2~5MHz<br>B.线阵5~10MHz<br>C.凸阵2~5MHz<br>D.扇形1~3MHz<br>E.扇形3~6MHz", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-3-58", "title": "58. 小儿心脏超声检查适宜选用?", "front": "A.线阵2~5MHz<br>B.线阵5~10MHz<br>C.凸阵2~5MHz<br>D.扇形1~3MHz<br>E.扇形3~6MHz", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["选择题", "总论"], "kind": "选择题", "page": 11, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-4-1", "title": "简述脉冲波多普勒(PW)与连续波多普勒(CW)的优缺点。", "front": "", "back": "<b>参考答案:</b><br>PW采用单个换能器发射脉冲波,优点:具有距离选通能力,能定点测血流速度;缺点:最高流速受PRF限制,不能测高速血流。<br>CW采用两组换能器分别发射和接收,优点:能测高速血流;缺点:无距离选通能力,无法定点测量,频谱为声束线上所有血流信号。", "tags": ["简答题", "总论"], "kind": "简答题", "page": 13, "chapter": "ch1", "static": false, "image": "", "figcap": ""}, {"no": "1-4-2", "title": "简述组织多普勒成像(TDI)的基本原理与临床应用。", "front": "", "back": "<b>参考答案:</b><br>原理:以多普勒原理为基础,通过特殊滤波器滤除血流产生的高频低振幅频移信号,保留心肌运动产生的低频高振幅频移信号,进行彩色编码和成像。<br>应用:主要用于心肌运动的定性和定量分析。", "tags": ["简答题", "总论"], "kind": "简答题", "page": 13, "chapter": "ch1", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

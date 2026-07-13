@@ -309,6 +309,34 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "ultrasound-imaging-flashcards",
+    category: "imaging",
+    title: "医学超声影像学知识卡片",
+    excerpt:
+      "前言与12章内容整理为1457张可翻面卡片，支持关键词搜索、题型筛选、批量翻面和复习进度记录。",
+    date: "2026-07-13",
+    readTime: "1 分钟",
+    cover: null,
+    tags: ["超声", "知识卡片", "学习工具"],
+    body: `# 医学超声影像学知识卡片
+
+这是一套可以直接在浏览器中使用的医学超声复习工具。内容覆盖超声基础、心脏及大血管、胸腔与肺、消化系统、泌尿系统、妇产、周围血管、浅表器官、肌骨神经以及介入超声等主题。
+
+## 这套卡片包含什么？
+
+- **1457 张卡片**，覆盖前言与 12 个章节；
+- 名词解释、填空题、选择题和简答题分类复习；
+- 点击卡片翻面查看答案，也可一键批量翻面；
+- 支持关键词搜索和题型筛选；
+- 自动记录学习时长、打开次数和复习等级；
+- 电脑与手机浏览器均可使用。
+
+<p><a class="knowledge-card-launch" href="/knowledge-cards/index.html">打开医学超声影像学知识卡片 <span>→</span></a></p>
+
+> 学习记录保存在当前浏览器中，不会上传个人数据。卡片仅用于知识复习与交流，不能替代教材原文、规范化培训或临床诊疗依据。
+`,
+  },
+  {
     slug: "clinical-ultrasound-reference-cards",
     category: "imaging",
     title: "超声正常值老记不住？这套「临床超声正常值知识卡片」帮你搞定",

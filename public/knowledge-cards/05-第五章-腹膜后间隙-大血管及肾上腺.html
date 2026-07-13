@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第五章 腹膜后间隙、大血管及肾上腺</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #8b5cf6 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #8b5cf6; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #8b5cf6;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #8b5cf6;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #8b5cf6;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #8b5cf6; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #8b5cf6;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #8b5cf6;
+  transition: width 0.3s; box-shadow: 0 0 8px #8b5cf6;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #8b5cf6;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #8b5cf6;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #8b5cf6;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #8b5cf6; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第五章 腹膜后间隙、大血管及肾上腺</h1>
+    <p>Pages 81-87 · 腹膜后/肾上腺</p>
+    <div class="stats">
+      <span class="stat">📇 共 44 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "5-1-1", "title": "越峰征", "front": "请简述该名词的定义。", "back": "<b>越峰征</b>:<br>腹部纵向扫查时嘱病人做腹式深吸气，腹部向前隆起，可见腹腔脏器（肝脏、脾脏、胃肠）向足侧移动，位于肿瘤旁的腹腔脏器可以移到肿瘤腹侧（肿瘤和腹壁间），犹如在山腰的登山者攀上或越过山峰。", "tags": ["名词解释", "腹膜后"], "kind": "名词解释", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-1-2", "title": "肿瘤悬吊征", "front": "请简述该名词的定义。", "back": "<b>肿瘤悬吊征</b>:<br>用于中等大小的腹部肿瘤定位。病人取膝-肘俯卧位，探头在腹部探查，腹腔肿瘤因重力作用压向腹壁，胃肠等被压扁，或被挤压到肿瘤周围。腹膜后肿瘤因受后腹膜限制则不能向腹壁移动，后壁与后腹壁相连。", "tags": ["名词解释", "腹膜后"], "kind": "名词解释", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-1-3", "title": "布加综合征", "front": "请简述该名词的定义。", "back": "<b>布加综合征</b>:<br>是指肝与右心房之间的肝静脉或（和）下腔静脉发生阻塞而引起肝静脉回流受阻，由此产生的一系列症状。", "tags": ["名词解释", "腹膜后"], "kind": "名词解释", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-1-4", "title": "胡桃夹综合征", "front": "请简述该名词的定义。", "back": "<b>胡桃夹综合征</b>:<br>又称胡桃夹现象或左肾静脉压迫综合征，是由于腹主动脉与肠系膜上动脉之间的夹角过小引起左肾静脉回流障碍所致。", "tags": ["名词解释", "腹膜后"], "kind": "名词解释", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-1-5", "title": "库欣综合征", "front": "请简述该名词的定义。", "back": "<b>库欣综合征</b>:<br>又称皮质醇增多症，是指各种原因引起肾上腺皮质分泌过多的糖皮质激素所致疾病的总称。", "tags": ["名词解释", "腹膜后"], "kind": "名词解释", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-1-6", "title": "海鸥征", "front": "请简述该名词的定义。", "back": "<b>海鸥征</b>:<br>常见于右侧肾上腺肿瘤，肾上腺肿瘤呈圆形或类圆形，肿瘤周边的强回声带与肝、肾的强回声包膜形成海鸥形状，称为“海鸥征”。", "tags": ["名词解释", "腹膜后"], "kind": "名词解释", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-2-1", "title": "1. 腹膜后间隙为___与___之间的间隙。上以___为界，下至___上缘，两侧以___外缘和___腱部为界，前面是后腹膜及腹内脏器的附着处，后面为腰大肌、腰方肌等。", "front": "", "back": "<b>答案:</b>腹膜壁层 腹后壁 膈肌 真骨盆 腰方肌 腹横肌", "tags": ["填空题", "腹膜后"], "kind": "填空题", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-2-2", "title": "2. 主要观察的腹膜后间隙包括经胰腺长轴显示的___, 经肾门横断面的___, 经腹主动脉长轴纵断面的___。", "front": "", "back": "<b>答案:</b>肾前间隙 肾周围间隙 肾后间隙", "tags": ["填空题", "腹膜后"], "kind": "填空题", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-2-3", "title": "3. 腹主动脉瘤分为___、___和___三种。其中真性腹主动脉瘤的诊断标准为：①最大径&gt;___；②腹主动脉最宽处外径较相邻正常段外径增大___倍以上。", "front": "", "back": "<b>答案:</b>真性 假性 夹层 3cm 1.5", "tags": ["填空题", "腹膜后"], "kind": "填空题", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-2-4", "title": "4. 显微镜下，肾上腺组织由外向内分为___、___和___三层。肾上腺皮质由外向内分为___、___和___。", "front": "", "back": "<b>答案:</b>被膜 皮质 髓质 球状带 束状带 网状带", "tags": ["填空题", "腹膜后"], "kind": "填空题", "page": 82, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-1", "title": "1. 腹膜后间隙是在", "front": "A.腹膜的后方和后腹壁肌肉间<br>B.腹膜的前方和腹壁肌肉间<br>C.腹膜腔的后方和内脏腹膜的后方<br>D.腹膜腔的后方和内脏腹膜的前方<br>E.腹膜的后方和腹壁肌肉间", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 83, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-2", "title": "2. 腹膜后肿瘤可引起向前移位的脏器有 ①肝脏 ②脾脏 ③胰腺 ④胃", "front": "A.①+②<br>B.①+②+③<br>C.②+③+④<br>D.①+③<br>E.①+②+③+④", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 83, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-3", "title": "3. 不属于 腹膜后肿瘤超声表现特点的是", "front": "A.肿瘤位置较深<br>B.肿瘤常为多形性<br>C.肿瘤不随呼吸体位改变<br>D.胸-膝位时,腹前壁探查,肿瘤前缘与腹壁距离增大并为胃肠所充填<br>E.位于肝、脾后方的腹膜后肿瘤可使肝肾或脾肾间距减小", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 83, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-4", "title": "4. 腹膜后器官有 ①胰腺 ②小肠 ③双肾 ④肝", "front": "A.①+②<br>B.①+②+③<br>C.②+③<br>D.①+③<br>E.②+④", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 83, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-5", "title": "5. 有关肾上腺嗜铬细胞瘤， 不正确 的描述是", "front": "A.瘤体常呈中等回声，有时可见到无回声区<br>B.90%左右发生于肾上腺髓质<br>C.以良性居多，有3%~6%为恶性<br>D.肿瘤多数为双侧性<br>E.肾上腺外的嗜铬细胞瘤多见于肾门附近", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 84, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-6", "title": "6. 有关肾上腺转移瘤， 不正确 的描述是", "front": "A.超声表现为肾上腺区低回声肿块<br>B.多来源于乳腺癌、肺癌<br>C.超声表现为肾上腺区高回声肿块<br>D.常为无功能性<br>E.可发生于单侧", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 84, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-7", "title": "7. 有关真性腹主动脉瘤， 不正确 的描述是", "front": "A.常由管壁粥样硬化引起<br>B.是由于动脉内膜撕裂，血液从破裂口流入中层，使内膜和中层分离<br>C.瘤体内常见附壁血栓<br>D.多见于老年男性<br>E.好发于肾动脉水平以下的腹主动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 84, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-8", "title": "8. 以下描述,正确的是", "front": "A.禁食时腹腔动脉血流为低阻的三相波形<br>B.进食后肠系膜上动脉内径明显减小<br>C.禁食时肠系膜上动脉为三相波形<br>D.肾动脉血流频谱为高阻型<br>E.房室舒缩致下腔静脉血流频谱呈单相型", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 84, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-9", "title": "9. 有关动静脉瘘， 不正确 的描述是", "front": "A.瘘口处血流呈高速高阻型动脉样血流频谱<br>B.临床表现为三联征：腰腹部疼痛、搏动性肿块、粗糙连续的机器样杂音<br>C.与瘘相连的静脉频谱显示为静脉血流动脉化<br>D.瘘口近心端供血动脉血流为高速低阻型<br>E.瘘口处为紊乱的血流信号", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 84, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-10", "title": "10. 左侧肾上腺位于", "front": "A.左肾、脾脏、结肠脾曲之间<br>B.胃底、左肾、下腔静脉之间<br>C.左肾、胃窦、左腰肌之间<br>D.左肾、腹主动脉、左膈脚之间<br>E.腹主动脉、脾脏、左肾之间", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-11", "title": "11. 右侧肾上腺位于", "front": "A.肝、右肾、右腰肌之间<br>B.右肾外侧<br>C.肝、右肾、结肠肝曲之间<br>D.肝、右肾、下腔静脉之间<br>E.肝、下腔静脉、右膈脚之间", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-12", "title": "12. 肾上腺肿瘤分为皮质和髓质肿瘤， 不属于 髓质肿瘤的是", "front": "A.嗜铬细胞瘤<br>B.神经母细胞瘤<br>C.节细胞神经瘤<br>D.醛固酮瘤 F. 恶性嗜铬细胞瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-13", "title": "13. 关于嗜铬细胞瘤的超声表现， 不正确 的描述是", "front": "A.肿块大小差别较大<br>B.多呈圆形或椭圆形<br>C.边界呈强回声带<br>D.肿块内为中等回声，也可见无回声区<br>E.都位于左、右肾上腺区", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-14", "title": "14. 肾上腺皮质功能亢进， 不包括", "front": "A.库欣综合征<br>B.皮质醇增多症<br>C.嗜铬细胞瘤<br>D.肾上腺性征异常症<br>E.原发性醛固酮增多症", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-15", "title": "15. 关于肾上腺嗜铬细胞瘤超声表现，正确的是", "front": "A.肿块相对较小<br>B.肿块内部回声以囊性为主<br>C.CDFI: 肿块内一般没有血流信号<br>D.肿块大小约1cm左右<br>E.一般为单侧肾上腺发病，仅10%为双侧肾上腺发病", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-1", "title": "16. 病人，女。47岁，乏力、低热1个月。腹部超声检查示：脊柱及腹主动脉周围可见多个大小不等的类圆形实性低回声团，边界尚清，部分相互融合呈花瓣状，内回声尚均匀。查体：双侧腹股沟可触及肿大淋巴结，质韧、无触痛。其最可能的诊断是", "front": "A.脊索瘤<br>B.恶性组织细胞病<br>C.恶性淋巴瘤<br>D.脂肪瘤<br>E.腹膜后纤维肉瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "腹膜后"], "kind": "选择题", "page": 85, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-2", "title": "17. 患儿，女性。2岁，超声检查示一侧肾上腺区 6 cm × 7 cm 的肿块，边界不规整，内部回声不均匀，并可见高回声，患侧肾位置下移，眼眶部发现异常肿块，则该肾上腺肿块最可能为", "front": "A.髓性脂肪瘤<br>B.皮质腺瘤<br>C.节细胞神经瘤<br>D.恶性嗜铬细胞瘤<br>E.神经母细胞瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "腹膜后"], "kind": "选择题", "page": 86, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-3", "title": "18. 病人，女性。67岁，高血压20余年，2个月前出现头晕、肢体无力，血压为200/110mmHg，血钾为2.3mmol/L，血肌酐为112μmol/L（正常值&lt;97μmol/L）。醛固酮为405.7pg/ml（正常值63～239.6pg/ml）。超声检查示右侧肾上腺低回声肿块，直径为2.2cm，类圆形，边界清晰。根据以上临床表现、实验室检查及超声表现，初步诊断为", "front": "A.肾上腺神经母细胞瘤<br>B.肾上腺嗜铬细胞瘤<br>C.肾上腺皮质增生<br>D.肾上腺醛固酮瘤<br>E.库欣综合征", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "腹膜后"], "kind": "选择题", "page": 86, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-4", "title": "19. 中年男性，身体健康，无高血压家族史，但在排尿时血压升高，伴有头晕，心悸。超声检查：膀胱壁内见一直径约3cm 的中等回声肿块，呈椭圆形，并突向膀胱腔。其最可能的诊断是", "front": "A.膀胱乳头状瘤<br>B.神经源性膀胱<br>C.腺性膀胱炎<br>D.膀胱壁平滑肌瘤<br>E.膀胱嗜铬细胞瘤", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "腹膜后"], "kind": "选择题", "page": 86, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-shared-20-23", "title": "共用备选答案 · 第 20~23 题", "front": "<b>下列第 20~23 题共用以下备选答案:</b><br>A.间叶组织<br>B.神经组织<br>C.胚胎残留组织<br>D.继发性肿瘤<br>E.上皮组织", "back": "", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": true, "image": "", "figcap": ""}, {"no": "5-3-1", "title": "20. 神经母细胞瘤来源于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-2", "title": "21. 恶性脊索瘤来源于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-3", "title": "22. 平滑肌肉瘤来源于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-4", "title": "23. 滋养叶细胞瘤来源于", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-shared-24-28", "title": "共用备选答案 · 第 24~28 题", "front": "<b>下列第 24~28 题共用以下备选答案:</b><br>A.嗜铬细胞瘤<br>B.肾上腺神经母细胞瘤<br>C.节细胞瘤<br>D.肾上腺髓样脂肪瘤<br>E.肾上腺转移瘤", "back": "", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": true, "image": "", "figcap": ""}, {"no": "5-3-5", "title": "24. 起源于交感神经细胞的良性肿瘤是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-6", "title": "25. 多见于儿童，恶性程度很高的是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-7", "title": "26. 肿瘤组织柔软，呼吸运动时能发生形变的是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-8", "title": "27. 多见于小细胞肺癌的是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-3-9", "title": "28. 3个10%肿瘤的是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "腹膜后"], "kind": "共用备选答案", "page": 0, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-4-1", "title": "1. 简述真性腹主动脉瘤的超声表现及鉴别诊断。", "front": "", "back": "<b>参考答案:</b><br>（1）真性腹主动脉瘤超声表现：①病变段腹主动脉局限性扩张，多呈梭形或纺锤形，瘤壁仍表现为动脉壁的各层结构，瘤体内常见附壁血栓。CDFI 显示瘤腔内出现涡流，呈杂色血流信号。②诊断标准：a. 最大径&gt;3.0cm；b. 腹主动脉最宽处外径较相邻正常段外径增大1.5倍以上。符合两者之一，即可诊断。\n\n（2）真性腹主动脉瘤的鉴别诊断：①应与假性腹主动脉瘤和腹主动脉夹层鉴别。②应与腹膜后血肿、胰腺囊肿、腹膜后囊性占位、椎旁脓肿及腹膜后淋巴瘤等鉴别。", "tags": ["简答题", "腹膜后"], "kind": "简答题", "page": 87, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-4-2", "title": "2. 简述肾动脉狭窄的超声表现。", "front": "", "back": "<b>参考答案:</b><br>肾动脉狭窄的超声表现：①患肾正常大小或萎缩（肾长径&lt;9cm或较健侧&lt;1.5cm以上）。②狭窄段管腔变窄，血流束变细，流速明显升高，阻力增大；狭窄后段为杂色血流信号，仍可测及高速射流。③狭窄动脉的肾内动脉分支血流频谱呈小慢波改变，表现为频谱形态低平、圆钝，频谱上升倾斜，流速减低，阻力减低。", "tags": ["简答题", "腹膜后"], "kind": "简答题", "page": 87, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-4-3", "title": "3. 简述肾上腺皮质醇增多症的超声表现。", "front": "", "back": "<b>参考答案:</b><br>肾上腺皮质醇增多症的超声表现包括肾上腺内改变和肾上腺外改变：\n\n（1）肾上腺内改变：①肾上腺皮质增生少部分病例可表现为肾上腺低回声区增厚，多数病例超声图像无明显改变，肾上腺结节状增生表现为肾上腺区直径约1cm的结节。②肾上腺皮质腺瘤超声表现为肾上腺区圆形或类圆形低回声肿块，直径为2~3cm，边界清楚，内部回声多为均匀分布。③肾上腺皮质腺癌超声表现为体积较大的肾上腺区肿块，\n多呈圆形或椭圆形，肿块较大时会推挤肾脏。\n\n（2）肾上腺外改变：肾上腺皮质醇增多症在肾上腺外改变为皮下脂肪层增厚，肾周脂肪层或肾上腺周围脂肪也明显增厚。", "tags": ["简答题", "腹膜后"], "kind": "简答题", "page": 87, "chapter": "ch5", "static": false, "image": "", "figcap": ""}, {"no": "5-4-4", "title": "4. 试述肾上腺嗜铬细胞瘤超声表现。", "front": "", "back": "<b>参考答案:</b><br>肾上腺嗜铬细胞瘤的超声表现为肾上腺区圆形或椭圆形肿块，边界清楚，球体感明显。肿块大小多为3~5cm，肿块内部回声多呈中等回声，当肿瘤出血或囊性变时，内部可出现无回声区。CDFI显示有时可在肿瘤内发现点状血流信号。肾上腺外的嗜铬细胞瘤多位于肾门附近，较大的肿瘤会推挤肾脏向外侧移位。此外，腹主动脉旁、髂血管旁、膀胱壁也可发现等回声的肿瘤。膀胱壁的嗜铬细胞瘤位于膀胱壁层，肿块处膀胱黏膜光滑，一般不向膀胱突出。恶性嗜铬细胞瘤的瘤体一般较大，转移到肝内表现为圆形或类圆形的低回声肿块，边界清楚。\n\n（李颖嘉 罗淑仪 胡兵）", "tags": ["简答题", "腹膜后"], "kind": "简答题", "page": 87, "chapter": "ch5", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>

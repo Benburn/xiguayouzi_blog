@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>医学超声影像学 · 第九章 周围血管</title>
+<style>
+* { box-sizing: border-box; }
+:root {
+  --gutter: clamp(10px, 3vw, 24px);
+  --header-fs: clamp(18px, 4.5vw, 26px);
+  --body-fs: clamp(13px, 2.8vw, 15px);
+  --btn-min: 44px;
+}
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e6efff 100%);
+  margin: 0; padding: var(--gutter); color: #1e293b;
+  font-size: var(--body-fs);
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.layout {
+  display: flex;
+  width: 100%;
+  max-width: min(1180px, calc(100vw - 2 * var(--gutter)));
+  margin: 0 auto;
+  gap: clamp(12px, 2vw, 18px);
+  align-items: flex-start;
+}
+.container { flex: 1; min-width: 0; max-width: 100%; }
+.header {
+  background: linear-gradient(135deg, #14b8a6 0%, #4f46e5 100%);
+  color: white; padding: 28px 24px; border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  margin-bottom: 20px;
+}
+.header h1 { margin: 0 0 8px 0; font-size: var(--header-fs); line-height: 1.3; }
+.header p { margin: 0; opacity: 0.95; font-size: 14px; }
+.stats {
+  display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap;
+}
+.stat {
+  background: rgba(255,255,255,0.18); padding: 6px 14px;
+  border-radius: 20px; font-size: 13px; backdrop-filter: blur(4px);
+}
+.toolbar {
+  display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+  align-items: center; justify-content: space-between;
+}
+.toolbar-left { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border: none; border-radius: 8px;
+  background: white; color: #1e293b; cursor: pointer;
+  font-size: 13px; box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all 0.15s;
+  min-height: 36px;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.btn.active { background: #14b8a6; color: white; }
+.search-box {
+  flex: 1; min-width: 140px; max-width: 280px;
+  padding: 9px 12px; border: 1px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; background: white;
+  min-height: 36px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700; color: #14b8a6;
+  margin: 28px 0 12px; padding-bottom: 6px;
+  border-bottom: 2px solid #14b8a6;
+}
+.card {
+  margin-bottom: 22px;
+  background: transparent; min-height: 100px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.card[data-kind="重点"] { margin-bottom: 28px; }
+.card-inner {
+  position: relative; width: 100%;
+}
+.card-face {
+  background: white; padding: 18px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  border-left: 4px solid #14b8a6;
+  animation: cardFadeIn 0.25s ease;
+  -webkit-user-select: text; user-select: text;
+}
+.card-front { cursor: pointer; }
+.card-back { cursor: default; }
+.card-actions { margin-top: 14px; text-align: right; }
+.flip-back-btn {
+  cursor: pointer; font-size: 13px; padding: 6px 14px;
+  border: 1px solid #f59e0b; background: #fff; color: #b45309;
+  border-radius: 8px; transition: background .15s;
+}
+.flip-back-btn:hover { background: #fef3c7; }
+.card-back {
+  display: none;
+  background: linear-gradient(135deg, #fffef5 0%, #fff8e1 100%);
+  border-left-color: #f59e0b;
+}
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back { display: block; }
+
+/* 不可翻动的引用卡(B 型题"共用备选答案") */
+.static-card {
+  cursor: default;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0284c7;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.static-card .card-title { color: #0369a1; font-size: 14px; margin: 6px 0 8px; }
+.static-card .card-body { font-size: 13px; line-height: 1.7; color: #0c4a6e; }
+.static-card .card-no { font-size: 11px; color: #64748b; }
+/* 重点卡片:直接亮出内容(不可翻动),金色主题 */
+.kp-static {
+  background: linear-gradient(135deg, #fffdf5 0%, #fef3c7 100%);
+  border-left: 4px solid #f59e0b;
+}
+.kp-static .card-title { color: #b45309; font-size: 15px; margin: 6px 0 10px; }
+.kp-static .card-body { color: #1e293b; }
+.kp-static .kp-content { font-size: 14px; line-height: 1.85; color: #1e293b; }
+/* "共用备选答案"大类下的 B 型题卡片:左侧统一用青色描边,视觉上与选项卡归为一组 */
+.card[data-kind="共用备选答案"]:not(.static-card) { margin-left: 14px; }
+.card[data-kind="共用备选答案"]:not(.static-card) .card-front { border-left-color: #0284c7; }
+.opt-ref { display:inline-block; font-size:12px; color:#0369a1; background:#e0f2fe;
+  padding:2px 8px; border-radius:6px; font-style:italic; }
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kp-prompt {
+  font-size: 14px; color: #14b8a6; margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;
+}
+.kp-hint {
+  font-size: 15px; color: #1e293b; line-height: 1.7;
+  padding: 8px 0;
+}
+.kp-tag {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 12px; color: #94a3b8;
+  text-align: center; font-style: italic;
+}
+.kp-content {
+  font-size: 14px; line-height: 1.85; color: #1e293b;
+}
+.card-no {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 6px; letter-spacing: 0.5px;
+}
+.page-badge {
+  display: inline-block; background: #e0e7ff; color: #14b8a6;
+  padding: 2px 8px; border-radius: 6px; font-weight: 600;
+  margin-left: 6px; font-size: 10px;
+}
+.card-title {
+  font-size: 16px; font-weight: 700; color: #1d4ed8;
+  margin-bottom: 10px;
+}
+.answer-title { color: #b45309; }
+.card-body { font-size: 14px; line-height: 1.65; color: #1e293b; overflow-wrap: break-word; word-break: break-word; }
+.card-fig { margin: 8px 0 10px; text-align: center; }
+.card-fig img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 4px rgba(0,0,0,.12); background: #000; }
+.card-fig figcaption { margin-top: 4px; font-size: 12px; color: #64748b; }
+.answer-body { font-size: 14px; line-height: 1.65; color: #451a03; overflow-wrap: break-word; word-break: break-word; }
+.highlight {
+  background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+  padding: 1px 6px; border-radius: 4px; font-weight: 700;
+  color: #b91c1c;
+}
+.tip {
+  background: #fef2f2; border-left: 3px solid #ef4444;
+  padding: 8px 12px; margin-top: 10px; border-radius: 6px;
+  font-size: 13px; color: #991b1b;
+}
+.tags { margin-top: 10px; }
+.tag {
+  display: inline-block; background: #dbeafe; color: #1e40af;
+  padding: 2px 9px; border-radius: 12px; font-size: 11px;
+  margin-right: 5px; font-weight: 600;
+}
+.flip-hint {
+  text-align: center; color: #94a3b8; font-size: 11px;
+  margin-top: 10px; font-style: italic;
+}
+.empty { text-align: center; color: #94a3b8; padding: 40px; }
+.filter-bar {
+  display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+}
+.filter-bar .btn { font-size: 12px; padding: 5px 10px; }
+.progress-bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px;
+  background: transparent; z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: #14b8a6;
+  transition: width 0.3s; box-shadow: 0 0 8px #14b8a6;
+}
+.section-nav {
+  position: sticky; top: 3px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  display: flex; gap: 6px; flex-wrap: wrap;
+  z-index: 99;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.section-nav a {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #475569;
+  text-decoration: none;
+  background: #f1f5f9;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.section-nav a:hover {
+  background: #14b8a6;
+  color: white;
+  transform: translateY(-1px);
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='min(260px,40vw)' height='min(160px,25vw)' viewBox='0 0 260 160'><text x='40' y='90' font-family='PingFang SC,sans-serif' font-size='28' fill='rgba(99,102,241,0.07)' transform='rotate(-22 130 80)'>西瓜柚子</text></svg>");
+  background-repeat: repeat;
+  background-size: min(260px, 40vw) min(160px, 25vw);
+}
+.tracker {
+  position: sticky; top: 20px;
+  width: clamp(200px, 22vw, 260px); flex-shrink: 0;
+  background: white; border-radius: 14px;
+  padding: clamp(14px, 2vw, 18px); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-top: 4px solid #14b8a6;
+  font-size: 13px;
+  align-self: flex-start;
+}
+.tracker-title {
+  font-size: 15px; font-weight: 700; color: #14b8a6;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+.tracker-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px dashed #f1f5f9;
+}
+.tracker-row.highlight-row {
+  background: linear-gradient(90deg, #fef3c7 0%, #fde68a 100%);
+  margin: 8px -10px; padding: 8px 10px;
+  border-radius: 8px; border-bottom: none;
+}
+.tracker-label { color: #64748b; }
+.tracker-value { font-weight: 700; color: #1e293b; }
+.tracker-row.highlight-row .tracker-label,
+.tracker-row.highlight-row .tracker-value { color: #b45309; }
+.tracker-hint {
+  margin-top: 12px; padding: 8px 10px;
+  background: #f8fafc; border-radius: 8px;
+  font-size: 11px; color: #64748b; line-height: 1.5;
+}
+.tracker-btn {
+  width: 100%; padding: 9px 12px; margin-top: 10px;
+  border: none; border-radius: 8px;
+  background: #14b8a6; color: white; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+  transition: all 0.15s;
+}
+.tracker-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tracker-btn.ghost {
+  background: transparent; color: #64748b;
+  border: 1px solid #e2e8f0; font-weight: 500;
+}
+.tracker-btn.ghost:hover { background: #f8fafc; }
+@media (max-width: 1200px) {
+  .tracker { width: 200px; }
+}
+@media (max-width: 960px) {
+  .layout { flex-direction: column; gap: 14px; }
+  .tracker { position: static; width: 100%; }
+}
+@media (max-width: 768px) {
+  .toolbar-left .btn { font-size: 12px; padding: 6px 11px; }
+  .search-box { font-size: 14px; padding: 8px 12px; }
+  .card-face { padding: 16px; }
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .header { padding: 16px 14px; }
+  .header h1 { font-size: 18px; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere; }
+  .header p { font-size: 12px; line-height: 1.5; word-break: break-word; }
+  .stat { font-size: 11px; padding: 4px 10px; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left { width: 100%; }
+  .toolbar-left .btn { font-size: 11px; padding: 5px 9px; }
+  .search-box { width: 100%; max-width: none; min-width: 0; margin-top: 6px; }
+  .card-face { padding: 14px; }
+  .card-title { font-size: 15px; }
+  .card-body, .answer-body { font-size: 13px; line-height: 1.7; }
+  .section-nav { padding: 6px 8px; }
+  .section-nav a { font-size: 11px; padding: 4px 9px; }
+  .tracker { padding: 14px; font-size: 12px; }
+  .tracker-title { font-size: 14px; }
+}
+@media (max-width: 360px) {
+  body { padding: 8px; }
+  .header h1 { font-size: 16px; }
+  .toolbar-left .btn { font-size: 10px; padding: 4px 7px; }
+  .stat { font-size: 10px; padding: 3px 8px; }
+  .card-face { padding: 12px; }
+  .section-nav a { font-size: 10px; padding: 3px 7px; }
+}
+@media (min-width: 1400px) {
+  .layout { max-width: 1320px; }
+  body { font-size: 16px; }
+  .card-body, .answer-body { font-size: 15px; }
+}
+.project-nav {
+  width: min(1320px, 100%); margin: 0 auto 14px; display: flex;
+  align-items: center; justify-content: space-between; gap: 10px;
+}
+.project-nav a {
+  display: inline-flex; align-items: center; min-height: 38px; padding: 7px 13px;
+  border: 1px solid rgba(71, 112, 153, .18); border-radius: 999px;
+  background: rgba(255,255,255,.82); color: #315777; font-size: 12px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(35,79,122,.06);
+}
+.project-nav a:hover { color: #1d4ed8; border-color: rgba(29,78,216,.3); }
+</style>
+</head>
+<body>
+<nav class="project-nav" aria-label="项目导航">
+  <a href="index.html">← 返回总目录</a>
+  <a href="/blog/imaging">医学影像栏目</a>
+</nav>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+<div class="layout">
+<div class="container">
+  <div class="header">
+    <h1>🎴 医学超声影像学 · 第九章 周围血管</h1>
+    <p>Pages 138-164 · 颅脑血管/四肢血管</p>
+    <div class="stats">
+      <span class="stat">📇 共 176 张卡片</span>
+      <span class="stat">🔄 全部可翻面</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="btn active" data-filter="all">全部</button>
+      <button class="btn" data-filter="名词解释">📝 名词解释</button>
+      <button class="btn" data-filter="填空题">✏️ 填空题</button>
+      <button class="btn" data-filter="选择题">🔘 选择题</button>
+      <button class="btn" data-filter="共用备选答案">🔗 共用备选答案</button>
+      <button class="btn" data-filter="简答题">📋 简答题</button>
+      <button class="btn" id="flip-all">🔄 全部翻面</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索关键词...">
+  </div>
+
+  <nav class="section-nav" id="section-nav"></nav>
+  <div id="cards-container"></div>
+</div>
+
+<aside class="tracker" id="tracker">
+  <div class="tracker-title">📊 学习追踪</div>
+  <div class="tracker-row">
+    <span class="tracker-label">⏱️ 学习时长</span>
+    <span class="tracker-value" id="elapsed">00:00</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🔄 打开次数</span>
+    <span class="tracker-value" id="visit-count">1</span>
+  </div>
+  <div class="tracker-row">
+    <span class="tracker-label">🧠 复习等级</span>
+    <span class="tracker-value" id="review-level">Lv.0 入门</span>
+  </div>
+  <div class="tracker-row highlight-row">
+    <span class="tracker-label">📅 下次复习</span>
+    <span class="tracker-value" id="next-review">--</span>
+  </div>
+  <div class="tracker-hint" id="review-hint">遵循艾宾浩斯遗忘曲线</div>
+  <button class="tracker-btn" id="mark-reviewed">✅ 我已复习</button>
+  <button class="tracker-btn ghost" id="reset-tracker">🔄 重置记录</button>
+</aside>
+
+</div>
+
+<script>
+const CARDS_DATA = [{"no": "9-1-1", "title": "TCCS", "front": "请简述该名词的定义。", "back": "<b>TCCS</b>:<br>即经颅彩色多普勒超声（transcranial color code sonography，TCCS），是利用低频探头，使声束通过成人颅骨透声窗（颞骨嶙部、枕骨大孔、眼眶、颅骨缺损区）而显示颅内实质及血管结构，无创性评价颅内动脉血流动力学的检查方法。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-2", "title": "Willis 环", "front": "请简述该名词的定义。", "back": "<b>Willis 环</b>:<br>又称颅底动脉环，为双侧颈内动脉系与椎-基底动脉系统相关动脉构成的类似“六边形”动脉血管环，是双侧颈内动脉系统之间、颈内动脉与椎-基底动脉系统之间侧支循环通路建立的解剖基础，包括双侧颈内动脉终末段、双侧大脑前动脉 A1 段、前交通动脉、双侧大脑后动脉 P1 段以及后交通动脉。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-3", "title": "PI 值", "front": "请简述该名词的定义。", "back": "<b>PI 值</b>:<br>血管搏动指数 PI = (Vs - Vd) / Vm，为描述血管搏动性及脑血流灌注阻力的参数指标，正常值为 0.65 ~ 1.10。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-4", "title": "RI 值", "front": "请简述该名词的定义。", "back": "<b>RI 值</b>:<br>RI值：血管阻力指数 RI= (V_{s}-V_{d})/V_{s} ，为描述血管搏动性及脑血流灌注阻力的参数指标。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-5", "title": "DFI", "front": "请简述该名词的定义。", "back": "<b>DFI</b>:<br>血流方向指数 DFI=1-R/F（R、F 分别为反向与正向血流速度值），当颅内压增高，脑血流频谱出现振荡型改变时，应计算 DFI，DFI&lt;0.8 可以判定为脑死亡血流改变。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-6", "title": "脑死亡", "front": "请简述该名词的定义。", "back": "<b>脑死亡</b>:<br>无论何种病因导致严重的颅内压升高最终使脑循环停止、脑功能丧失不可逆转，但脑以外的生命体征如心脏搏动、呼吸功能等用药物及人工机械可以维持一定时间，此种病人的临床状态即为脑死亡。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-7", "title": "椎动脉生理性走行变异", "front": "请简述该名词的定义。", "back": "<b>椎动脉生理性走行变异</b>:<br>正常椎动脉于 C6～7 颈椎横突孔向上走行，当椎动脉绕行一个或多个椎体前方后再经对应椎体的横突孔上行时，可以观察到长段无椎体遮挡的椎动脉管腔，即椎动脉生理性走行变异。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-8", "title": "椎动脉生理性不对称", "front": "请简述该名词的定义。", "back": "<b>椎动脉生理性不对称</b>:<br>当双侧椎动脉管径相差 ≥ 1mm时，称为双侧椎动脉生理性不对称。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-9", "title": "IMT", "front": "请简述该名词的定义。", "back": "<b>IMT</b>:<br>即内-中膜厚度（intima-media thickness, IMT），包括内膜层和中膜层厚度，正常 IMT&lt;1.0mm, IMT≥1.0mm 为增厚，是动脉粥样硬化的早期征象。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-10", "title": "不均质回声斑块", "front": "请简述该名词的定义。", "back": "<b>不均质回声斑块</b>:<br>当斑块内部有20%以上面积的回声不一致时称为不均质回声斑块。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-11", "title": "易损斑块", "front": "请简述该名词的定义。", "back": "<b>易损斑块</b>:<br>有以下特征者可以考虑为易损斑块：①不均质回声；②薄纤维帽；③斑块内出血；④斑块破裂伴血栓形成；⑤细小点状钙化；⑥危险因素未控制、斑块无增强或周边及内部呈稀疏点状增强；⑦超声造影显示斑块由周边向内部呈密度较高的点状及短线状增强-新生小血管。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-12", "title": "锁骨下动脉窃血综合征", "front": "请简述该名词的定义。", "back": "<b>锁骨下动脉窃血综合征</b>:<br>锁骨下动脉或头臂干动脉于椎动脉分支的近心段有部\n分的或完全的闭塞性病变，由于虹吸作用引起患侧椎动脉血流逆行，进入患侧锁骨下动脉的远心端，导致后循环缺血性发作和患侧上肢缺血等症状和体征为主的一组综合征。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-13", "title": "频谱多普勒的动脉三相波", "front": "请简述该名词的定义。", "back": "<b>频谱多普勒的动脉三相波</b>:<br>正常的四肢动脉多普勒血流频谱为“正向-反向-正向”的三相波形。分别为心脏收缩期射血引起的前向血流、心室舒张早期血液向心室方向反流所形成、舒张中晚期动脉管壁弹性回缩产生的前向血流。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-14", "title": "雷诺综合征", "front": "请简述该名词的定义。", "back": "<b>雷诺综合征</b>:<br>多见于女性，临床上表现为肢体远端阵发性苍白-发绀-潮红，发病与寒冷刺激或精神紧张而引起的肢体远端动脉痉挛有关。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-15", "title": "true aneurysm", "front": "请简述该名词的定义。", "back": "<b>true aneurysm</b>:<br>真性动脉瘤。由于动脉局部管壁变薄，在血流冲击下局部逐渐膨出形成。瘤壁由动脉壁全层构成。动脉瘤局部动脉直径为相邻正常动脉直径的1.5倍以上。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-16", "title": "pseudoaneurysm", "front": "请简述该名词的定义。", "back": "<b>pseudoaneurysm</b>:<br>假性动脉瘤。多与外伤、感染有关。动脉管壁全层破损，血管周围组织包绕，构成瘤壁。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-17", "title": "动脉粥样硬化闭塞症", "front": "请简述该名词的定义。", "back": "<b>动脉粥样硬化闭塞症</b>:<br>是由动脉粥样硬化病变引起的慢性动脉闭塞性疾病。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-18", "title": "穿静脉", "front": "请简述该名词的定义。", "back": "<b>穿静脉</b>:<br>穿过深筋膜、连接深浅静脉之间的静脉，穿静脉的瓣膜阻挡血液由深静脉向浅静脉反流。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-19", "title": "静脉血流频谱的期相性", "front": "请简述该名词的定义。", "back": "<b>静脉血流频谱的期相性</b>:<br>四肢静脉内血流速度、血流量等随呼吸运动而变化、波动，特别是大静脉。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-20", "title": "Klippel-Trenaunay 综合征", "front": "请简述该名词的定义。", "back": "<b>Klippel-Trenaunay 综合征</b>:<br>该病是一种先天性静脉畸形，临床少见，病人多具有典型的三联病征，即四肢增长、增粗，浅表静脉曲张以及皮肤血管痣。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-1-21", "title": "动静脉瘘", "front": "请简述该名词的定义。", "back": "<b>动静脉瘘</b>:<br>是指动脉与静脉之间存在的异常通道。", "tags": ["名词解释", "血管"], "kind": "名词解释", "page": 143, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-1", "title": "1. 颈内动脉颅内段可分为 ___、___、___、___ 和 ___。", "front": "", "back": "<b>答案:</b>岩骨段(C5段) 海绵窦段(C4段) 膝段(C3段) 床突上段(C2段) 终末段(C1段)", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-2", "title": "2. Willis 环的组成包括___、___、___、___和___。", "front": "", "back": "<b>答案:</b>双侧颈内动脉终末段 双侧大脑前动脉 A1 段 前交通动脉 双侧大脑后动脉 P1 段 后交通动脉", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-3", "title": "3. 典型脑动脉侧支循环通路包括___、___和___。", "front": "", "back": "<b>答案:</b>前交通动脉开放 后交通动脉开放 颈-内外动脉侧支循环开放", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-4", "title": "4. 颅脑血管超声检查常用的声窗包括___、___、___、___。", "front": "", "back": "<b>答案:</b>颞窗 眼窗 枕窗 颌下窗", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-5", "title": "5. 颅内动脉狭窄或闭塞性病变的常见病因有___、___和___等。", "front": "", "back": "<b>答案:</b>动脉粥样硬化性 先天性发育不良 脑动脉炎", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-6", "title": "6. ___是蛛网膜下腔出血最常见的严重并发症之一。", "front": "", "back": "<b>答案:</b>脑血管痉挛", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-7", "title": "7. 蛛网膜下腔出血后 ___ 天颅内动脉血流速度 ___ ，持续 ___ 周左右，___ 周左右血流速度逐渐恢复正常。", "front": "", "back": "<b>答案:</b>4~8 广泛升高 1~2 3~4", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-8", "title": "8. 颈动脉超声常规检测血管包括___、___、___、___、___和___。", "front": "", "back": "<b>答案:</b>颈总动脉 颈内动脉 颈外动脉 椎动脉 锁骨下动脉 无名动脉", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-9", "title": "9. 颈动脉超声检查常规采用___ MHz 探头，部分病人颈动脉分叉位置较高、血管位置较深可适当选用___ MHz 探头或___ MHz 微凸探头。", "front": "", "back": "<b>答案:</b>5~10 2~5 4~8", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-10", "title": "10. 颈动脉超声检测常规测量包括___、___和___。", "front": "", "back": "<b>答案:</b>动脉血管内径 内-中膜厚度 血流动力学参数", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-11", "title": "11. 采用频谱多普勒分析测量血流速度时，血流束与多普勒取样角度应___。", "front": "", "back": "<b>答案:</b>小于 60°", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-12", "title": "12. 颈动脉斑块形态学分类包括：___，如扁平斑块，基底较宽，表面纤维帽完整、光滑。___，斑块表面纤维帽完整而形态不规则，属于易损斑块；___指斑块表面纤维帽不完整，形成“火山口”征，为易损斑块。", "front": "", "back": "<b>答案:</b>规则型 不规则型 溃疡性斑块", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-13", "title": "13. 颈动脉斑块根据回声特征可分为___、___、___和___。", "front": "", "back": "<b>答案:</b>低回声斑块 等回声斑块 强回声斑块 不均质回声斑块", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-14", "title": "14. 颈动脉狭窄根据狭窄程度可分为___、___、___和___。", "front": "", "back": "<b>答案:</b>正常或小于50% 50%~69% 70%~99% 闭塞", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-15", "title": "15. 椎动脉闭塞部位及类型可分为___、___、___和___。", "front": "", "back": "<b>答案:</b>起始段闭塞 节段性闭塞 颅内段闭塞 全程闭塞", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-16", "title": "16. 锁骨下动脉窃血分级包括___、___和___。", "front": "", "back": "<b>答案:</b>I 级隐匿型Ⅱ级部分型Ⅲ级完全型", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-17", "title": "17. 下肢动脉的主干包括___、___、___、___、___、___、___、___、___、___、___和___。", "front": "", "back": "<b>答案:</b>股总动脉 股浅动脉 股深动脉 腘动脉 胫前动脉 胫腓干 胫后动脉 腓动脉 足背动脉", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-18", "title": "18. 正常肢体直行的动脉段内的血流呈___, 表现为动脉管腔的中央色彩较为___, 管腔的边缘色彩较___。", "front": "", "back": "<b>答案:</b>层流 明亮 深暗", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-19", "title": "19. 使用脉冲多普勒评价四肢动脉狭窄程度要注意：①血流-声束夹角___；②动脉位置较深时，可使用___、___。", "front": "", "back": "<b>答案:</b>小于 60° 低频 凸阵探头", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-20", "title": "20. 急性动脉栓塞彩色多普勒显示血流于栓塞部位 ___ , 栓塞远心端动脉内可测及的血流频谱呈 ___ 或 ___ 。", "front": "", "back": "<b>答案:</b>突然中断 低速低阻 单相连续性带状", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-21", "title": "21. 急性四肢动脉栓塞的典型临床表现包括___、___、___、___和___。", "front": "", "back": "<b>答案:</b>疼痛 苍白 无脉 麻木 运动障碍", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-22", "title": "22. 当动脉病变处管径为相邻正常管径的 ___ 时，可诊断为真性动脉瘤。", "front": "", "back": "<b>答案:</b>1.5 倍以上", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-23", "title": "23. 下肢深静脉与浅静脉之间的沟通通过 ___ 实现。", "front": "", "back": "<b>答案:</b>穿静脉", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-24", "title": "24. 下肢深静脉包括___、___、___、___、", "front": "", "back": "<b>答案:</b>股总静脉 股深静脉 股浅静脉 腘静脉 胫腓静脉干 胫后静脉 腓静脉 胫前静脉", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-25", "title": "25. 急性四肢静脉血栓最主要超声检查手法是___。", "front": "", "back": "<b>答案:</b>探头加压法", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-26", "title": "26. 血栓形成的主要因素有 ___、___ 和 ___。", "front": "", "back": "<b>答案:</b>静脉血流缓慢 内膜损伤 高凝状态", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-2-27", "title": "27. 检查下肢静脉反流可采用的体位有___、___、___。", "front": "", "back": "<b>答案:</b>头高脚低位 站立位 坐位", "tags": ["填空题", "血管"], "kind": "填空题", "page": 144, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-1", "title": "1. 不属于 颈内动脉分段的是", "front": "A.岩骨段<br>B.海绵窦段<br>C.床突上段<br>D.虹吸段<br>E.膝段", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 146, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-2", "title": "2. 基底动脉的终末分支是", "front": "A.小脑后下动脉<br>B.大脑后动脉<br>C.椎动脉<br>D.后交通动脉<br>E.小脑上动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 146, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-3", "title": "3. 下列说法 不正确 的是", "front": "A.小脑的供血动脉是小脑后下动脉、小脑前下动脉及小脑上动脉<br>B.颈总动脉走行于胸锁乳突肌的外缘<br>C.右侧颈总动脉由无名动脉分出<br>D.左侧颈总动脉直接起自主动脉弓<br>E.左侧椎动脉可以直接起自主动脉弓", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 146, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-4", "title": "4. 下图标示处的动脉是", "front": "A.大脑前动脉<br>B.大脑后动脉<br>C.后交通动脉<br>D.大脑中动脉<br>E.前交通动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 146, "chapter": "ch9", "static": false, "image": "image/9-4.png", "figcap": "图9-4"}, {"no": "9-3-5", "title": "5. 成人颅内动脉检查中，主要用于检查基底动脉的声窗是", "front": "A.颞窗<br>B.顶窗<br>C.眼窗<br>D.枕窗<br>E.颌下窗", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-6", "title": "6. 关于 SAH， 不正确 的描述是", "front": "A.脑血管痉挛是蛛网膜下腔出血后临床上常见的严重并发症之一<br>B.蛛网膜下腔出血后4~8天颅内动脉血流速度广泛升高，高峰持续1~2周<br>C.大脑中动脉与颈内动脉颅外段流速比值≥6为重度脑血管痉挛<br>D.脑血管痉挛血流速度的升高为节段性<br>E.正常大脑中动脉与颈内动脉颅外段流速比值&lt;3:1", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-7", "title": "7. Willis 环组成血管， 不包括", "front": "A.大脑中动脉<br>B.颈内动脉终末段<br>C.大脑前动脉<br>D.大脑后动脉<br>E.前交通动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-8", "title": "8. 颈内动脉第一支分支是", "front": "A.眼动脉<br>B.视网膜中央动脉<br>C.睫状后长动脉<br>D.睫状后短动脉<br>E.睫状前动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-9", "title": "9. 根据动脉行程，正常颈内动脉的解剖分段是", "front": "A.颅外段、颅内段、虹吸部<br>B.岩骨段、颈段、前床突上段和海绵窦段<br>C.颈段、虹吸部、终末段<br>D.颅外段、岩骨段、海绵窦段、膝段、床突上段与终末段<br>E.颈段、海绵窦段、虹吸部、膝段和终末段", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-10", "title": "10. 颈内动脉 C1 段分出的动脉， 不包括", "front": "A.大脑中动脉<br>B.大脑前动脉<br>C.前交通动脉<br>D.左侧后交通动脉<br>E.右侧后交通动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-11", "title": "11. 椎动脉最大的分支血管是", "front": "A.小脑前下动脉<br>B.小脑后下动脉<br>C.基底动脉<br>D.大脑后动脉<br>E.小脑上动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 147, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-12", "title": "12. 颅内外动脉主要侧支循环通路， 不包括", "front": "A.前交通支开放<br>B.后交通支开放<br>C.软脑膜侧支建立<br>D.颈-内外侧支开放<br>E.眼动脉逆转", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-13", "title": "13. 不可能 出现后交通支开放的是", "front": "A.大脑中动脉闭塞<br>B.颈内动脉膝段重度狭窄<br>C.颈总动脉闭塞<br>D.基底动脉重度狭窄<br>E.双侧椎动脉重度狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-14", "title": "14. 颈内动脉岩骨段重度狭窄时，眼动脉可能出现的血流频谱是", "front": "A.正向低阻<br>B.反向低阻<br>C.双向低阻<br>D.未探及明显血流<br>E.以上均有可能", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-15", "title": "15. 椎动脉颅外段闭塞时, TCD检测颅内动脉血流频谱 不可能 出现的改变是", "front": "A.无血流信号<br>B.低速低阻改变<br>C.收缩期逆转的振荡型血流频谱<br>D.高速高阻力特征改变<br>E.正常流速伴低阻力特征改变", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-16", "title": "16. TCD 检查发现一侧椎动脉血流频谱呈低速低阻力改变， 不考虑 的原因是", "front": "A.椎动脉颅外段重度狭窄<br>B.椎动脉颅外段闭塞<br>C.同侧锁骨下动脉重度狭窄<br>D.基底动脉闭塞<br>E.椎动脉入颅段重度狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-17", "title": "17. 当一侧颈动脉颅外段病变时，前交通支开放的最根本特征是", "front": "A.患侧大脑前动脉流速增快<br>B.患侧大脑前动脉血流方向逆转<br>C.患侧大脑中动脉流速正常<br>D.健侧大脑前动脉流速升高<br>E.健侧颈内动脉终末段流速升高", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-18", "title": "18. 可以引起脑血流速度广泛升高的是", "front": "A.脑血管痉挛<br>B.高血压<br>C.贫血<br>D.甲亢<br>E.以上都是", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 148, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-19", "title": "19. 可以引起颅内动脉血流速度广泛减低的是", "front": "A.心功能不全<br>B.脑出血后遗症<br>C.酒精性脑病<br>D.升主动脉扩张<br>E.以上均可", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-20", "title": "20. 关于大脑中动脉慢性闭塞的 TCCS 表现， 不正确 的描述是", "front": "A.大脑中动脉血流信号不连续<br>B.大脑中动脉血流呈低速低阻型改变<br>C.患侧颈内动脉血流频谱出现相对高阻改变<br>D.患侧大脑前动脉血流速度代偿升高<br>E.患侧后交通支开放", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-21", "title": "21. 在判定脑血管重度痉挛时，TCD 检查大脑中动脉与同侧颈内动脉颅外段流速比值应", "front": "A.大于2<br>B.大于3<br>C.大于4<br>D.大于5<br>E.大于6", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-22", "title": "22. 以下关于压迫试验的叙述， 不能 说明前交通支存在的是", "front": "A.压迫一侧颈总动脉，同侧大脑前动脉血流方向逆转<br>B.压迫一侧颈总动脉，对侧大脑前动脉血流速度升高<br>C.一侧颈内动脉闭塞，压迫健侧颈总动脉，患侧大脑中动脉血流速度减低<br>D.一侧颈总动脉病变，压迫患侧颈总动脉，患侧大脑前动脉血流信号消失<br>E.一侧颈总动脉病变，压迫健侧颈总动脉，患侧大脑后动脉血流速度升高", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-23", "title": "23. 关于颈外动脉的超声表现， 不正确 的描述是", "front": "A.血流频谱呈高阻型<br>B.可见多个分支<br>C.甲状颈干可起自其近端<br>D.甲状腺上动脉起自其近端<br>E.颞浅动脉叩击试验阳性", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-24", "title": "24. 颈外动脉的分支， 不包括", "front": "A.甲状腺上动脉<br>B.甲状腺干<br>C.面动脉<br>D.舌动脉<br>E.颞浅动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-25", "title": "25. 动脉的阻力指数由高到低排列顺序正确的是", "front": "A.颈总动脉&gt;颈内动脉&gt;颈外动脉&gt;锁骨下动脉<br>B.颈总动脉&gt;颈外动脉&gt;锁骨下动脉&gt;颈内动脉<br>C.颈外动脉&gt;锁骨下动脉&gt;颈总动脉&gt;颈内动脉<br>D.锁骨下动脉&gt;颈外动脉&gt;颈总动脉&gt;颈内动脉<br>E.锁骨下动脉&gt;颈外动脉&gt;颈内动脉&gt;颈总动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-26", "title": "26. 血管壁结构可分为内膜、中膜、外膜层，中膜层的回声属于", "front": "A.低回声<br>B.等回声<br>C.强回声<br>D.以上均是<br>E.以上均不是", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 149, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-27", "title": "27. 颈部血管检查中，显示正常彩色血流的最佳角度是", "front": "A.≤30° <br>B.≤40° <br>C.≤45° <br>D.≤50° <br>E.≤60°", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-28", "title": "28. 关于颈动脉溃疡斑块的超声征象，正确的是", "front": "A.纤维帽菲薄<br>B.纤维帽不连续，血流向斑块内灌注征<br>C.斑块内可见无回声区<br>D.血流束纤细<br>E.血流信号中断", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-29", "title": "29. 最 不易 出现血管狭窄的部位是", "front": "A.颈总动脉近段<br>B.颈总动脉远段<br>C.颈内动脉近段<br>D.椎动脉起始段<br>E.锁骨下动脉起始段", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-30", "title": "30. 最易发生椎动脉病变的部位是", "front": "A.V1 和 V2 段<br>B.V1 和 V3 段<br>C.V2 和 V3 段<br>D.V1 和 V4 段<br>E.V2 和 V4 段", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-31", "title": "31. 椎动脉先天发育不良的管径标准为", "front": "A.≤3.5mm <br>B.≤3.0mm <br>C.≤2.5mm <br>D.≤2.0mm <br>E.≤1.5mm", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-32", "title": "32. 颈动脉狭窄的常见病因包括", "front": "A.动脉粥样硬化性<br>B.大动脉炎性<br>C.肌纤维发育不良<br>D.夹层动脉瘤<br>E.以上都是", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-33", "title": "33. 关于颈内动脉狭窄50%~69%的超声诊断， 不正确 的描述是", "front": "A.残余管径&gt;1.5mm<br>B.收缩期流速&gt;150cm/s<br>C.舒张期流速&gt;100cm/s<br>D.狭窄段/狭窄远段流速比值&gt;2.0<br>E.狭窄段/狭窄远端流速比值&lt;4.0", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 150, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-34", "title": "34. 关于颈内动脉狭窄70%~99%的超声诊断， 不正确 的描述是", "front": "A.狭窄段 PSV&gt;230cm/s<br>B.狭窄段 EDV&lt;100cm/s<br>C.狭窄段残余管径&lt;1.5mm<br>D.狭窄段/狭窄远端流速&gt;4.0<br>E.颈内动脉远段血流频谱呈低搏动性改变", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-35", "title": "35. 颈内动脉狭窄程度达到70%~99%时，狭窄段与狭窄远端的流速比值应", "front": "A.&gt;2.0<br>B.&gt;2.5<br>C.&gt;3.0<br>D.&gt;4.0<br>E.&gt;4.5", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-36", "title": "36. 颈内动脉闭塞时可能出现的超声征象， 不包括", "front": "A.颈总动脉血流速度减低，频谱形态呈高阻型改变<br>B.颈总动脉收缩期血流方向逆转<br>C.颈总动脉舒张期血流方向逆转<br>D.颈动脉球部出现“开关”血流征<br>E.颈外动脉血流速度升高", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-37", "title": "37. 关于椎动脉生理性变异的表述， 不正确 的描述是", "front": "A.双侧管径可能存在不对称性<br>B.椎动脉自第5颈椎横突孔上行为走行变异<br>C.椎动脉起源于主动脉弓为起源异常<br>D.右侧椎动脉起自无名动脉为起点异常<br>E.椎动脉起自锁骨下动脉后下壁为起点异常", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-38", "title": "38. 当无名动脉重度狭窄时，右锁骨下动脉血流频谱的形态是", "front": "A.高阻力型<br>B.低阻力型<br>C.正常<br>D.振荡型<br>E.以上均有可能", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-39", "title": "39. 一侧椎动脉闭塞后,侧支动脉血流 不可能 来源于", "front": "A.上颌动脉<br>B.甲状颈干<br>C.对侧椎动脉<br>D.颈内动脉<br>E.桄动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-40", "title": "40. 椎动脉血流频谱呈高阻型改变， 不可能 的原因是", "front": "A.椎动脉远端闭塞<br>B.椎动脉先天发育不良<br>C.基底动脉重度狭窄<br>D.对侧锁骨下动脉窃血<br>E.椎动脉起始段闭塞", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 151, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-41", "title": "41. 椎动脉椎间隙段血流方向逆转 不可能 见于", "front": "A.椎动脉 V1 段闭塞<br>B.锁骨下动脉中度狭窄<br>C.锁骨下动脉起始段重度狭窄<br>D.锁骨下动脉发出椎动脉之前闭塞<br>E.无名动脉闭塞", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-42", "title": "42. 椎动脉椎间隙段血流频谱呈低速高阻型改变， 不可能 的原因是", "front": "A.椎动脉先天发育细<br>B.椎动脉颅内段重度狭窄<br>C.颅内压升高<br>D.椎动脉近段闭塞<br>E.基底动脉重度狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-43", "title": "43. 关于大动脉炎， 不正确 的描述是", "front": "A.多发于年轻女性<br>B.较少累及腹部动脉、肠系膜动脉和髂动脉<br>C.临床表现可出现脉搏减弱、血压升高<br>D.超声显示动脉内-中膜不均增厚<br>E.超声显示管壁全层均匀性增厚", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-44", "title": "44. 颈动脉管腔内可见膜状中强回声随血流漂动，CDFI 检测显示血流充盈不全，应首先考虑为", "front": "A.颈动脉夹层<br>B.颈动脉溃疡斑块<br>C.大动脉炎<br>D.颈动脉硬化狭窄<br>E.肌纤维发育不良", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-45", "title": "45. 颈动脉夹层延伸至颈动脉外膜层易形成", "front": "A.真性动脉瘤<br>B.假性动脉瘤<br>C.夹层动脉瘤<br>D.血栓<br>E.动脉硬化斑块", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-46", "title": "46. 以下说法 不正确 的是", "front": "A.颈动脉硬化性狭窄表现为颈内动脉全程纤细呈“串珠样”，血流充盈不全<br>B.动脉粥样硬化病变好发的部位以颈动脉分叉处最多见<br>C.通常 IMT≥1.0mm 界定为颈动脉内-中膜增厚<br>D.斑块的基本结构包括斑块表面的纤维帽、核心部、基底部和上下肩部<br>E.按形态学分类将斑块分为规则型、不规则型和溃疡性斑块", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-47", "title": "47. 颈动脉肌纤维发育不良，血管造影呈“串珠样”改变，最先受累的血管壁结构是", "front": "A.内膜层<br>B.中膜层<br>C.外膜层<br>D.以上都是<br>E.以上都不是", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 152, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-48", "title": "48. 肌纤维发育不良表现为“串珠样”改变时，显示效果最佳的是", "front": "A.二维结构<br>B.彩色多普勒<br>C.频谱多普勒<br>D.能量多普勒<br>E.组织多普勒", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-49", "title": "49. 不属于 上肢动脉的是", "front": "A.桡动脉<br>B.锁骨下动脉<br>C.头臂干<br>D.肱动脉<br>E.尺动脉", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-50", "title": "50. 关于左锁骨下动脉,正确的描述是", "front": "A.起源于主动脉弓<br>B.起源于无名动脉<br>C.其远侧段是肱动脉<br>D.其远侧段是尺动脉<br>E.其第一分支是甲状颈干", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-51", "title": "51. 关于足背动脉检查探头的选择,正确的描述是", "front": "A.多采用 1 ∼ 3 MHz 线阵探头<br>B.多采用 2 ∼ 5 MHz 线阵探头<br>C.多采用 5 ∼ 7 MHz 线阵探头<br>D.多采用 7 ∼ 10 MHz 线阵探头<br>E.多采用 10 ∼ 15 MHz 线阵探头", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-52", "title": "52. 关于四肢动脉的超声检查方法， 不正确 的描述是", "front": "A.二维超声显示动脉走行及结构，重点观察动脉管壁及其三层结构<br>B.彩色多普勒增益过大时，可以引起血流信号外溢<br>C.彩色多普勒能准确测定动脉的血流方向、血流速度<br>D.一般情况下，动脉管腔不被压瘪<br>E.行多普勒取样时须使用恰当的取样容积和多普勒角度", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-53", "title": "53. 防止彩色血流信号倒错(混叠)的方法之一是", "front": "A.用高频超声<br>B.下移血流标尺基线<br>C.低通滤波<br>D.高增益<br>E.低速标尺", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-54", "title": "54. 关于频谱多普勒技术，正确的描述是", "front": "A.测量血流速度、判断血流方向、获取血流参数<br>B.不受血流-声束影响<br>C.不受检查深度影响<br>D.可显示动脉硬化<br>E.舒张期血流速度增高，提示远侧阻力增高", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 153, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-55", "title": "55. 下肢动脉超声检查时，常采用“蛙腿位”，它是指", "front": "A.被检肢体内收、内旋、膝关节略弯曲<br>B.被检肢体内收、内旋、膝关节伸直<br>C.被检肢体内收、外旋、膝关节略弯曲<br>D.被检肢体外展、外旋、膝关节略弯曲<br>E.被检肢体外展、内旋、膝关节伸直", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-56", "title": "56. 彩色多普勒检查的彩色增益过高，会出现的现象是", "front": "A.血流信号显示不连续，有中断现象<br>B.彩色血流信号溢出到血管外，使血流假性增宽<br>C.血流充盈不好，血管内有假性充盈缺损<br>D.血流信号缺乏，假性闭塞<br>E.彩色信号出现翻转(倒错)，歪曲了血流行走方向", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-57", "title": "57. 关于正常四肢动脉的声像图特征，正确的描述是", "front": "A.管壁菲薄，在二维超声上表现为细线状<br>B.内膜平整、光滑<br>C.管腔内的血流呈无回声，高分辨力超声仪可显示流动的红细胞而呈现弱回声<br>D.探头加压，管腔压瘪<br>E.管腔内可看见瓣膜结构", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-58", "title": "58. 关于正常四肢动脉的频谱特征，正确的描述是", "front": "A.自发性血流<br>B.期相性血流<br>C.乏氏反应，即乏氏动作时，动脉管径增宽<br>D.舒张早期反向血流<br>E.收缩早期加速时间延长", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-59", "title": "59. 四肢动脉狭窄引起狭窄即后段出现湍流，紊乱最重的一般在", "front": "A.紧接狭窄段之后 1.0cm 以内<br>B.紧接狭窄段之后 1.5cm 以内<br>C.紧接狭窄段之后 2.0cm 以内<br>D.紧接狭窄段之后 2.5cm 以内<br>E.紧接狭窄段之后 3.0cm 以内", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-60", "title": "60. 四肢动脉超声检查时,如果动脉管腔内未见血流信号,可能的原因 不包括", "front": "A.多普勒增益太大<br>B.多普勒增益太小<br>C.检查部位太深<br>D.探头频率太高<br>E.血流-声束夹角太大", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-61", "title": "61. 四肢动脉超声检查时，如果动脉收缩期血流速度降低，可能的原因是", "front": "A.远心段动脉有狭窄<br>B.远心段有动静脉瘘<br>C.远心段动脉栓塞<br>D.血容量过多<br>E.近心段动脉有重度狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 154, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-62", "title": "62. 关于四肢动脉狭窄或闭塞的超声诊断， 不正确 的描述是", "front": "A.病变处收缩期峰值流速&gt;200cm/s，与相邻正常动脉比值大于2：1，则无狭窄<br>B.动脉主干闭塞，闭塞远心段也可能有血流信号<br>C.对于多发动脉狭窄，诊断远处的狭窄，流速比值比绝对值更有意义<br>D.动脉闭塞表现为管腔内充满实性回声<br>E.动脉闭塞时动脉搏动消失", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-63", "title": "63. 关于四肢动脉硬化性闭塞症的临床表现，正确的描述是", "front": "A.肢体肿胀<br>B.肢体发冷、间歇性跛行、静息痛、肢端溃疡或坏疽<br>C.皮肤表面色素沉着<br>D.皮肤温度升高<br>E.肢体表面可触及震颤", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-64", "title": "64. 关于股动脉穿刺术后并发症， 不正确 的描述是", "front": "A.股动脉狭窄<br>B.股动脉夹层<br>C.假性动脉瘤<br>D.动静脉瘘<br>E.股动脉穿破后血肿形成", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-65", "title": "65. 在诊断上肢动脉硬化闭塞症时，需要鉴别的疾病是", "front": "A.高血压<br>B.冠心病<br>C.雷诺综合征<br>D.糖尿病<br>E.布加综合征", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-66", "title": "66. 不属于 上肢深静脉的是", "front": "A.桡静脉<br>B.锁骨下静脉<br>C.头静脉<br>D.肱静脉<br>E.尺静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-67", "title": "67. 不属于 下肢浅静脉的是", "front": "A.大隐静脉<br>B.股浅静脉<br>C.股外侧浅静脉<br>D.小隐静脉<br>E.阴部外浅静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-68", "title": "68. 下肢静脉瓣功能不全, 定性观察有无反流, 首选", "front": "A.二维灰阶超声显像<br>B.彩色多普勒血流显像<br>C.彩色多普勒能量图<br>D.M型超声<br>E.连续多普勒超声", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 155, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-69", "title": "69. 关于四肢静脉检查探头的选择, 正确的描述是", "front": "A.上肢静脉检查多采用 5 ∼ 7 MHz 线阵探头<br>B.锁骨下静脉检查可采用 5 MHz 的凸阵探头或扇扫探头<br>C.下肢静脉检查常使用 15 MHz 线阵探头<br>D.低频探头适合检查低速血流, 高频探头适合检查高速血流<br>E.较浅表的静脉可使用 5 ∼ 7 MHz 的线阵探头", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-70", "title": "70. 关于四肢静脉的超声检查方法， 不正确 的描述是", "front": "A.二维超声显示静脉走行及结构，重点观察静脉走行、管壁及内膜、管腔内回声情况<br>B.彩色多普勒观察静脉管腔内是否为自发性血流信号以及血流的充盈情况<br>C.彩色多普勒准确测定静脉的血流方向、血流速度<br>D.探头轻放，以免受检静脉被压瘪<br>E.行多普勒采样时使用恰当的取样容积和多普勒角度", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-71", "title": "71. 关于正常四肢静脉的声像图特征， 不正确 的描述是", "front": "A.管壁菲薄，在二维超声上表现为细线状<br>B.内膜平整、光滑<br>C.管腔内的血流呈无回声，高分辨力超声仪可显示流动的红细胞而呈现弱回声<br>D.具有可压缩性。由于静脉壁很薄，仅凭腔内血液的压力使静脉处于开放状态，探头加压可使管腔闭合<br>E.静脉管腔内均可看见静脉瓣膜结构", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-72", "title": "72. 关于正常四肢静脉的频谱特征， 不正确 的描述是", "front": "A.自发性：不管肢体处于休息还是运动状态，四肢静脉内均存在血流信号，特别是大、中静脉，而小静脉内可探测不到自发血流<br>B.期相性：四肢静脉内的血流速度、血流量随心脏搏动发生变化<br>C.乏氏反应：深吸气后屏气时，四肢大、中静脉的内径明显增宽，血流信号减少、\n短暂消失或出现短暂反流<br>D.肢体加压后血流信号增高：肢体静脉突然受压时都会使静脉回心血量和流速增加，并可使静脉瓣完好的受压部位远端血流停止<br>E.单向回心血流：由于肢体静脉瓣的作用，正常四肢静脉血液仅回流至心脏", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-73", "title": "73. 关于四肢静脉血栓形成后的临床表现，正确的描述是", "front": "A.肢体肿胀，疼痛，血栓脱落可引起肺栓塞<br>B.呼吸困难、咯血<br>C.肢体发冷<br>D.肢体静息条件下剧烈疼痛<br>E.肢端溃疡或坏疽", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-74", "title": "74. 关于静脉瓣功能不全的超声表现， 不正确 的描述是", "front": "A.静脉管腔正常或增宽<br>B.不能观察到瓣膜增厚<br>C.探头加压后管腔能完全闭合<br>D.挤压小腿放松后，可见病变段静脉瓣膜处线样或束状反向血流信号<br>E.静脉瓣反流频谱，即远端加压后出现反向血流频谱，持续时间&gt;1.0秒", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-75", "title": "75. 关于穿静脉的表述，正确的描述是", "front": "A.穿静脉没有瓣膜<br>B.穿静脉可以阻止肌肉收缩时血液从浅静脉流入深静脉<br>C.穿静脉和交通静脉是同一概念<br>D.Dodds 静脉位于小腿<br>E.Dodds 静脉位于大腿中下段内侧，Boyds 静脉位于膝关节", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-76", "title": "76. 若静脉瓣膜功能正常，挤压小腿时，挤压部近侧端与远侧端静脉瓣膜的反应分别是", "front": "A.近侧端静脉瓣膜关闭，远侧端静脉瓣膜开放<br>B.近侧端静脉瓣膜开放，远侧端静脉瓣膜关闭<br>C.近侧端与远侧端静脉瓣膜均关闭<br>D.近侧端与远侧端静脉瓣膜均开放<br>E.近侧端与远侧端静脉瓣膜均无反应", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 156, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-77", "title": "77. 下面静脉的血流通常为非期相性血流的是", "front": "A.锁骨下静脉<br>B.髂总静脉<br>C.髂外静脉<br>D.股总静脉<br>E.胫后静脉", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-78", "title": "78. 四肢动静脉瘘的回流静脉超声表现， 不包括", "front": "A.出现搏动血流<br>B.流速减低<br>C.出现湍流<br>D.管径增宽<br>E.毛刺状多普勒频谱", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-79", "title": "79. 诊断为反流时，下肢静脉反流持续时间应大于", "front": "A.1 秒<br>B.2 秒<br>C.3 秒<br>D.4 秒<br>E.5 秒", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-80", "title": "80. 静脉内见实性回声，管腔压不瘪，CDFI 探不到血流信号，可能的诊断是", "front": "A.脉炎性狭窄<br>B.静脉血栓<br>C.静脉的变异<br>D.静脉外压性狭窄<br>E.静脉癌栓", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A1型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-1", "title": "81. 病人，女性。67岁，突发左侧肢体无力1天来院，CT证实右侧基底节区大片状低密度影，TCCS检查发现右侧大脑中动脉主干血流成像节段异常，血流速度231cm/s，伴明显涡流频谱，大脑中动脉远段流速68cm/s，频谱形态呈低搏动性改变。其最可能的诊断是", "front": "A.脑出血，脑血管痉挛<br>B.右侧大脑中动脉重度狭窄<br>C.右侧大脑中动脉轻度狭窄<br>D.右侧大脑中动脉急性闭塞<br>E.右侧大脑中动脉慢性闭塞", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-2", "title": "82. 病人，男性。27岁，2年前开始出现间断剧烈头痛，进行性加重，发作时可伴有肢体抽搐及呕吐。TCCS检测发现脑组织局限性回声不均，彩色血流成像显示病变区域“五彩镶嵌样”，多普勒检测血流速度明显升高，血流频谱增宽（舒张期流速升高），舒张期无平滑线性下降特征，呈“毛刺样”改变。其最可能的诊断是", "front": "A.神经性头痛<br>B.癫痫发作<br>C.血管痉挛<br>D.脑出血<br>E.脑动静脉畸形", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-3", "title": "83. 病人，男性。40岁，突发头痛1小时，CT提示蛛网膜下腔出血。TCD检查右侧大脑中动脉、颈内动脉终末段、大脑前动脉流速广泛升高，右侧大脑中动脉血流速度升高达200cm/s。其最可能的诊断是", "front": "A.脑血管痉挛<br>B.大脑中动脉重度狭窄<br>C.颅内压升高<br>D.脑死亡<br>E.脑水肿", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 157, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-4", "title": "84. 病人，女性。60 岁，血压 120/80 mmHg，双侧颈总动脉管腔内血流通畅，但频谱形态呈低搏动性改变。其最可能的诊断是", "front": "A.主动脉瓣重度狭窄<br>B.主动脉瓣关闭不全<br>C.双侧颈内动脉重度狭窄<br>D.双侧颈内动脉闭塞<br>E.贫血", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-5", "title": "85. 病人，男性。70岁，头晕，超声检查发现右侧锁骨下动脉重度狭窄，右侧椎动脉全程血流通畅，但血流频谱呈正向低搏动性改变，可能的原因 不包括", "front": "A.右侧椎动脉开口重度狭窄<br>B.左侧椎动脉闭塞<br>C.锁骨下动脉狭窄位于椎动脉开口以远段<br>D.左侧锁骨下动脉重度狭窄<br>E.左侧椎动脉颅内段重度狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-6", "title": "86. 病人，女性。31岁，因右侧肢体无力伴眩晕来院就诊，颈动脉超声检查可见颈总动脉外径明显增宽，血管腔内线状膜样结构随血流搏动。其最可能的诊断是", "front": "A.颈动脉内异物<br>B.颈动脉假性动脉瘤<br>C.颈动脉血栓脱落<br>D.颈动脉夹层<br>E.颈动脉肌纤维发育不良", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-7", "title": "87. 对于症状性颈动脉重度狭窄且局部斑块存在严重钙化的病人，最适宜的治疗方法是", "front": "A.颈动脉搭桥术<br>B.颈动脉内膜剥脱术<br>C.颈动脉支架<br>D.颈动脉球囊扩张术<br>E.以上均不合适", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-8", "title": "88. 病人，男性。70岁，因右腿间歇性跛行就诊，其下肢动脉超声检查发现右侧腘动脉出现下图这一频谱。其最可能的诊断是", "front": "A.腘动脉重度狭窄<br>B.胫前动脉重度狭窄或闭塞<br>C.胫腓干重度狭窄或闭塞<br>D.腘静脉血栓形成<br>E.股浅动脉重度狭窄或闭塞", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "image/9-88.png", "figcap": "图9-88"}, {"no": "9-3-9", "title": "89. 病人，男性。55岁，因肾病透析治疗，左上肢发现一包块，超声表现如下图。其最可能的诊断是", "front": "A.血管瘤<br>B.真性动脉瘤<br>C.动脉夹层<br>D.假性动脉瘤<br>E.动静脉瘘", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "image/9-89.png", "figcap": "图9-89"}, {"no": "9-3-10", "title": "90. 病人，女性。30岁，因左眼视力减退就诊，其颈部超声检查发现左侧颈总动脉声像图如下图所示。其最可能的诊断是", "front": "A.动脉粥样硬化<br>B.急性血栓栓塞<br>C.大动脉炎", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 158, "chapter": "ch9", "static": false, "image": "image/9-90.png", "figcap": "图9-90"}, {"no": "9-3-11", "title": "91. 病人，男性。42岁，右下肢间歇性跛行2年，足趾出现趾端溃疡，足背动脉搏动减弱。吸烟史23年，每日1~2包，现已戒烟2年，饮酒适量。超声表现如下图所示（POPA：腘动脉；POPV：腘静脉；PTA：胫后动脉）。其最可能的诊断是", "front": "A.动脉粥样硬化<br>B.血栓闭塞性脉管炎<br>C.大动脉炎<br>D.动脉瘤伴血栓形成<br>E.急性血栓栓塞", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 159, "chapter": "ch9", "static": false, "image": "image/9-91.png", "figcap": "图9-91"}, {"no": "9-3-12", "title": "92. 病人，女性。30岁，因左下肢酸胀5年就诊。站立位下肢静脉超声检查，脉冲多普勒检查，挤压小腿后大隐静脉频谱如下图所示。其最可能的诊断是", "front": "A.左大隐静脉瓣膜功能不全<br>B.左大隐静脉急性血栓<br>C.左大隐静脉近心段梗阻<br>D.左大隐静脉远心段梗阻<br>E.左大隐静脉侧支静脉血栓形成", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 159, "chapter": "ch9", "static": false, "image": "image/9-92.png", "figcap": "图9-92"}, {"no": "9-3-13", "title": "93. 病人，男性。70岁，因病卧床1个月，近1周右小腿肿胀就诊。其下肢静脉超声检查如下图所示，左半图：为右小腿横断面超声图，右半图：为同一切面位置探头加压后超声图。其最可能的诊断是", "front": "A.大隐静脉血栓<br>B.小隐静脉血栓<br>C.小腿深静脉血栓<br>D.腓动脉狭窄<br>E.胫后动脉狭窄", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 159, "chapter": "ch9", "static": false, "image": "image/9-93.png", "figcap": "图9-93"}, {"no": "9-3-14", "title": "94. 病人，男性。55岁，因左腿胀痛三天就诊，下肢静脉超声检查如下图所示，左图：浅层的静脉为大隐静脉，深层的静脉为股浅静脉，右图：小腿内侧大隐静脉横切面声像图。其最可能的诊断是", "front": "A.左大隐静脉反流<br>B.左大隐静脉小腿段反流<br>C.左大隐静脉大腿段血栓<br>D.左大隐静脉大腿段及小腿段血栓<br>E.左大隐静脉小腿段血栓", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["A2型题", "选择题", "血管"], "kind": "选择题", "page": 159, "chapter": "ch9", "static": false, "image": "image/9-94.png", "figcap": "图9-94"}, {"no": "9-3-shared-95-97", "title": "共用备选答案 · 第 95~97 题", "front": "<b>下列第 95~97 题共用以下备选答案:</b><br>A.大脑中动脉重度狭窄<br>B.大脑中动脉急性闭塞<br>C.大脑中动脉慢性闭塞<br>D.脑血管痉挛<br>E.高血压", "back": "", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": true, "image": "", "figcap": ""}, {"no": "9-3-1", "title": "95. TCD 沿大脑中动脉主干检测深度 40～65mm 范围内均未探测到血流信号或仅探及不连续的低速高阻力型或单峰型血流信号，应考虑为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-2", "title": "96. 沿大脑中动脉主干(深度 40 ~ 65mm)探及低流速低阻力型(PI值明显减低)不连续性血流信号，患侧大脑前动脉、大脑后动脉流速明显升高，伴PI值减低，频谱形态改变、峰钝，应考虑为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-3", "title": "97. 蛛网膜下腔出血后5天，TCD示大脑中动脉、大脑前动脉、大脑后动脉血流速度均明显升高，伴PI值升高，应诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">D</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-shared-98-100", "title": "共用备选答案 · 第 98~100 题", "front": "<b>下列第 98~100 题共用以下备选答案:</b><br>A.生理性管径不对称<br>B.生理性全程狭窄<br>C.起源异常<br>D.起点异常<br>E.走行变异", "back": "", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": true, "image": "", "figcap": ""}, {"no": "9-3-4", "title": "98. 一侧椎动脉内径全程细(1.8mm)，对侧椎动脉内径正常(3.4mm)，较细的一侧应诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-5", "title": "99. 椎动脉起自主动脉弓，应诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-6", "title": "100. 右侧椎动脉自 C3~4 椎间隙入横突孔上行，应诊断为", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-shared-101-102", "title": "共用备选答案 · 第 101~102 题", "front": "<b>下列第 101~102 题共用以下备选答案:</b><br>A.三相波<br>B.双期双向频谱<br>C.血流速度增快<br>D.无血流信号<br>E.单相频谱，收缩期流速减低，加速时间延长", "back": "", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": true, "image": "", "figcap": ""}, {"no": "9-3-7", "title": "101. 动脉局部重度狭窄，远侧会出现的频谱是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-8", "title": "102. 假性动脉瘤，瘤颈会出现的频谱是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">B</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-shared-103-104", "title": "共用备选答案 · 第 103~104 题", "front": "<b>下列第 103~104 题共用以下备选答案:</b><br>A.动脉内中膜增厚，管壁可见强回声斑块<br>B.经常伴发血栓性浅静脉炎<br>C.病变累及中小动脉<br>D.与寒冷刺激或精神紧张而引起的肢体远端动脉痉挛有关<br>E.病变主要累及主动脉及其分支的起始部", "back": "", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": true, "image": "", "figcap": ""}, {"no": "9-3-9", "title": "103. 多发性大动脉炎会出现的表现是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-10", "title": "104. 动脉硬化闭塞症会出现的表现是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-shared-105-106", "title": "共用备选答案 · 第 105~106 题", "front": "<b>下列第 105~106 题共用以下备选答案:</b><br>A.平卧位<br>B.站立位<br>C.头高脚低位<br>D.坐位<br>E.上述所有体位", "back": "", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": true, "image": "", "figcap": ""}, {"no": "9-3-11", "title": "105. 下肢静脉反流检查，假阴性率最高的体位是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-12", "title": "106. 关于下肢静脉反流检查， 不正确 的体位包括", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">A</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-shared-107-108", "title": "共用备选答案 · 第 107~108 题", "front": "<b>下列第 107~108 题共用以下备选答案:</b><br>A.静脉管径明显扩张，管腔内表现为无回声<br>B.静脉管腔内低-无回声，其近心端自由漂浮在管腔中<br>C.静脉管腔变细，管壁不规则增厚，静脉瓣膜增厚、回声增强<br>D.静脉管腔不能被压瘪<br>E.静脉管径正常，管腔内可见中等回声黏附于壁上，不能完全", "back": "", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": true, "image": "", "figcap": ""}, {"no": "9-3-13", "title": "107. 亚急性期血栓会出现的超声表现是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">E</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-3-14", "title": "108. 慢性期血栓会出现的超声表现是", "front": "<span class=\"opt-ref\">选项见上方「共用备选答案」卡</span>", "back": "<b>正确答案:</b> <span class=\"highlight\">C</span>", "tags": ["B型题", "血管"], "kind": "共用备选答案", "page": 0, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-1", "title": "1. 简述一侧颈内动脉颅外段病变时典型侧支循环途径及 TCD/TCCS 表现。", "front": "", "back": "<b>参考答案:</b><br>一侧颈内动脉颅外段病变时典型侧支循环途径包括三条：①患侧颈内-外动脉侧支循环开放，是患侧眼动脉建立的颈内、外动脉之间的侧支通路。颈外动脉的血流经眼动脉逆行向颈内动脉系统供血，TCD/TCCS表现为眼动脉血流方向逆转或呈双向，血流速度正常或升高，血管搏动指数减低，频谱形态呈低搏动性改变。②前交通动脉开放，为健侧颈内动脉系统经前交通动脉向患侧颈内动脉系统供血的途径，TCD/TCCS表现为患侧大脑前动脉血流方向逆转。③患侧后交通动脉开放，为椎-基底动脉系统通过后交通动脉向患侧\n颈内动脉系统供血，TCD/TCCS表现为患侧大脑后动脉血流速度代偿性升高，TCCS彩色血流模式下可见开放的后交通动脉。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-2", "title": "2. 简述 TCD/TCCS 常用检测声窗及所探查动脉。", "front": "", "back": "<b>参考答案:</b><br>TCD/TCCS 常用检测声窗包括：①颞窗，可探查大脑中动脉、颈内动脉终末端、大脑前动脉、大脑后动脉、前交通动脉和后交通动脉；②眼窗：可探查眼动脉和颈内动脉虹吸部各段，也可探查到对侧大脑中动脉、颈内动脉终末端、大脑前动脉和大脑后动脉；③枕窗：椎动脉、小脑后下动脉和基底动脉；④颌下窗：颈内动脉颅外段。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-3", "title": "3. 简述典型颅内动脉狭窄的血流动力学变化及 TCD/TCCS 表现。", "front": "", "back": "<b>参考答案:</b><br>典型颅内动脉狭窄的血流动力学变化为狭窄段血流速度升高，狭窄即后段血流紊乱以及狭窄以远段血流速度及血管搏动指数均减低，流速升高呈节段性改变。如轻度狭窄时仅表现为狭窄段局部血流速度升高，其近、远段血流速度及频谱形态正常；中度狭窄时TCCS可显示病变处血流束局性变细，流速相对升高，可探及涡流频谱，狭窄以远段血流速度正常或相对减低，频谱形态及血管搏动指数正常；重度狭窄时TCCS可显示病变处局限血流束明显变细，呈“五彩镶嵌”样血流信号，狭窄即后段管腔扩张、血流束增粗，血流紊乱呈湍流改变，狭窄以远段血流充盈暗淡，流速及血管搏动指数减低，频谱形态呈低阻力性改变。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-4", "title": "4. 简述急、慢性大脑中动脉闭塞的 TCD/TCCS 表现。", "front": "", "back": "<b>参考答案:</b><br>（1）急性大脑中动脉闭塞时，TCD/TCCS检测沿大脑中动脉主干均未探及血流信号或仅探及不连续的低速高阻型/单峰型血流信号，而同侧大脑前动脉、大脑后动脉血流速度与健侧比较基本对称。\n\n（2）慢性大脑中动脉闭塞时，TCD/TCCD检测沿大脑中动脉主干可探及不连续的低速低搏动性血流信号，同侧大脑前动脉、大脑后动脉血流速度代偿性升高，频谱形态改变、峰钝，血管搏动指数相对减低。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-5", "title": "5. 简述颈动脉超声常规检查内容及注意事项。", "front": "", "back": "<b>参考答案:</b><br>颈动脉超声常规探查血管包括双侧颈总动脉、颈内动脉、颈外动脉、椎动脉、锁骨下动脉以及无名动脉，测量指标包括血管内径、内-中膜厚度、有无斑块，导致管腔狭窄的程度、闭塞，以及各段血流速度，包括收缩期峰值流速、舒张期末流速和血管阻力指数，观察血流频谱形态。当存在重度狭窄和闭塞性病变时，应进一步评估侧支循环情况，另外还需要对狭窄、闭塞性病变进行病因学鉴别，为临床选择合适的治疗方案提供信息。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-7", "title": "7. 简述颈动脉狭窄的常见病因。", "front": "", "back": "<b>参考答案:</b><br>颈动脉狭窄的常见病因包括：①颈动脉粥样硬化性狭窄、闭塞性病变；②颈动脉栓塞；③颈动脉夹层；④大动脉炎；⑤颈内动脉肌纤维发育不良；⑥外压性病变，如颈动脉体瘤压迫所致等。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-6", "title": "6. 简述颈内、外动脉的主要鉴别点。", "front": "", "back": "<b>参考答案:</b><br>&lt;table border=1 style='margin: auto; word-wrap: break-word;'&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;颈内动脉&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;颈外动脉&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;解剖特征&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;无分支&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;多个分支&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;检测位置&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;后外侧,探头朝向脊柱&lt;/td&gt;&lt;td ...", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-8", "title": "8. 简述颈内动脉狭窄的分级以及超声诊断标准。", "front": "", "back": "<b>参考答案:</b><br>目前颈内动脉狭窄闭塞性病变的超声诊断标准是根据2003年北美放射年会超声会议上公布的血流动力学参数标准，具体数值见下表格，并以二维狭窄率作为辅助指标综合评估狭窄程度。\n\n&lt;table border=1 style='margin: auto; word-wrap: break-word;'&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;狭窄程度&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;PSV ( cm/s )&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;EDV ( cm/s )&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;PSV_{ICA}/PSV_{CCA}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;0 ~ 49%&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;&amp;lt;125&lt;/td&gt;&lt;td style='text-alig...", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-9", "title": "9. 简述锁骨下动脉窃血综合征的超声特征。", "front": "", "back": "<b>参考答案:</b><br>（1）彩色多普勒显示锁骨下动脉起始部或无名动脉“五彩镶嵌”样血流或血流中断；脉冲多普勒测量收缩期峰值流速增加提示动脉狭窄，或采集不到频谱提示闭塞。\n\n（2）椎动脉血流频谱异常：Ⅰ级收缩期血流速度降低，收缩期血流频谱加速度时间延长，出现“切迹”征；Ⅱ级收缩期血流反向，舒张期方向正常；Ⅲ级收缩期血流完全反向。\n\n（3）患侧上肢动脉充盈尚可、血流通畅，但流速较对侧明显检查，CDFI色彩暗淡。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-10", "title": "10. 简述如何提高低速血流显示的敏感性。", "front": "", "back": "<b>参考答案:</b><br>降低彩色多普勒血流速度量程；降低彩色多普勒壁滤波；提高彩色多普勒增益；降低二维增益；降低彩色多普勒角度；尽可能采用垂直彩色多普勒取样框；用能量多普勒探查；避免扫查时用力加压。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-11", "title": "11. 简述真性动脉瘤、假性动脉瘤与动脉夹层的鉴别。", "front": "", "back": "<b>参考答案:</b><br>&lt;table border=1 style='margin: auto; word-wrap: break-word;'&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;真性动脉瘤&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;假性动脉瘤&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;动脉夹层&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;常见病因&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;动脉粥样硬化&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;外伤、感染&lt;/td&gt;&lt;td style='text-align: center; word-wrap: break-word;'&gt;动脉粥样硬化、梅毒、马方综合征等&lt;/td&gt;&lt;...", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-12", "title": "12. 简述急性血栓的二维超声表现。", "front": "", "back": "<b>参考答案:</b><br>急性血栓是指2周之内的血栓，超声表现为：①血栓处静脉明显增粗；②血栓呈无回声或低回声；③静脉管腔不能被压瘪；④急性血栓的近心端往往未黏附于静脉壁，漂浮于管腔中。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-13", "title": "13. 简述下肢静脉瓣功能不全的频谱多普勒表现。", "front": "", "back": "<b>参考答案:</b><br>（1）反流频谱，即远端肢体加压后出现反向血流频谱，反流时间大于1.0秒；\n\n（2）反流时间与反流峰速结合判断反流程度，即反流时间越长、反流峰速越高，反流程度一般较重。", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}, {"no": "9-4-14", "title": "14. 简述海绵状血管瘤和蔓状血管瘤的鉴别要点。", "front": "", "back": "<b>参考答案:</b><br>（1）彩色多普勒检查时，前者在探头加压后迅速放松时血流量和颜色增加明显，后者无需加压，瘤体内血流可清晰显示。\n\n（2）前者为小静脉病，血流缓慢。后者为动静脉异常吻合畸形，其内血流速度较快，表现为高速低阻血流。\n\n（3）结合临床，后者多数疼痛，较前者症状明显。\n\n（华扬 温朝阳 唐杰）", "tags": ["简答题", "血管"], "kind": "简答题", "page": 164, "chapter": "ch9", "static": false, "image": "", "figcap": ""}];
+
+const container = document.getElementById('cards-container');
+let activeFilter = 'all';
+let searchTerm = '';
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function attrEscape(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function cardHTML(card) {
+  const tags = (card.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
+  const searchBlob = ((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '')).toLowerCase();
+  const safeSearch = attrEscape(searchBlob);
+  const safeKind = attrEscape(card.kind);
+  const safeTags = attrEscape((card.tags || []).join(','));
+  const figHTML = card.image ? `<figure class="card-fig"><img src="${card.image}" alt="${attrEscape(card.figcap)}" loading="lazy"><figcaption>${card.figcap || ''}</figcaption></figure>` : '';
+  if (card.static) {
+    const isKp = card.kind === '重点';
+    const icon = isKp ? '⭐' : '🔗';
+    const cls = isKp ? 'static-card kp-static' : 'static-card';
+    return `
+    <div class="card ${cls}" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}" data-static="1">
+      <div class="card-static-inner">
+        <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+        <div class="card-title">${icon} ${card.title}</div>
+        <div class="card-body">${card.front}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+  `;
+  }
+  return `
+    <div class="card" data-tags="${safeTags}" data-search="${safeSearch}" data-kind="${safeKind}">
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <div class="card-no">卡号 ${card.no} ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title">📌 ${card.title}</div>
+          ${figHTML}
+          <div class="card-body">${card.front}</div>
+          <div class="tags">${tags}</div>
+          <div class="flip-hint">💡 点击卡片翻面查看答案</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-no">卡号 ${card.no} · 答案 ${card.page ? `<span class="page-badge">第 ${card.page} 页</span>` : ''}</div>
+          <div class="card-title answer-title">✅ ${card.title}</div>
+          ${figHTML}
+          <div class="card-body answer-body">${card.back}</div>
+          <div class="tags">${tags}</div>
+          <div class="card-actions"><button type="button" class="flip-back-btn">↩︎ 返回题目</button></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCards() {
+  let html = '';
+  let visibleCount = 0;
+  const sections = {
+    '前言': [], '目录': [], '重点': [],
+    '名词解释': [], '填空题': [], '选择题': [], '共用备选答案': [], '简答题': []
+  };
+  const others = [];
+
+  CARDS_DATA.forEach(card => {
+    const tags = card.tags || [];
+    const kind = card.kind || '';
+    let placed = false;
+    for (const k of Object.keys(sections)) {
+      if (tags.includes(k) || kind === k) {
+        sections[k].push(card); placed = true; break;
+      }
+    }
+    if (!placed) others.push(card);
+  });
+
+  // 标题映射
+  const titleMap = {
+    '前言': '📖 前言',
+    '目录': '📚 目录',
+    '重点': '⭐ 重点难点',
+    '名词解释': '📝 名词解释',
+    '填空题': '✏️ 填空题',
+    '选择题': '🔘 选择题',
+    '共用备选答案': '🔗 共用备选答案(B型题)',
+    '简答题': '📋 简答题'
+  };
+
+  let allCards = [];
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    allCards.push({type: 'title', label: titleMap[k], key: k});
+    list.forEach(c => allCards.push({type: 'card', data: c, key: k}));
+  }
+  others.forEach(c => allCards.push({type: 'card', data: c, key: '其他'}));
+
+  allCards.forEach(item => {
+    if (item.type === 'title') {
+      html += `<div class="section-title" id="section-${item.key}" data-section="${item.key}">${item.label} <span style="font-size:13px;color:#94a3b8;">(${sections[item.key]?.length || 0} 张)</span></div>`;
+    } else {
+      const card = item.data;
+      const matchSearch = !searchTerm || (((card.title || '') + ' ' + (card.front || '') + ' ' + (card.back || '') + ' ' + (card.tags || []).join(' ')).toLowerCase().includes(searchTerm));
+      const matchFilter = activeFilter === 'all' ||
+        (card.tags || []).some(t => t === activeFilter) ||
+        card.kind === activeFilter;
+      if (matchSearch && matchFilter) {
+        html += cardHTML(card);
+        visibleCount++;
+      }
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="empty">🚫 没有匹配的卡片</div>';
+  }
+  container.innerHTML = html;
+  container.querySelectorAll('.section-title').forEach(title => {
+    const next = title.nextElementSibling;
+    if (!next || next.classList.contains('section-title')) title.remove();
+  });
+  renderNav(sections, titleMap);
+  document.querySelectorAll('#section-nav a[href^="#section-"]').forEach(link => {
+    const targetId = link.getAttribute('href').slice(1);
+    if (!document.getElementById(targetId)) link.remove();
+  });
+
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+}
+
+function renderNav(sections, titleMap) {
+  const nav = document.getElementById('section-nav');
+  let html = '<a href="#top">⬆️ 顶部</a>';
+  for (const [k, list] of Object.entries(sections)) {
+    if (list.length === 0) continue;
+    const label = titleMap[k] || k;
+    const short = label.replace(/^[^一-龥A-Za-z]+/, '');
+    html += `<a href="#section-${k}">${short}</a>`;
+  }
+  nav.innerHTML = html;
+}
+
+document.getElementById('section-nav').addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+  e.preventDefault();
+  const id = link.getAttribute('href').slice(1);
+  if (id === 'top') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+  const target = document.getElementById(id);
+  if (target) {
+    const top = target.getBoundingClientRect().top + window.scrollY - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+});
+
+container.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('static-card')) return;
+  // 显式"返回题目"按钮:收起答案
+  if (e.target.closest('.flip-back-btn')) {
+    card.classList.remove('flipped');
+    return;
+  }
+  // 已翻面时,点击不再翻回(避免误触遮住答案);仅按钮可收起
+  if (card.classList.contains('flipped')) return;
+  // 正在选择文字(复制)时不翻面
+  const sel = window.getSelection();
+  if (sel && sel.toString().trim().length > 0) return;
+  // 链接/图片等交互元素不触发翻面
+  if (e.target.closest('a, img, button')) return;
+  card.classList.add('flipped');
+});
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderCards();
+  });
+});
+
+document.getElementById('flip-all').addEventListener('click', () => {
+  const cards = document.querySelectorAll('.card:not(.static-card)');
+  const allFlipped = Array.from(cards).every(c => c.classList.contains('flipped'));
+  cards.forEach(c => c.classList.toggle('flipped', !allFlipped));
+});
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value.toLowerCase();
+  renderCards();
+});
+
+window.addEventListener('scroll', () => {
+  document.getElementById('progress').style.width =
+    ((window.scrollY + window.innerHeight) / document.documentElement.scrollHeight * 100) + '%';
+});
+
+// ===== 学习追踪 (艾宾浩斯遗忘曲线) =====
+const EB_INTERVALS = [1, 2, 4, 7, 15, 30, 60, 90];
+const LEVEL_NAMES = ['Lv.0 入门', 'Lv.1 巩固', 'Lv.2 熟练', 'Lv.3 精通', 'Lv.4 大师', 'Lv.5 宗师'];
+const STORAGE_KEY = 'us_xtj_tracker_' + (CARDS_DATA[0]?.chapter || 'default');
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function formatDuration(ms) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h > 0 ? `${pad2(h)}:${pad2(m)}:${pad2(s)}` : `${pad2(m)}:${pad2(s)}`;
+}
+
+function formatRemaining(ms) {
+  if (ms <= 0) return '⏰ 现在该复习啦!';
+  const total = Math.floor(ms / 1000);
+  const d = Math.floor(total / 86400);
+  const h = Math.floor((total % 86400) / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  if (d > 0) return `还有 ${d} 天 ${h} 小时`;
+  if (h > 0) return `还有 ${h} 小时 ${m} 分`;
+  return `还有 ${m} 分钟`;
+}
+
+function loadTracker() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { firstOpen: Date.now(), lastOpen: Date.now(), visits: 0, level: 0, nextReviewAt: null };
+}
+
+function saveTracker(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function recomputeNextReview(state) {
+  if (state.level >= EB_INTERVALS.length) {
+    state.nextReviewAt = null;
+    return;
+  }
+  const days = EB_INTERVALS[state.level];
+  state.nextReviewAt = Date.now() + days * 24 * 3600 * 1000;
+}
+
+const tracker = loadTracker();
+tracker.visits = (tracker.visits || 0) + 1;
+tracker.lastOpen = Date.now();
+if (!tracker.nextReviewAt) recomputeNextReview(tracker);
+saveTracker(tracker);
+
+const sessionStart = Date.now();
+const $elapsed = document.getElementById('elapsed');
+const $visit = document.getElementById('visit-count');
+const $level = document.getElementById('review-level');
+const $next = document.getElementById('next-review');
+const $hint = document.getElementById('review-hint');
+
+function renderTracker() {
+  $elapsed.textContent = formatDuration(Date.now() - sessionStart);
+  $visit.textContent = tracker.visits;
+  $level.textContent = LEVEL_NAMES[Math.min(tracker.level, LEVEL_NAMES.length - 1)];
+  if (tracker.level >= EB_INTERVALS.length) {
+    $next.textContent = '🎉 已完全掌握';
+    $hint.textContent = '你已超越艾宾浩斯曲线,知识长存!';
+  } else {
+    const now = Date.now();
+    if (tracker.nextReviewAt && now >= tracker.nextReviewAt) {
+      $next.textContent = '⏰ 现在该复习啦!';
+      $hint.textContent = `按 Lv.${tracker.level} 间隔 ${EB_INTERVALS[tracker.level]} 天,已到复习点`;
+    } else {
+      $next.textContent = formatRemaining((tracker.nextReviewAt || 0) - now);
+      const nextDays = EB_INTERVALS[tracker.level];
+      $hint.textContent = `当前等级:第 ${tracker.level} 次复习 · 间隔 ${nextDays} 天`;
+    }
+  }
+}
+
+renderTracker();
+setInterval(renderTracker, 1000);
+
+document.getElementById('mark-reviewed').addEventListener('click', () => {
+  tracker.level = Math.min(tracker.level + 1, EB_INTERVALS.length);
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+  const btn = document.getElementById('mark-reviewed');
+  const orig = btn.textContent;
+  btn.textContent = '🎉 已记录!';
+  btn.style.background = '#10b981';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1200);
+});
+
+document.getElementById('reset-tracker').addEventListener('click', () => {
+  if (!confirm('确定要重置本章节的学习记录吗?')) return;
+  tracker.firstOpen = Date.now();
+  tracker.lastOpen = Date.now();
+  tracker.visits = 1;
+  tracker.level = 0;
+  recomputeNextReview(tracker);
+  saveTracker(tracker);
+  renderTracker();
+});
+
+renderCards();
+</script>
+</body>
+</html>
