@@ -25,7 +25,9 @@ export default function BlogPost() {
 
   const html = useMemo(() => {
     if (!post?.body) return "";
-    return marked.parse(post.body);
+    return marked
+      .parse(post.body)
+      .replaceAll("<img ", '<img loading="lazy" decoding="async" ');
   }, [post]);
 
   if (!post || !category) {
