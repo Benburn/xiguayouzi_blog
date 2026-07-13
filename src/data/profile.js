@@ -131,95 +131,179 @@ export const blogCategories = [
 export const blogPosts = [
   // —— 医疗器械 ——
   {
-    slug: "ha-bone-repair-granules",
+    slug: "cytrans-carbonate-apatite",
     category: "device",
-    title: "纳米晶羟基磷灰石骨修复颗粒研发笔记",
+    title: "Cytrans®：碳酸盐磷灰石的优势",
     excerpt:
-      "从仿生沉淀工艺到中试放大，记录一类骨修复材料从实验室到三类医疗器械的完整路径。",
-    date: "2024-11-12",
-    readTime: "12 分钟",
-    cover: null,
-    tags: ["三类医疗器械", "骨修复", "工艺"],
-    body: `# 纳米晶羟基磷灰石骨修复颗粒研发笔记
+      "从理化性质、降解行为和组织学表现出发，对比碳酸盐磷灰石、羟基磷灰石与 β-TCP，并讨论 Cytrans® 的优势与局限。",
+    date: "2026-03-30",
+    readTime: "7 分钟",
+    cover: "/images/device/cytrans-cover.webp",
+    tags: ["碳酸盐磷灰石", "骨修复", "Cytrans"],
+    body: `# Cytrans®：碳酸盐磷灰石的优势
 
-## 起点：为什么选择这条路
+![Cytrans 碳酸盐磷灰石](/images/device/cytrans-cover.webp)
 
-2018 年在北京顶级三甲医院做基础研究时，我第一次完整跑通"锶掺杂羟基磷灰石"的体内外评价。临床医生反复追问的问题是——*这东西到底能不能上车？* 当时我答不上来。
+我们之前报道过碳酸化羟基磷灰石，并留下了很深的印象。用于口腔的骨增量材料需要具备良好的空间维持能力，不能在成骨早期失去“支架”作用——这或许也是一些煅烧牛骨类产品一直受到追捧的原因。
 
-2022 年带着这个问题进入工业界，开始把实验室的"工艺可行"翻译成注册路径上的"工艺可控"。
+“可吸收”只是骨修复材料需要具备的特性之一。材料更重要的课题，是如何在稳定支撑与适时降解之间取得平衡。
 
-## 工艺：从烧杯到反应釜
+## CO₃Ap：Cytrans® Granule
 
-- 仿生沉淀法：钙磷比、温度、pH 三条曲线同时锁死
-- 粒径分布：把 CV 从 18% 压到 5% 以内
-- 清洗工艺：硫化物、氯离子、内毒素的逐级控制
+Cytrans® 是日本 GC 公司研发生产的一款以碳酸盐磷灰石（CO₃Ap）为核心成分的可吸收骨替代材料。它是全球首款以碳酸盐磷灰石为主成分、日本首款获批临床植入的颗粒状骨补填材料，主要用于口腔及骨科骨缺损修复。
 
-> 工艺稳定的本质不是参数越多越好，而是把关键参数变得不可调错。
+![Cytrans 产品外观](/images/device/cytrans-product.webp)
 
-## 注册：三类器械的隐性成本
+![不同规格颗粒的扫描电镜图](/images/device/cytrans-granules.webp)
 
-注册检验、生物学评价、临床前研究——每一步都有可量化的"钱"和不可量化的"等"。
+![颗粒表面扫描电镜图](/images/device/cytrans-sem.webp)
 
-国械注准 202631700** 是这场马拉松的终点线，但它真正的起点是工艺定型那天。
+![植入兔股骨外侧的 X 线图像](/images/device/cytrans-xray.webp)
+
+## CO₃Ap、HAp 与 β-TCP 的理化对比
+
+![CO₃Ap、HAp 与 β-TCP 对比](/images/device/cytrans-comparison.webp)
+
+### 1. CO₃Ap
+
+- 结晶尺寸小、比表面积高、体积密度高，材料致密且无内部孔隙；
+- 碳酸根是其重要组成；
+- 在酸性环境——模拟破骨细胞吸收腔——中溶解最快，在中性生理环境中溶解较温和；
+- 兼顾生物稳定性与骨吸收适配性。
+
+### 2. β-TCP
+
+- 结晶尺寸与 HAp 接近，比表面积最小；
+- 在中性环境中溶解最快；
+- 孔隙率低于 HAp，但仍属于多孔结构；
+- 需要通过较低的比表面积调控溶解速度，使其与新骨形成相匹配。
+
+### 3. HAp
+
+- 孔隙率高，比表面积中等，体积密度较低；
+- 结晶度高、化学稳定性强；
+- 在酸性和中性环境中的溶解速度均最慢；
+- 较难被骨组织完全替代，主要发挥骨引导支架作用。
+
+## 成骨效果对比
+
+植入 12 周后，可通过组织学观察比较羟基磷灰石（Neobone®）、碳酸盐磷灰石（Cytrans®）及 β-磷酸三钙（Cerasorb®）修复犬下颌骨缺损的表现。维兰纽瓦・戈德纳染色中，绿色区域代表骨组织，红色区域代表类骨质。
+
+## 仍需关注的局限
+
+1. 颗粒为致密材料，内部缺少孔隙；
+2. 属于骨引导性材料，缺乏主动的骨诱导功能；
+3. 颗粒状材料容易散落和发生微移动，增量体积与空间维持能力仍有改进空间。
+
+国内厂商也在尝试通过双相成分、镁元素引入等技术路线，改善材料在降解与成骨之间的动态适配。
+
+## 参考文献
+
+Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison of hydroxyapatite, carbonate apatite, and β-tricalcium phosphate bone substitutes. *Materials*. 2018;11(10):1993.
+
+> 本文整理自微信公众号“西瓜柚子”。[阅读公众号原文](https://mp.weixin.qq.com/s?src=11&timestamp=1783945109&ver=6840&signature=oSX5LCK0xsqSHkVx2XaPhWcRkesFb61QcLFTa27EGf-N26-rpN56Gyv7i3r9deoaLkZtA8*MZrtHiSHpaUOT3rM17dsL9VaBm2k4Eblut3ytvZt68Qmb8tvw2FJzhgFT&new=1)
 `,
   },
   {
-    slug: "calcium-phosphate-microspheres",
+    slug: "oss-name-and-bone-grafts",
     category: "device",
-    title: "医美注射用磷酸钙微球：粒径与可注射性",
+    title: "是不是英文商品中有叫“Oss”的都是动物骨修复材料？",
     excerpt:
-      "面向医美填充与再生场景的磷酸钙微球体系，重点拆解粒径调控与可注射性测试。",
-    date: "2024-08-03",
-    readTime: "9 分钟",
-    cover: null,
-    tags: ["医美", "微球", "可注射性"],
-    body: `# 医美注射用磷酸钙微球
+      "“Oss”是与骨相关的拉丁词根，并不等同于动物骨。辨别材料来源，应查看 Xenograft、Alloplast、Allograft 等专业术语。",
+    date: "2026-02-05",
+    readTime: "5 分钟",
+    cover: "/images/device/oss-cover.webp",
+    tags: ["骨修复材料", "Oss", "材料分类"],
+    body: `# 是不是英文商品中有叫“Oss”的都是动物骨修复材料？
 
-## 粒径为什么这么重要
+![Oss 与骨修复材料](/images/device/oss-cover.webp)
 
-粒径直接决定了：
-- 推注力（临床手感）
-- 体内分布（成簇 vs 弥散）
-- 降解周期（与比表面积挂钩）
+答案是：**并不是。**
 
-我们把目标 CV 压在 5% 以内，配套动态光散射 + 激光衍射双方法互相验证。
+英文商品名中带有 “Oss”，并不代表它一定是动物来源的骨修复材料。大家形成这种印象，很可能是因为牙科和骨科领域非常知名的 Bio-Oss（盖氏骨粉）——它是市场上常见的牛骨来源修复材料。
 
-## 可注射性测试的几个误区
+实际上，“Oss”这个词根的含义更广泛，虽然大多与骨骼相关，但不能直接用来判断材料来源。
 
-1. 只看 27G 针管，忽略 30G
-2. 推注力只看峰值，不看曲线
-3. 没有对比空白基质
+## 词源：Oss = 骨
 
-## 中试放大踩过的坑
+“Oss”或“Os”源自拉丁语，意思是“骨头”。常见词汇包括：
 
-- 反应釜放大 50 倍时，搅拌雷诺数下降导致局部过饱和
-- 通过引入轴向流叶片 + 循环回路解决
+1. **Ossify**：骨化；
+2. **Osseous**：骨的、骨质的；
+3. **Ossuary**：纳骨塔、人骨盒。
+
+在医学领域，另一个更常见的骨相关词根是 **Osteo-**，例如 Osteoporosis（骨质疏松症）、Osteoarthritis（骨关节炎）和 Osteogenesis（骨生成）。
+
+因此，医疗厂商常用这些词根为骨科、牙科或骨骼健康相关产品命名，并不只用于动物骨粉。
+
+## 名称带“Oss”，但不是动物骨的例子
+
+- **Össur（奥索）**：冰岛假肢与支具厂商，产品以碳纤维、硅胶及机械结构为主，并非动物骨修复材料；
+- **Osstem（奥齿泰）**：韩国种植牙品牌，核心产品包括钛合金种植体；该企业也提供骨修复类产品，但不能仅凭品牌名称判断材料来源；
+- **合成骨粉**：许多以磷酸钙、羟基磷灰石为主要成分的人工合成骨修复材料，也会使用带有“Oss”的商品名。
+
+## 如何判断材料是不是动物骨？
+
+查看牙科或骨科材料时，不要只看商品名，而应重点寻找包装、说明书或注册资料中的专业术语：
+
+- **Xenograft（异种骨）**：动物来源，常见来源包括牛骨（Bovine）和猪骨（Porcine）；
+- **Alloplast（合成骨）**：人工化学合成，不含动物来源成分；
+- **Allograft（同种异体骨）**：经过处理的人体捐赠骨；
+- **Autograft（自体骨）**：取自患者自身的骨组织。
+
+> 判断骨修复材料来源，专业分类和注册信息比商品名称更可靠。
+
+> 本文整理自微信公众号“西瓜柚子”。[阅读公众号原文](https://mp.weixin.qq.com/s?src=11&timestamp=1783944995&ver=6840&signature=oSX5LCK0xsqSHkVx2XaPhWcRkesFb61QcLFTa27EGf8iQ*ucpmZU6-qUw2y46-TGsR3exDjWnJ5VoyEebEBxp*IjzMrmqW17So9BftIkwakdMNef1292rxxharTao2J7&new=1)
 `,
   },
   {
-    slug: "class-iii-registration",
+    slug: "calcium-phosphate-bone-implants",
     category: "device",
-    title: "三类医疗器械注册全流程复盘",
+    title: "什么！大部分骨植入材料都是磷酸钙类材料？",
     excerpt:
-      "从立项到拿证，一份完整的注册路径地图与时间表。",
+      "梳理 51 例 NMPA 批准的国产非承重骨修复产品后发现，96% 的产品含有磷酸钙材料。为什么市场会形成这种格局？",
     date: "2024-05-20",
-    readTime: "15 分钟",
-    cover: null,
-    tags: ["注册", "三类", "路径"],
-    body: `# 三类医疗器械注册全流程复盘
+    readTime: "5 分钟",
+    cover: "/images/device/calcium-phosphate-cover.webp",
+    tags: ["磷酸钙", "骨植入材料", "NMPA"],
+    body: `# 什么！大部分骨植入材料都是磷酸钙类材料？
 
-## 总览
+![磷酸钙类骨植入材料](/images/device/calcium-phosphate-cover.webp)
 
-- 立项 → 工艺定型：6-9 个月
-- 型检 → 生物学评价：9-12 个月
-- 临床前研究：3-6 个月
-- 申报 → 审评 → 拿证：12-18 个月
+## 现象：96% 的产品含有磷酸钙材料
 
-## 一些不写在 SOP 里的经验
+我们整理了 **51 例 NMPA 批准的国产非承重骨修复产品**，并按照组成成分进行分析。其中只有 2 例以生物活性玻璃为主要材料，其余产品均含有羟基磷灰石、β-磷酸三钙、动物来源磷酸钙或磷酸氢钙等磷酸钙材料，占比约 **96%**。
 
-- 注册专员要尽早介入工艺定型
-- 生物学评价的"等报告"阶段最磨人
-- 审评发补是常态，第一轮能过的才是少数
+如果按元素组成计算，纳入统计的产品中 **100% 含有钙和（或）磷元素**。
+
+![骨移植材料产品梳理](/images/device/calcium-phosphate-products.webp)
+
+## 为什么是磷酸钙材料？
+
+我们认为主要有以下几个原因：
+
+1. **与人体无机成分相似**：钙、磷参与人体细胞的重要生理代谢；
+2. **研究历史悠久**：早在 17 世纪，就有动物来源异种骨用于骨移植的记录；
+3. **临床使用量大**：材料的基本性质与主要使用风险已经较为清楚；
+4. **性能稳定、便于复配**：磷酸钙材料能够与其他材料复合，也可以通过离子掺杂等方式改性，整体生物相容性良好；
+5. **来源广泛且可控**：既可以从生物组织提取，也可以通过钙磷反应人工合成，并能形成多种材料形态。
+
+![磷酸钙材料的研究与应用](/images/device/calcium-phosphate-history.webp)
+
+## 未来仍会由磷酸钙材料占据主要市场吗？
+
+答案仍然是肯定的。
+
+未来的骨科植入材料会向精准化、定制化与智能化发展。例如在增材制造领域，以磷酸钙材料制备可打印墨水，已经成为重要技术路线之一。
+
+但磷酸钙材料本身制造门槛与成本相对有限。未来更值得关注的方向，是将其与其他材料复配、进行结构与成分改性，在保留生物相容性的同时扩展应用边界和产品价值。
+
+## 参考文献
+
+1. Pawelec K, Planell JA, eds. *Bone Repair Biomaterials: Regeneration and Clinical Applications*. 2018.
+2. Ong JL, Guda T, eds. *Translating Biomaterials for Bone Graft: Bench-top to Clinical Applications*. CRC Press; 2017.
+
+> 本文整理自微信公众号“西瓜柚子”。[阅读公众号原文](https://mp.weixin.qq.com/s?src=11&timestamp=1783944995&ver=6840&signature=oSX5LCK0xsqSHkVx2XaPhWcRkesFb61QcLFTa27EGf-PCUbBQ*wqMsMonCvStSxK5qhWwjZL0qXtvYWaTuHBrK93ALYxHpi9HQheo6-d73UYGvMDPcpWkWq5bfo*gAN9&new=1)
 `,
   },
 
