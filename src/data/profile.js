@@ -309,6 +309,38 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "female-reproductive-system-ultrasound-cards",
+    category: "imaging",
+    title: "女性生殖系统超声知识卡片",
+    excerpt:
+      "围绕女性生殖系统解剖、经阴道超声、辅助生殖、妇科疾病与早孕等内容，整理为 31 个中英双语专题，并提供 78 幅内嵌图片和原书 PDF 页码索引。",
+    date: "2026-07-14",
+    readTime: "2 分钟",
+    cover: null,
+    tags: ["妇科超声", "生殖医学", "知识卡片"],
+    body: `# 女性生殖系统超声知识卡片
+
+这套学习工具以 *Ultrasonography of the Female Reproductive System* 为内容基础，把女性生殖系统超声的核心知识整理为 **31 个中英双语专题**，适合按章节系统复习，也适合临床工作中快速查阅。
+
+## 内容覆盖
+
+- 女性生殖系统解剖与生理；
+- 超声物理、探头选择、二维及三维超声成像；
+- 经阴道超声标准化检查；
+- 卵泡监测、取卵与胚胎移植超声引导；
+- 输卵管通畅性、子宫内膜容受性与常见妇科疾病；
+- 正常早孕、异位妊娠及妊娠并发症。
+
+## 使用方式
+
+每个专题均可独立打开，支持上一专题、下一专题快速切换和五套阅读主题。页面共内嵌 **78 幅原书图片**，点击图片可放大查看；专题标题下方标注了原著页码，点击即可打开随附 PDF 的对应起始页。电脑和手机浏览器均可使用。
+
+<p><a class="knowledge-card-launch" href="/female-reproductive-ultrasound-cards/index.html">打开女性生殖系统超声知识卡片 <span>→</span></a></p>
+
+> 本项目仅供学习与知识整理使用，具体诊断与临床决策请以原著、现行指南及实际临床情况为准。
+`,
+  },
+  {
     slug: "ultrasound-imaging-flashcards",
     category: "imaging",
     title: "医学超声影像学知识卡片",
