@@ -309,6 +309,64 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "chronic-pancreatitis-ultrasound",
+    category: "imaging",
+    title: "胰腺里出现“亮点＋黑影”，意味着什么？一图读懂慢性胰腺炎超声",
+    excerpt:
+      "从胰腺钙化、主胰管异常、实质改变和并发症四个方面，梳理慢性胰腺炎的常见超声表现，并说明为什么不能只凭单一征象下结论。",
+    date: "2026-07-15",
+    readTime: "5 分钟",
+    cover: "/images/imaging/chronic-pancreatitis/normal-vs-chronic-pancreatitis.png",
+    tags: ["慢性胰腺炎", "超声医学", "影像科普"],
+    body: `# 胰腺里出现“亮点＋黑影”，意味着什么？一图读懂慢性胰腺炎超声
+
+> 超声看到胰腺钙化、主胰管改变或实质萎缩，就等于确诊慢性胰腺炎吗？答案是：不能只看单一征象，但有些组合非常值得警惕。
+
+![正常胰腺与慢性胰腺炎超声对照标注图](/images/imaging/chronic-pancreatitis/normal-vs-chronic-pancreatitis.png)
+
+## 先看结论：超声最该抓住的 4 个信号
+
+1. **胰腺钙化**：表现为实质内或胰管内强回声灶；足够大的钙化常伴后方声影。胰管内钙化在合适的临床背景下高度提示慢性胰腺炎。
+2. **主胰管改变**：可见扩张、管径不均、走行迂曲或不规则，也可伴狭窄与结石。
+3. **实质改变**：胰腺回声可增粗、不均，晚期可出现体积缩小、实质萎缩；但单纯回声改变特异性有限。
+4. **并发症线索**：假性囊肿、胆管扩张、脾静脉血栓等也可能被超声发现。
+
+## 正常与异常，怎么对照？
+
+| 观察点 | 正常胰腺 | 慢性胰腺炎常见表现 |
+|---|---|---|
+| 实质 | 回声较均匀，轮廓与大小大致正常 | 回声增粗或不均；晚期可萎缩 |
+| 钙化 | 通常无 | 强回声灶，部分伴后方声影 |
+| 主胰管 | 不扩张，走行较规则 | 扩张、迂曲、狭窄或管径不均 |
+| 显示条件 | 可能受肠气影响 | 同样可能因肠气、体型而显示不全 |
+
+### 需要修正的“概念”
+
+- **“钙化常伴彗尾伪影”不宜作为核心知识点。** 慢性胰腺炎钙化更经典的描述是强回声灶及后方声影；小钙化可不伴声影，也可能出现彩色多普勒闪烁伪影。彗尾伪影不是该病的常规关键诊断征象。
+- **“主胰管直径通常超过 3 mm”过于绝对。** 管径受测量部位、年龄及检查条件影响；不能把单一阈值当作确诊标准。更稳妥的表述是“主胰管扩张、走行不规则或管径变化”，并结合其他影像征象。
+- **“胰腺显示不清＝萎缩”不成立。** 显示不清常由胃肠气体、体型或声窗欠佳导致；萎缩需要在充分显示后结合体积、轮廓及其他影像检查判断。
+- **“小钙化逐渐融合”可作为病程现象理解，但不能据单次超声宣称动态进展。** 需要同一患者的连续影像对照。
+- **需与其他原因鉴别。** 胰管结石可属于慢性胰腺炎表现的一部分；同时应注意肿瘤性梗阻、年龄相关改变等。局灶性肿块、突然出现的胰管截断或上游萎缩尤其需要排除胰腺肿瘤。
+
+## 为什么不能只靠一次超声下结论？
+
+经腹超声无创、便捷，适合发现明显钙化、胰管改变及部分并发症，但胰腺容易被肠气遮挡，而且早期慢性胰腺炎可能没有典型形态改变。疑似病例通常需要结合症状、危险因素、胰腺功能，以及胰腺协议 CT、MRI/MRCP 或 EUS 综合判断。
+
+## 何时应尽快就医？
+
+反复或持续上腹痛、疼痛向背部放射、原因不明的体重下降、油脂样大便、反复胰腺炎，或影像提示胰腺钙化/胰管异常时，应至消化内科或胰腺专科进一步评估。
+
+> **医学声明：** 本文用于健康科普与影像学习，不能替代医生面诊、正式超声报告或个体化诊疗建议。
+
+## 参考依据
+
+1. Conwell DL, et al. American Pancreatic Association Practice Guidelines in Chronic Pancreatitis: Evidence-Based Report on Diagnostic Guidelines. *Pancreas*. 2014. [查看全文](https://pmc.ncbi.nlm.nih.gov/articles/PMC5434978/)
+2. Löhr JM, et al. United European Gastroenterology evidence-based guidelines for the diagnosis and therapy of chronic pancreatitis (HaPanEU). *United European Gastroenterology Journal*. 2017. [查看全文](https://pmc.ncbi.nlm.nih.gov/articles/PMC5349368/)
+3. Gardner TB, et al. ACG Clinical Guideline: Chronic Pancreatitis. *American Journal of Gastroenterology*. 2020. [查看摘要](https://pubmed.ncbi.nlm.nih.gov/32022720/)
+4. Ito T, et al. Evidence-based clinical practice guidelines for chronic pancreatitis 2021. *Journal of Gastroenterology*. 2022. [查看全文](https://pmc.ncbi.nlm.nih.gov/articles/PMC9522716/)
+`,
+  },
+  {
     slug: "female-reproductive-system-ultrasound-cards",
     category: "imaging",
     title: "女性生殖系统超声知识卡片",
