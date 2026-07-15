@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useLayoutEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Hero from "./components/Hero.jsx";
 import About from "./components/About.jsx";
@@ -31,9 +32,39 @@ function Layout({ children }) {
   );
 }
 
+// React Router 默认会沿用当前滚动位置；进入新栏目或文章时统一回到页面顶部。
+function RouteScrollReset() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const previousMode = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    return () => {
+      window.history.scrollRestoration = previousMode;
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const resetScroll = () => {
+      const root = document.documentElement;
+      const previousBehavior = root.style.scrollBehavior;
+      root.style.scrollBehavior = "auto";
+      window.scrollTo(0, 0);
+      root.style.scrollBehavior = previousBehavior;
+    };
+
+    resetScroll();
+    const frameId = window.requestAnimationFrame(resetScroll);
+    return () => window.cancelAnimationFrame(frameId);
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <RouteScrollReset />
       <Routes>
         <Route
           path="/"
