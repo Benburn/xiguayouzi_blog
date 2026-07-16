@@ -309,6 +309,34 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "ultrasound-medicine-second-edition",
+    category: "imaging",
+    title: "《超声医学（第2版）》在线学习版",
+    excerpt:
+      "全书整理为 21 章、112 节的网页阅读器，包含 1303 张原书图片，支持多级目录、全文搜索、字号调整和个人标注。",
+    date: "2026-07-16",
+    readTime: "2 分钟",
+    cover: null,
+    tags: ["超声医学", "在线教材", "学习工具"],
+    body: `# 《超声医学（第2版）》在线学习版
+
+这是一套面向超声医学系统学习与临床查阅的在线阅读工具。内容覆盖超声成像基础、心脏、胸腹部、泌尿系统、妇产、外周血管、浅表器官、肌肉骨骼和介入超声等主题。
+
+## 内容与功能
+
+- **21 章、112 节**，通过章、节、小节和子目四级目录快速定位；
+- 包含 **1303 张原书图片**，图片随正文加载，点击目录即可跳转到对应内容；
+- 支持目录关键词搜索和正文全文搜索；
+- 支持字号增减，方便电脑和手机阅读；
+- 支持个人高亮与标注，内容保存在当前浏览器中；
+- 响应式阅读界面，手机端可通过“目录”按钮展开章节导航。
+
+<p><a class="knowledge-card-launch" href="/ultrasound-medicine-2e/index.html">打开《超声医学（第2版）》在线学习版 <span>→</span></a></p>
+
+> 本项目仅用于个人学习、知识整理与教学参考。相关文字与图片版权归原作者及出版机构所有，请勿用于商业传播；具体诊断和临床决策请以现行指南及实际临床情况为准。
+`,
+  },
+  {
     slug: "chronic-pancreatitis-ultrasound",
     category: "imaging",
     title: "胰腺里出现“亮点＋黑影”，意味着什么？一图读懂慢性胰腺炎超声",
