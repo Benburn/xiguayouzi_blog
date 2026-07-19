@@ -309,6 +309,37 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "pocus-appendicitis-cn",
+    category: "imaging",
+    title: "急性阑尾炎床旁超声（POCUS）中文图解教程",
+    excerpt:
+      "通过 16 幅连续超声动图和 4 幅教学示意图，系统学习探头选择、分级加压、正常阑尾识别、急性阑尾炎征象与系统扫查路径。",
+    date: "2026-07-19",
+    readTime: "12 分钟",
+    cover: null,
+    tags: ["阑尾炎", "床旁超声", "POCUS"],
+    body: `# 急性阑尾炎床旁超声（POCUS）中文图解教程
+
+这是一份面向急诊、全科、超声及床旁医学学习者的中文图解教程。项目使用 **16 幅连续超声动图** 和 **4 幅教学示意图**，帮助你从解剖定位开始，逐步建立急性阑尾炎的系统扫查思路。
+
+## 主要内容
+
+- 高频线阵与低频探头的选择；
+- 分级加压与右下腹解剖标志定位；
+- 正常阑尾的盲端、可压缩和横纵切表现；
+- 急性阑尾炎的管径增大、不可压缩及靶样改变；
+- 阑尾石、周围游离液和“火环征”等继发征象；
+- 找不到阑尾时的系统化搜索路径；
+- 报告记录与临床沟通要点。
+
+所有 GIF 均保持动态图形式，可直接在电脑或手机浏览器中连续查看。
+
+<p><a class="knowledge-card-launch" href="/pocus-appendicitis-cn/index.html">打开阑尾炎 POCUS 中文图解教程 <span>→</span></a></p>
+
+> 本项目仅用于医学学习与教学交流，不能替代临床诊断、正式影像报告或个体化诊疗建议。原始图片与资料版权归原作者及来源网站所有，完整来源和版权说明已集中标注在教程文末。
+`,
+  },
+  {
     slug: "ultrasound-medicine-second-edition",
     category: "imaging",
     title: "《超声医学（第2版）》在线学习版",
