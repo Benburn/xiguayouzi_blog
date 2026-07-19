@@ -37,18 +37,22 @@ function CategoryBlock({ category }) {
   return (
     <article className={`project-block project-block--${category.color}`}>
       {/* 左侧：分类信息 */}
-      <div className="project-block__head">
+      <Link
+        to={`/blog/${category.id}`}
+        className="project-block__head"
+        aria-label={`查看${category.title}栏目全部文章`}
+      >
         <div className="project-block__code">{category.code}</div>
         <div className="project-block__titles">
           <h3 className="project-block__title">{category.title}</h3>
           <div className="project-block__subtitle">{category.subtitle}</div>
         </div>
         <p className="project-block__desc">{category.description}</p>
-        <Link to={`/blog/${category.id}`} className="project-block__more">
+        <span className="project-block__more">
           <span>查看全部文章</span>
           <span className="arrow">→</span>
-        </Link>
-      </div>
+        </span>
+      </Link>
 
       {/* 右侧：文章列表 */}
       <div className="project-block__posts">
