@@ -6,75 +6,281 @@
 <meta name="description" content="急性阑尾炎床旁超声（POCUS）中文图解教程，包含探头选择、分级加压、正常阑尾、急性阑尾炎征象与系统扫查动态图。">
 <title>阑尾炎床旁超声（POCUS）中文教程</title>
 <style>
-:root { color-scheme: light; --ink:#17202a; --muted:#5a6673; --line:#d9e1e8; --accent:#0f766e; --paper:#ffffff; --soft:#f5f8fa; }
+:root {
+  color-scheme: light;
+  --ink: #0b2447;
+  --text: #29496d;
+  --muted: #66809d;
+  --line: #dce8f5;
+  --accent: #2478df;
+  --accent-dark: #125db8;
+  --paper: #fff;
+  --soft: #f3f8fe;
+  --canvas: #eef5fc;
+  --shadow: 0 24px 70px rgba(25, 75, 130, .1);
+}
 *, *::before, *::after { box-sizing: border-box; }
-body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif; color:var(--ink); background:#eef3f5; line-height:1.72; }
-main { max-width: 980px; margin: 0 auto; padding: 42px 22px 72px; background:var(--paper); }
-h1 { font-size: 32px; line-height:1.25; margin: 0 0 12px; }
-h2 { font-size: 22px; margin: 34px 0 12px; padding-top: 6px; border-top: 1px solid var(--line); }
-p, li { font-size: 16px; }
-.lead { color:var(--muted); font-size: 15px; }
-.notice { border-left: 4px solid var(--accent); background: var(--soft); padding: 12px 16px; margin: 20px 0; }
-figure { margin: 22px 0 30px; padding: 0; }
-figure img { max-width: 100%; height: auto; display:block; border:1px solid var(--line); background:#111; }
-figcaption { margin-top: 8px; font-size: 14px; color:var(--muted); }
-table { width:100%; border-collapse:collapse; margin-top: 12px; font-size:14px; }
-th, td { border:1px solid var(--line); padding:8px 10px; vertical-align:top; }
-th { background:var(--soft); text-align:left; }
-code { font-family: Consolas, "SFMono-Regular", monospace; font-size: 13px; }
-a { color:#0f5f87; }
-.site-back { display:inline-flex; align-items:center; gap:8px; margin:0 0 24px; padding:9px 14px; border:1px solid #cfe0f6; border-radius:999px; background:#f3f8fe; color:#155ca8; font-size:14px; font-weight:650; text-decoration:none; }
-.site-back:hover { background:#e8f2fd; border-color:#a9c9ed; }
-.content-attribution { margin-top:24px; }
-figure img { width:auto; margin-inline:auto; border-radius:8px; }
-@media (max-width: 640px) { main { padding:24px 14px 56px; } h1 { font-size:27px; } h2 { font-size:20px; } figure { margin:18px 0 24px; } figcaption { font-size:13px; line-height:1.6; } .pdf-watermark { font-size:34pt; } }
-@media print { body { background:#fff; } main { padding: 20px; } figure { break-inside: avoid; } .site-back { display:none; } }
-</style>
-
-<style id="pdf-export-style">
-@page { size: A4; margin: 14mm 14mm 16mm; }
-html, body { margin: 0; padding: 0; background: #fff; }
-body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-main { max-width: none; margin: 0; padding: 0; }
-h1 { margin-top: 0; }
-h2 { break-after: avoid; page-break-after: avoid; }
-figure, .notice { break-inside: avoid; page-break-inside: avoid; }
-figure img { max-height: 220mm; object-fit: contain; }
-table { break-inside: auto; }
-thead { display: table-header-group; }
-tr { break-inside: avoid; page-break-inside: avoid; }
+html { scroll-behavior: smooth; scroll-padding-top: 82px; }
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 92% 4%, rgba(96, 196, 232, .16), transparent 28rem),
+    var(--canvas);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+  line-height: 1.82;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  position: relative;
+  z-index: 2;
+  width: min(calc(100% - 40px), 1120px);
+  margin: 24px auto 48px;
+  padding: 34px clamp(28px, 6vw, 84px) 90px;
+  overflow: hidden;
+  border: 1px solid rgba(194, 214, 235, .82);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: var(--shadow);
+}
+h1 {
+  max-width: 900px;
+  margin: 34px 0 18px;
+  color: var(--ink);
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 760;
+  letter-spacing: -.045em;
+  line-height: 1.16;
+}
+h2 {
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-size: clamp(25px, 3vw, 34px);
+  font-weight: 720;
+  letter-spacing: -.025em;
+  line-height: 1.3;
+}
+p, li { font-size: 17px; }
+p { margin: 14px 0; }
+ul, ol { margin: 16px 0 0; padding-left: 1.4em; }
+li { margin: 8px 0; padding-left: .25em; }
+li::marker { color: var(--accent); font-weight: 700; }
+a { color: var(--accent-dark); }
+.lead {
+  max-width: 880px;
+  margin: 0 0 34px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.9;
+}
+.site-back {
+  position: sticky;
+  top: 14px;
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  margin: 0;
+  padding: 8px 15px;
+  border: 1px solid rgba(171, 202, 236, .9);
+  border-radius: 999px;
+  background: rgba(247, 251, 255, .92);
+  box-shadow: 0 8px 24px rgba(23, 83, 146, .08);
+  color: #155ca8;
+  font-size: 14px;
+  font-weight: 680;
+  text-decoration: none;
+  backdrop-filter: blur(14px);
+  transition: .2s ease;
+}
+.site-back:hover { border-color: #87b8ed; background: #fff; transform: translateY(-1px); }
+.toc {
+  max-width: 880px;
+  margin: 0 0 18px;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f7fbff, #eef7ff);
+}
+.toc__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.toc__title { color: var(--ink); font-size: 17px; font-weight: 750; }
+.toc__meta { color: var(--muted); font-size: 12px; letter-spacing: .08em; }
+.toc ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px 26px; margin: 0; padding: 0; list-style: none; counter-reset: toc; }
+.toc li { margin: 0; padding: 0; counter-increment: toc; }
+.toc a {
+  display: flex;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 9px;
+  color: #365a80;
+  font-size: 14px;
+  line-height: 1.45;
+  text-decoration: none;
+}
+.toc a::before { content: counter(toc, decimal-leading-zero); color: var(--accent); font: 700 11px/1.9 ui-monospace, monospace; }
+.toc a:hover, .toc a[aria-current="true"] { background: #fff; color: var(--accent-dark); }
+section {
+  max-width: 880px;
+  margin: 0;
+  padding: 48px 0 12px;
+  border-top: 1px solid var(--line);
+}
+.notice {
+  margin: 24px 0;
+  padding: 17px 20px;
+  border: 1px solid #cfe1f5;
+  border-left: 4px solid var(--accent);
+  border-radius: 0 14px 14px 0;
+  background: var(--soft);
+  color: #31577d;
+}
+figure {
+  width: 100%;
+  margin: 28px 0 38px;
+  overflow: hidden;
+  border: 1px solid #d6e3f0;
+  border-radius: 18px;
+  background: #0a1724;
+  box-shadow: 0 16px 44px rgba(20, 58, 94, .1);
+}
+figure img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 78vh;
+  margin: 0 auto;
+  object-fit: contain;
+  background: #0a1724;
+}
+figcaption {
+  margin: 0;
+  padding: 13px 16px 15px;
+  border-top: 1px solid #dce6ef;
+  background: #fff;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.content-attribution { margin-top: 26px; }
+.reading-progress {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2478df, #39b8d7);
+  box-shadow: 0 1px 8px rgba(36, 120, 223, .3);
+}
+.back-top {
+  position: fixed;
+  z-index: 40;
+  right: 22px;
+  bottom: 22px;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 12px 28px rgba(36, 120, 223, .28);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: .22s ease;
+}
+.back-top.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
 .pdf-watermark {
   position: fixed;
+  z-index: 8;
   left: 50%;
   top: 50%;
-  z-index: 9999;
   transform: translate(-50%, -50%) rotate(-30deg);
-  color: rgba(15, 118, 110, 0.11);
+  color: rgba(32, 111, 200, .055);
   font-family: "Microsoft YaHei", "SimHei", sans-serif;
-  font-size: 50pt;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-size: clamp(34pt, 7vw, 58pt);
+  font-weight: 750;
+  letter-spacing: .16em;
   white-space: nowrap;
   pointer-events: none;
+  user-select: none;
 }
-.watermark-note {
-  margin: 18px 0 20px;
-  padding: 9px 14px;
-  border-left: 4px solid #0f766e;
-  background: #f5f8fa;
-  color: #5a6673;
-  font-size: 14px;
+@media (min-width: 1200px) {
+  section, .toc, .lead { margin-left: auto; margin-right: auto; }
+  h1 { margin-left: auto; margin-right: auto; }
+}
+@media (max-width: 900px) {
+  main { width: min(calc(100% - 24px), 860px); margin-top: 12px; padding: 26px 34px 74px; border-radius: 22px; }
+  h1 { margin-top: 28px; font-size: clamp(36px, 7vw, 52px); }
+  section { padding-top: 42px; }
+  figure img { max-height: 72vh; }
+}
+@media (max-width: 640px) {
+  html { scroll-padding-top: 68px; }
+  body { background: #fff; }
+  main { width: 100%; margin: 0; padding: 18px 14px 58px; border: 0; border-radius: 0; box-shadow: none; }
+  .site-back { top: 8px; min-height: 40px; padding: 7px 13px; font-size: 13px; }
+  h1 { margin: 25px 0 15px; font-size: clamp(31px, 9.8vw, 42px); letter-spacing: -.035em; line-height: 1.2; }
+  h2 { font-size: 25px; line-height: 1.35; }
+  p, li { font-size: 16.5px; line-height: 1.86; }
+  .lead { margin-bottom: 24px; font-size: 16px; line-height: 1.82; }
+  .toc { margin-bottom: 4px; padding: 17px 14px; border-radius: 14px; }
+  .toc__head { margin-bottom: 9px; }
+  .toc ol { grid-template-columns: 1fr; gap: 1px; }
+  .toc a { padding: 7px 5px; font-size: 14px; }
+  section { padding: 36px 0 6px; }
+  .notice { padding: 14px 15px; border-radius: 0 12px 12px 0; }
+  figure { margin: 22px 0 30px; border-radius: 13px; box-shadow: 0 10px 28px rgba(20, 58, 94, .09); }
+  figure img { width: 100%; max-height: none; }
+  figcaption { padding: 11px 12px 13px; font-size: 13px; line-height: 1.62; }
+  .back-top { right: 14px; bottom: 14px; width: 44px; height: 44px; }
+  .pdf-watermark { font-size: 31pt; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: .01ms !important; }
+}
+@media print {
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  main { width: auto; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; box-shadow: none; }
+  .site-back, .toc, .reading-progress, .back-top { display: none !important; }
+  h1 { margin-top: 0; }
+  h2 { break-after: avoid; page-break-after: avoid; }
+  figure, .notice { break-inside: avoid; page-break-inside: avoid; }
+  figure img { max-height: 220mm; object-fit: contain; }
 }
 </style>
 </head>
 <body>
+<div id="reading-progress" class="reading-progress" aria-hidden="true"></div>
 <div class="pdf-watermark" aria-hidden="true">西瓜柚子</div>
 <main>
 <a class="site-back" href="/blog/imaging">← 返回医学影像</a>
 <h1>阑尾炎床旁超声（POCUS）中文教程</h1>
 <p class="lead">这是一份面向急诊、全科、超声及床旁医学学习者的中文图解教程，通过连续动态图梳理探头选择、分级加压、正常阑尾识别、急性阑尾炎征象与系统扫查路径。内容用于学习交流，不替代临床诊断、正式影像报告或当地诊疗流程。</p>
+<nav class="toc" aria-label="章节导航">
+<div class="toc__head"><span class="toc__title">章节速览</span><span class="toc__meta">10 SECTIONS · 16 GIFS</span></div>
+<ol>
+<li><a href="#learning-goals">学习目标</a></li>
+<li><a href="#evidence">证据与临床定位</a></li>
+<li><a href="#probe-selection">探头选择</a></li>
+<li><a href="#scan-workflow">基本扫查流程</a></li>
+<li><a href="#normal-appendix">正常解剖与正常阑尾</a></li>
+<li><a href="#primary-signs">急性阑尾炎的主要征象</a></li>
+<li><a href="#secondary-signs">继发征象</a></li>
+<li><a href="#systematic-search">找不到阑尾时的系统扫查</a></li>
+<li><a href="#reporting">报告与临床沟通要点</a></li>
+<li><a href="#references">来源、版权与参考</a></li>
+</ol>
+</nav>
 <section>
-<h2>1. 学习目标</h2>
+<h2 id="learning-goals">1. 学习目标</h2>
 <ul>
 <li>掌握疑似阑尾炎时的探头选择、体位、扫查入口和加压技巧。</li>
 <li>识别正常阑尾的盲端、可压缩、外径较小等特征。</li>
@@ -83,20 +289,20 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 </ul>
 </section>
 <section>
-<h2>2. 证据与临床定位</h2>
+<h2 id="evidence">2. 证据与临床定位</h2>
 <p>床旁超声在儿童阑尾炎评估中很有价值，尤其适合减少不必要的电离辐射。原文引用的系统评价显示，在 461 名儿童数据中，急诊医师 POCUS 诊断阑尾炎的敏感度约 86%，特异度约 91%，阳性似然比约 9.24，阴性似然比约 0.17。</p>
 <div class="notice">实用理解：看到典型阳性表现时，POCUS 可显著提高诊断可信度；但阴性或未显示阑尾不能单独排除阑尾炎。临床仍需结合病史、查体、实验室、复查、放射科超声、CT 或 MRI。</div>
 <figure><img loading="lazy" decoding="async" src="images/fig01_evidence_atlas.png" alt="图 1：儿科阑尾炎证据图：用于快速回顾 POCUS 在阑尾炎评估中的证据基础。"><figcaption>图 1. 儿科阑尾炎证据图：用于快速回顾 POCUS 在阑尾炎评估中的证据基础。</figcaption></figure>
 </section>
 <section>
-<h2>3. 探头选择</h2>
+<h2 id="probe-selection">3. 探头选择</h2>
 <p>首选高频线阵探头，尤其是儿童和体型较瘦成人。线阵探头分辨率高，更容易看清浅表右下腹结构和阑尾壁层次。</p>
 <figure><img loading="lazy" decoding="async" src="images/fig02_linear_probe.jpg" alt="图 2：高频线阵探头：儿童或体型较瘦成人通常优先选择，分辨率更高。"><figcaption>图 2. 高频线阵探头：儿童或体型较瘦成人通常优先选择，分辨率更高。</figcaption></figure>
 <p>当患者体型较大、肠气多、阑尾位置较深、怀疑后盲肠阑尾，或线阵穿透不足时，换用低频曲阵或相控阵探头。低频探头牺牲一部分分辨率，但可获得更深视野。</p>
 <figure><img loading="lazy" decoding="async" src="images/fig03_low_frequency_probe.jpg" alt="图 3：低频曲阵或相控阵探头：当患者体型较大、阑尾位置较深或需要更大穿透深度时使用。"><figcaption>图 3. 低频曲阵或相控阵探头：当患者体型较大、阑尾位置较深或需要更大穿透深度时使用。</figcaption></figure>
 </section>
 <section>
-<h2>4. 基本扫查流程</h2>
+<h2 id="scan-workflow">4. 基本扫查流程</h2>
 <ol>
 <li>让患者仰卧，先从右下腹最大压痛点开始。</li>
 <li>使用 graded compression（分级加压）：缓慢、持续下压，把肠气和可移动肠袢挤开，同时把阑尾压近探头。</li>
@@ -106,7 +312,7 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 </ol>
 </section>
 <section>
-<h2>5. 正常解剖与正常阑尾</h2>
+<h2 id="normal-appendix">5. 正常解剖与正常阑尾</h2>
 <p>右下腹常见定位关系是：阑尾邻近腰大肌和髂血管，盲端结构是确认阑尾的关键。原图中 Ap 表示 Appendix（阑尾），P 表示 Psoas（腰大肌），Ia 表示 Iliac artery（髂动脉），Iv 表示 Iliac vein（髂静脉）。</p>
 <figure><img loading="lazy" decoding="async" src="images/fig04_rlq_landmarks_bw.gif" alt="图 4：右下腹正常解剖黑白动态图：阑尾、腰大肌、髂动脉、髂静脉的空间关系。"><figcaption>图 4. 右下腹正常解剖黑白动态图：阑尾、腰大肌、髂动脉、髂静脉的空间关系。</figcaption></figure>
 <figure><img loading="lazy" decoding="async" src="images/fig05_rlq_landmarks_color.gif" alt="图 5：右下腹正常解剖彩色标注版：帮助从背景组织中分辨阑尾和邻近血管。"><figcaption>图 5. 右下腹正常解剖彩色标注版：帮助从背景组织中分辨阑尾和邻近血管。</figcaption></figure>
@@ -122,7 +328,7 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 <figure><img loading="lazy" decoding="async" src="images/fig14_normal_transverse_color.gif" alt="图 14：正常阑尾横切彩色标注版：帮助识别横切时的阑尾壁与腔。"><figcaption>图 14. 正常阑尾横切彩色标注版：帮助识别横切时的阑尾壁与腔。</figcaption></figure>
 </section>
 <section>
-<h2>6. 急性阑尾炎的主要征象</h2>
+<h2 id="primary-signs">6. 急性阑尾炎的主要征象</h2>
 <ul>
 <li>阑尾外径增大，常用阈值为大于 6-7 mm；原文强调成人常以 &gt;7 mm 更有提示意义，儿童常参考 &gt;6 mm。</li>
 <li>阑尾不可压缩。需要注意：穿孔后阑尾壁张力下降，有时反而可能被压缩，因此不能只靠一个征象。</li>
@@ -133,7 +339,7 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 <figure><img loading="lazy" decoding="async" src="images/fig16_abnormal_transverse_free_fluid.gif" alt="图 16：异常阑尾横切：外径约 8 mm，周围低回声游离液提示炎症水肿或并发改变。"><figcaption>图 16. 异常阑尾横切：外径约 8 mm，周围低回声游离液提示炎症水肿或并发改变。</figcaption></figure>
 </section>
 <section>
-<h2>7. 继发征象</h2>
+<h2 id="secondary-signs">7. 继发征象</h2>
 <p>当阑尾本身不容易完整显示时，继发征象尤其重要；即使已经看到扩张阑尾，也应主动寻找这些改变来判断炎症程度和并发症风险。</p>
 <ul>
 <li>阑尾石/粪石：阑尾腔内强回声结构，常伴后方声影。</li>
@@ -147,7 +353,7 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 <figure><img loading="lazy" decoding="async" src="images/fig19_ring_of_fire.gif" alt="图 19：“火环征”：彩色多普勒显示阑尾壁血流增多，提示活动性炎症。"><figcaption>图 19. “火环征”：彩色多普勒显示阑尾壁血流增多，提示活动性炎症。</figcaption></figure>
 </section>
 <section>
-<h2>8. 找不到阑尾时的系统扫查</h2>
+<h2 id="systematic-search">8. 找不到阑尾时的系统扫查</h2>
 <p>如果压痛点附近没有立即看到阑尾，不要过早结束。可以采用 Sivitz 等描述的系统化寻找方法：</p>
 <ol>
 <li>在右下腹向外侧移动，先识别升结肠和侧腹壁。结肠常表现为非蠕动、含气或含液结构，可见脏污声影和结肠袋。</li>
@@ -160,7 +366,7 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 <p>还可尝试后方手动加压：一只手放在右下腹背侧，四指从后向前、前内方向推压，使阑尾更接近腹壁。原文提到相关研究中，这一做法可增加部分病例的可视化率。</p>
 </section>
 <section>
-<h2>9. 报告与临床沟通要点</h2>
+<h2 id="reporting">9. 报告与临床沟通要点</h2>
 <ul>
 <li>是否看见阑尾；若看见，记录纵切/横切图像。</li>
 <li>最大外径、是否可压缩、是否有蠕动。</li>
@@ -170,7 +376,7 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 </ul>
 </section>
 <section>
-<h2>10. 来源、版权与参考</h2>
+<h2 id="references">10. 来源、版权与参考</h2>
 <ul>
 <li><a href="https://www.thepocusatlas.com/new-blog/appendicitis">The POCUS Atlas: Appendicitis</a></li>
 <li>Benabbas R 等：急诊医师 POCUS 诊断儿童急性阑尾炎的系统评价与 Meta 分析，Acad Emerg Med, 2017。</li>
@@ -181,5 +387,51 @@ tr { break-inside: avoid; page-break-inside: avoid; }
 <div class="notice content-attribution"><strong>资料来源与整理说明：</strong>本文教学资料与动态图主要来源于 <a href="https://www.thepocusatlas.com/new-blog/appendicitis" target="_blank" rel="noopener noreferrer">The POCUS Atlas《Appendicitis》</a>。原始图片与资料版权归原作者及来源网站所有；中文内容由“西瓜柚子”整理并添加水印，仅用于医学学习与教学交流，不作商业用途。公开分发或再次发布前，请确认已获得相应授权。</div>
 </section>
 </main>
+<button id="back-top" class="back-top" type="button" aria-label="返回顶部">↑</button>
+<script>
+(() => {
+  const progress = document.getElementById("reading-progress");
+  const backTop = document.getElementById("back-top");
+  const tocLinks = [...document.querySelectorAll(".toc a")];
+  const headings = [...document.querySelectorAll("h2[id]")];
+  let ticking = false;
+
+  function updateScrollUi() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    progress.style.width = `${ratio * 100}%`;
+    backTop.classList.toggle("show", window.scrollY > 560);
+    ticking = false;
+  }
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateScrollUi);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  backTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (!visible) return;
+      tocLinks.forEach((link) => {
+        const active = link.getAttribute("href") === `#${visible.target.id}`;
+        if (active) link.setAttribute("aria-current", "true");
+        else link.removeAttribute("aria-current");
+      });
+    }, { rootMargin: "-18% 0px -68% 0px", threshold: 0 });
+    headings.forEach((heading) => observer.observe(heading));
+  }
+
+  updateScrollUi();
+})();
+</script>
 </body>
 </html>
