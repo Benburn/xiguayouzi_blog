@@ -13,6 +13,7 @@ dist
 dist-ssr
 *.local
 tmp/
+__pycache__/
 
 # Vite cache（每次 dev 会重建）
 .vite-cache
