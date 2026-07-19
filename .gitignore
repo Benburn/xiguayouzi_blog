@@ -12,6 +12,7 @@ node_modules
 dist
 dist-ssr
 *.local
+tmp/
 
 # Vite cache（每次 dev 会重建）
 .vite-cache

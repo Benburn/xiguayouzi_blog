@@ -430,14 +430,14 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
     category: "imaging",
     title: "女性生殖系统超声知识卡片",
     excerpt:
-      "围绕女性生殖系统解剖、经阴道超声、辅助生殖、妇科疾病与早孕等内容，整理为 31 个中英双语专题，并提供 78 幅内嵌图片和原书 PDF 页码索引。",
+      "按原书小节重新核对正文、图片与图注，整理为 31 个专题，收录 324 幅可追溯原书页码的图片，并提供 PDF 逐页索引。",
     date: "2026-07-14",
     readTime: "2 分钟",
     cover: null,
     tags: ["妇科超声", "生殖医学", "知识卡片"],
     body: `# 女性生殖系统超声知识卡片
 
-这套学习工具以 *Ultrasonography of the Female Reproductive System* 为内容基础，把女性生殖系统超声的核心知识整理为 **31 个中英双语专题**，适合按章节系统复习，也适合临床工作中快速查阅。
+这套学习工具以 *Ultrasonography of the Female Reproductive System* 为内容基础，按原书小节边界重新核对正文、图片和图注，整理为 **31 个专题**。专题标题提供中英文对照，正文保留原书英文原文，避免摘要或二次配图造成图文错配。
 
 ## 内容覆盖
 
@@ -450,7 +450,7 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
 ## 使用方式
 
-每个专题均可独立打开，支持上一专题、下一专题快速切换和五套阅读主题。页面共内嵌 **78 幅原书图片**，点击图片可放大查看；专题标题下方标注了原著页码，点击即可打开随附 PDF 的对应起始页。电脑和手机浏览器均可使用。
+每个专题均可独立打开，并按原书页面顺序展示连续正文。页面共收录 **324 幅原书图片**；图片只放在其所在原书页，并保留相邻图号和图注。点击图片可放大查看，点击页码可直接打开随附 PDF 的对应页。电脑、平板和手机浏览器均可使用。
 
 <p><a class="knowledge-card-launch" href="/female-reproductive-ultrasound-cards/index.html">打开女性生殖系统超声知识卡片 <span>→</span></a></p>
 
