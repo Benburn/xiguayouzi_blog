@@ -2488,6 +2488,21 @@
   box-shadow: 0 18px 48px rgba(29, 76, 124, 0.1);
 }
 
+.post-content .medical-disclaimer {
+  margin: 30px 0;
+  padding: 20px 22px;
+  border-left: 4px solid #d6982f;
+  border-radius: 0 14px 14px 0;
+  background: #fff8e8;
+  color: #5d5140;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.post-content .medical-disclaimer strong {
+  color: #845c18;
+}
+
 .post-content .knowledge-card-launch {
   display: flex;
   align-items: center;

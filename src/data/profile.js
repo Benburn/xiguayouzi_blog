@@ -129,6 +129,31 @@ export const blogCategories = [
 // 示例文章数据
 // 实际使用时可替换为 MD 文件 + 解析器
 export const blogPosts = [
+  {
+    slug: "calcium-hydroxylapatite-soft-tissue-fillers-2e",
+    category: "device",
+    title: "羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）",
+    excerpt:
+      "从CaHA材料基础到区域治疗、超声评估与并发症管理的系统中文学习版。内容仅供医学教育与专业交流，不构成诊疗或注射操作建议。",
+    date: "2026-07-20",
+    readTime: "45 章 · 238 页",
+    cover: "/images/device/caha-soft-tissue-fillers-cover.svg",
+    tags: ["CaHA", "软组织填充剂", "医疗器械", "并发症管理"],
+    body: `# 羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）
+
+![羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）](/images/device/caha-soft-tissue-fillers-cover.svg)
+
+## 为什么值得系统阅读
+
+羟基磷灰石钙（CaHA）兼具即时支撑与生物刺激特性，是理解再生型软组织填充材料的重要切入点。本书把材料基础、解剖与麻醉、不同部位的治疗技术、超声评估以及并发症管理纳入同一知识框架，有助于医疗器械研发人员、医师和相关专业学习者建立从材料到临床风险控制的完整认识。
+
+在线版按原书物理页连续编排，共收录 **45 个正文章节、238 个原书物理页和 519 幅对应图片**。各章、各节文字与图片保持原有对应关系，目录可直接进入相应章节，适合电脑、平板和手机查阅。
+
+<aside class="medical-disclaimer"><strong>重要声明：</strong>本在线中文内容仅供医学教育、专业交流和资料索引使用，由原文辅助翻译整理，不能替代原版书籍、产品说明书、监管批准信息、规范化培训或执业医师的独立判断。内容不构成诊断、治疗、处方、注射操作或个体化医疗建议；涉及适应证、禁忌证、操作技术和并发症处理时，请以当地现行法规、经批准的产品标签及权威临床指南为准。非专业人员请勿据此自行操作。</aside>
+
+<p><a class="knowledge-card-launch" href="/caha-soft-tissue-fillers-2e/index.html">打开《羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）》 <span>→</span></a></p>
+`,
+  },
   // —— 医疗器械 ——
   {
     slug: "cytrans-carbonate-apatite",

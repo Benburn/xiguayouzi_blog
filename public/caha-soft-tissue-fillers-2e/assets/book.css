@@ -1,0 +1,53 @@
+:root{--nav:300px;--paper:#fff;--canvas:#edf1f3;--ink:#20262c;--muted:#6b747d;--line:#dce2e6;--brand:#176b72;--soft:#eaf5f5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--canvas);color:var(--ink);font:17px/1.85 "Noto Sans CJK SC","Source Han Sans SC","Microsoft YaHei",sans-serif}
+a{color:var(--brand)}.sidebar{position:fixed;inset:0 auto 0 0;width:var(--nav);overflow:auto;background:#17383c;color:#fff;padding:26px 19px;z-index:10}
+.sidebar h1{font-size:18px;line-height:1.45;margin:0 0 6px}.sidebar .meta{color:#b8ced0;font-size:12px;margin-bottom:18px}
+.sidebar a{display:block;color:#dcebed;text-decoration:none;padding:6px 8px;border-radius:5px;font-size:13px;line-height:1.5}.sidebar a:hover{background:#265158;color:#fff}
+.reader{margin-left:var(--nav);padding:46px 28px 90px}.paper{max-width:940px;margin:auto;background:var(--paper);padding:62px 76px 100px;box-shadow:0 10px 35px #15292d1c}
+.chapter-title{margin:0 0 35px;padding:0 0 18px;border-bottom:4px solid var(--brand);font-size:32px;line-height:1.45;color:#124f55}
+.source-page{position:relative;margin:34px 0 0;padding-top:30px;border-top:1px solid var(--line)}.source-page:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.page-tag{float:right;margin:0 0 10px 12px;padding:2px 9px;border-radius:12px;background:#eef2f3;color:#79838a;font-size:11px}
+h1,h2,h3,h4,h5,h6{clear:both;line-height:1.5;color:#174f55}h1{font-size:29px}h2{font-size:25px;border-bottom:2px solid #77aeb2;padding-bottom:7px}h3{font-size:21px}h4{font-size:19px}
+p{margin:.65em 0;text-align:justify;text-justify:inter-ideograph}img{display:block;max-width:100%;height:auto;margin:18px auto 8px}
+figure,.image-block{margin:22px 0;text-align:center}.figure-caption,figcaption{font-size:14px;line-height:1.6;color:#56636b;text-align:left}
+blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid var(--brand);background:var(--soft)}code{overflow-wrap:anywhere}
+.table-wrap{overflow:auto;margin:20px 0}table{border-collapse:collapse;min-width:100%;font-size:14px;line-height:1.55}th,td{border:1px solid #cfd7db;padding:7px 9px;vertical-align:top}th{background:#e9f3f4}
+.book-home{display:inline-block;margin:0 0 24px;text-decoration:none;font-size:14px}.notice{padding:12px 16px;background:#fff8e4;border-left:4px solid #d39a25;font-size:14px}
+.toc{list-style:none;padding:0}.toc li{border-bottom:1px solid var(--line)}.toc a{display:flex;gap:12px;justify-content:space-between;padding:12px 4px;text-decoration:none}.toc small{color:var(--muted);white-space:nowrap}
+@media(max-width:900px){.sidebar{position:static;width:auto}.reader{margin:0;padding:0}.paper{padding:34px 20px 70px;box-shadow:none}.chapter-title{font-size:27px}}
+@media print{.sidebar{display:none}.reader{margin:0;padding:0}.paper{max-width:none;box-shadow:none;padding:0}.source-page{break-after:page}.page-tag{display:none}}
+
+/* 西瓜柚子博客视觉适配 */
+:root{--nav:300px;--paper:#fff;--canvas:#f4f8fd;--ink:#0b2a55;--muted:#607797;--line:#dce8f5;--brand:#247bd6;--soft:#eef6ff}
+body{background:
+radial-gradient(circle at 92% 8%,rgba(44,177,214,.12),transparent 26rem),
+linear-gradient(180deg,#f8fbff 0,#f3f8fe 34rem,#f7faff 100%);color:var(--ink)}
+.sidebar{background:linear-gradient(180deg,#0b2a55 0%,#103d70 100%);box-shadow:12px 0 42px rgba(11,42,85,.12)}
+.sidebar .meta{color:#bcd3ed}.sidebar a{color:#dcecff}.sidebar a:hover{background:rgba(255,255,255,.12)}
+.reader{padding-top:38px}.paper{border:1px solid rgba(210,225,242,.9);border-radius:22px;box-shadow:0 22px 65px rgba(22,67,115,.1)}
+.chapter-title{color:#0b2a55;border-bottom-color:#247bd6;letter-spacing:-.025em}
+h1,h2,h3,h4,h5,h6{color:#103f73}h2{border-bottom-color:#9fc7ee}
+.page-tag{background:#edf5fe;color:#55769a}
+.book-home{padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:#f7fbff;font-weight:700;text-decoration:none}
+.book-site-nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:-18px 0 36px;padding-bottom:18px;border-bottom:1px solid var(--line);font-size:12px;font-weight:700;letter-spacing:.08em;color:#7187a2}
+.book-site-nav a{padding:8px 12px;border-radius:999px;background:#edf5fe;text-decoration:none;letter-spacing:0}
+.book-intro{margin:0 0 20px;padding:24px 26px;border:1px solid #d9e8f7;border-radius:18px;background:linear-gradient(135deg,#eef6ff 0%,#fff 72%)}
+.book-intro p{margin:0;text-align:left}.book-intro__eyebrow{margin-bottom:10px!important;color:#247bd6;font-size:12px;font-weight:800;letter-spacing:.13em}
+.book-stats{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.book-stats span{padding:8px 12px;border-radius:999px;background:#fff;color:#607797;font-size:13px;box-shadow:0 5px 16px rgba(31,83,136,.07)}.book-stats strong{color:#0b2a55;font-size:16px}
+.book-disclaimer{margin:0 0 20px;padding:18px 20px;border-left:4px solid #d6982f;border-radius:0 14px 14px 0;background:#fff8e8;color:#5d5140;font-size:14px;line-height:1.75}.book-disclaimer strong{color:#845c18}.book-disclaimer p{margin:5px 0 0;text-align:left}
+.notice{border-left-color:#247bd6;background:#eef6ff;color:#466383}
+.toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.toc li{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}.toc a{height:100%;padding:12px 14px}.toc a:hover{background:#f1f7fe}.toc span{font-weight:650;color:#183f6b}.toc small{align-self:center}
+img{border-radius:10px;box-shadow:0 10px 30px rgba(15,52,93,.1)}
+@media(max-width:900px){
+  html,body{max-width:100%;overflow-x:hidden}
+  .sidebar{position:sticky;inset:auto;top:0;display:flex;align-items:center;gap:6px;width:100%;max-width:100vw;max-height:none;overflow-x:auto;padding:10px 14px;backdrop-filter:blur(16px)}
+  .sidebar h1,.sidebar .meta{display:none}.sidebar a{flex:0 0 auto;padding:8px 11px;background:rgba(255,255,255,.08)}
+  .reader{margin:0;padding:14px}.paper{padding:34px 22px 70px;border-radius:17px;box-shadow:0 14px 40px rgba(22,67,115,.08)}
+  .book-site-nav{align-items:flex-start;flex-direction:column;margin-top:-8px}.toc{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  body{font-size:16px;line-height:1.78}.reader{padding:8px}.paper{padding:26px 17px 58px;border-radius:14px}
+  .chapter-title{font-size:25px}.book-intro{padding:19px 17px}.book-stats{gap:7px}.book-stats span{font-size:12px}
+  .source-page{margin-top:26px;padding-top:24px}h1{font-size:25px}h2{font-size:22px}h3{font-size:19px}
+  p{text-align:left}.toc a{display:block}.toc small{display:block;margin-top:4px}
+}

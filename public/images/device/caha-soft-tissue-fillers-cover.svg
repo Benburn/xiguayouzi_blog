@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）</title>
+  <desc id="desc">蓝白色医学书籍封面，展示羟基磷灰石钙微球与材料结构意象。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fbff"/>
+      <stop offset=".56" stop-color="#e8f4ff"/>
+      <stop offset="1" stop-color="#d7eff8"/>
+    </linearGradient>
+    <linearGradient id="book" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b2a55"/>
+      <stop offset="1" stop-color="#247bd6"/>
+    </linearGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#163e6d" flood-opacity=".22"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <g opacity=".32" fill="none" stroke="#70b9e8">
+    <circle cx="1320" cy="160" r="280"/>
+    <circle cx="1320" cy="160" r="212"/>
+    <circle cx="1320" cy="160" r="138"/>
+  </g>
+  <g opacity=".42" fill="#fff" stroke="#68b8e2" stroke-width="4">
+    <circle cx="1260" cy="130" r="35"/><circle cx="1384" cy="208" r="48"/>
+    <circle cx="1188" cy="275" r="25"/><circle cx="1450" cy="50" r="29"/>
+    <circle cx="1305" cy="330" r="19"/>
+  </g>
+  <g transform="translate(160 105)" filter="url(#shadow)">
+    <path d="M58 30h650c40 0 72 32 72 72v610H93c-51 0-93-42-93-93V88C0 56 26 30 58 30z" fill="url(#book)"/>
+    <path d="M93 30h34v682H93c-51 0-93-42-93-93V123c0-51 42-93 93-93z" fill="#092348" opacity=".92"/>
+    <path d="M127 640h653v72H93c-43 0-78-31-91-72h125z" fill="#fff" opacity=".95"/>
+    <text x="190" y="145" fill="#81d7f0" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="24" font-weight="700" letter-spacing="7">MEDICAL DEVICE · CaHA</text>
+    <text x="190" y="255" fill="#fff" font-family="'Microsoft YaHei',Arial,sans-serif" font-size="62" font-weight="800">羟基磷灰石钙</text>
+    <text x="190" y="340" fill="#fff" font-family="'Microsoft YaHei',Arial,sans-serif" font-size="58" font-weight="800">软组织填充剂</text>
+    <text x="190" y="414" fill="#bfe9f8" font-family="'Microsoft YaHei',Arial,sans-serif" font-size="31" font-weight="600">专家治疗技术（第2版）</text>
+    <g transform="translate(190 500)" fill="none" stroke="#92dcf1" stroke-width="5">
+      <circle cx="32" cy="32" r="32"/><circle cx="125" cy="32" r="22"/><circle cx="208" cy="32" r="40"/>
+      <path d="M64 32h39m44 0h21"/>
+    </g>
+    <text x="190" y="610" fill="#d6f1fb" font-family="Arial,sans-serif" font-size="22" letter-spacing="3">CALCIUM HYDROXYLAPATITE</text>
+  </g>
+  <g transform="translate(1010 590)">
+    <text fill="#247bd6" font-family="Arial,'Microsoft YaHei',sans-serif" font-size="22" font-weight="700" letter-spacing="6">XIGUA · YUZI</text>
+    <text y="58" fill="#0b2a55" font-family="'Microsoft YaHei',Arial,sans-serif" font-size="30" font-weight="700">材料 · 技术 · 超声 · 安全</text>
+    <path d="M0 92h370" stroke="#70b9e8" stroke-width="3"/>
+  </g>
+</svg>
