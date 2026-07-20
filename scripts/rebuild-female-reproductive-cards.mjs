@@ -276,7 +276,7 @@ const css = `:root{--ink:#0b2a55;--muted:#607797;--line:#dfe9f5;--paper:#fff;--w
 
 const supplementalCss = `
 .source-page{scroll-margin-top:88px}
-.source-page__bar{position:relative;top:auto}
+.source-page__bar{display:none}
 .restored-figure-note{margin:28px 0 8px;padding:8px 11px;border-radius:8px;background:#edf5fe;color:#3570ae;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:12px;font-weight:700}
 .chapter-summary{max-width:880px;margin:27px 0 0;padding:20px 22px;border:1px solid color-mix(in srgb,var(--accent) 22%,white);border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 7%,white),#fff);box-shadow:0 14px 38px rgba(31,75,121,.06)}
 .chapter-summary p{margin:0}.chapter-summary__label{margin-bottom:10px!important;color:var(--accent);font:800 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.14em}.chapter-summary__cn{color:#294666;font-size:16px;line-height:1.8}.chapter-summary__en{margin-top:8px!important;color:#7186a0;font:400 13px/1.65 Georgia,"Times New Roman",serif}

@@ -598,12 +598,7 @@ def build_bilingual_pages(files: list[Path], cache: dict[str, str]) -> None:
             source_copy.replace_with(chinese_panel)
             chinese_panel.insert_after(english_panel)
 
-            link = bar.find("a", recursive=False)
-            actions = soup.new_tag("span", attrs={"class": "source-page__actions"})
-            actions.append(make_language_switch(soup))
-            if link:
-                actions.append(link.extract())
-            bar.append(actions)
+            bar.decompose()
 
         file.write_text(str(soup), encoding="utf-8")
         print(
