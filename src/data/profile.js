@@ -137,11 +137,9 @@ export const blogPosts = [
       "从CaHA材料基础到区域治疗、超声评估与并发症管理的系统中文学习版。内容仅供医学教育与专业交流，不构成诊疗或注射操作建议。",
     date: "2026-07-20",
     readTime: "45 章 · 238 页",
-    cover: "/images/device/caha-soft-tissue-fillers-cover.svg",
+    cover: null,
     tags: ["CaHA", "软组织填充剂", "医疗器械", "并发症管理"],
     body: `# 羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）
-
-![羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）](/images/device/caha-soft-tissue-fillers-cover.svg)
 
 ## 为什么值得系统阅读
 
