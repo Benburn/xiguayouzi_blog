@@ -336,14 +336,14 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
     category: "imaging",
     title: "华斌笔记",
     excerpt:
-      "华斌超声笔记系列在线整理版，第2辑已上线，涵盖腹部、介入、胸腔与肺部及血管超声；其余五辑已预留统一入口。",
-    date: "2026-07-21",
-    readTime: "第2辑 · 4章25节",
+      "华斌超声笔记系列在线整理版，第2辑与第3辑已上线，覆盖腹部、介入、胸肺、血管、甲状腺、乳腺、淋巴结及阴囊等主题。",
+    date: "2026-07-22",
+    readTime: "已上线2辑",
     cover: null,
     tags: ["华斌笔记", "超声学习", "医学影像"],
     body: `# 华斌笔记
 
-这是一个持续更新的超声笔记系列入口。全系列规划为 **6 辑**，本次先上线第2辑，其余五辑已经预留位置，后续内容将继续整合到同一项目中。
+这是一个持续更新的超声笔记系列入口。全系列规划为 **6 辑**，目前第2辑和第3辑已经上线，其余四辑已经预留位置，后续内容将继续整合到同一项目中。
 
 ## 第2辑内容
 
@@ -353,6 +353,17 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 - 血管超声。
 
 第2辑正文按原书章节组织，共 **4章25节**。网页仅保留 P15–P402 的正文内容，前言、目录、P403及OCR生成说明不展示；图片继续放在对应文字和图注附近。
+
+## 第3辑内容
+
+- 甲状腺；
+- 乳腺；
+- 淋巴结；
+- 阴囊；
+- 其他；
+- 趣味超声。
+
+第3辑共 **6章92节**，正文范围为 P19–P276，共250个页面块和361张正文图片；已清理明显的OCR异常字符，图片保留在对应章节和图注附近。
 
 <p><a class="knowledge-card-launch" href="/huabin-ultrasound-notes/index.html">打开“华斌笔记”系列 <span>→</span></a></p>
 
