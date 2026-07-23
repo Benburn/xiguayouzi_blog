@@ -141,19 +141,20 @@
     color: var(--fg-mute); font-size: 0.85em; border-radius: 4px; line-height: 1.7; }
   a { color: var(--link); }
 
-  /* 西瓜柚子博客适配 */
+  /* 西瓜柚子博客统一阅读样式 */
   :root { --fg:#183b62; --fg-mute:#647b98; --bg:#fff; --bg-page:#f4f8fd;
     --rule:#dce8f5; --accent:#247bd6; --accent-d:#0b2a55;
     --accent-bg:#eef6ff; --accent-bg2:#dceeff; --link:#176cbe;
     --shadow:rgba(22,67,115,.10); }
-  html { scroll-padding-top: 20px; }
+  html { scroll-padding-top:20px; }
   body { background:radial-gradient(circle at 92% 8%,rgba(38,168,210,.12),transparent 28rem),#f4f8fd; }
   .toc-side { width:286px; background:linear-gradient(180deg,#0b2a55,#123f71); border:0;
     box-shadow:12px 0 42px rgba(11,42,85,.12); }
   .toc-side .brand { border-bottom-color:#4da8ec; }
   .toc-side .brand .t { color:#fff; }.toc-side .brand .s { color:#bbd5ef; }
   .toc-side nav a { color:#dcecff; }.toc-side nav a.lvl-chapter { color:#8fd9f0; border-top-color:rgba(255,255,255,.12); }
-  .toc-side nav a.lvl-section { color:#c4d8eb; }.toc-side nav a:hover { background:rgba(255,255,255,.11); color:#fff; }
+  .toc-side nav a.lvl-section { color:#c4d8eb; }.toc-side nav a:hover,.toc-side nav a.is-current { background:rgba(255,255,255,.12); color:#fff; }
+  .toc-toggle,.toc-mobile-head,.toc-search,.toc-backdrop { display:none; }
   .main-inner { max-width:1040px; padding-top:28px; }
   .series-toolbar { display:flex; align-items:center; gap:10px; margin:0 0 36px; padding:10px 0 18px;
     border-bottom:1px solid var(--rule); font:700 12px/1.4 Inter,"PingFang SC","Microsoft YaHei",sans-serif; letter-spacing:.08em; }
@@ -172,6 +173,7 @@
   .page:last-child { border-bottom:1px solid var(--rule); }.page .pageno { color:#7d93ad; }
   .page h1,.page h2 { color:#0b2a55; font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif; }
   .page h3 { color:#244b75; }.page div[style*="text-align: center"] img { border-radius:10px; box-shadow:0 10px 28px rgba(14,48,86,.14); }
+  .page sup,.page sub { font-size:.72em; line-height:0; }
   .chapter-title-page { margin:38px 0 20px; padding:56px 20px 34px; border:1px solid var(--rule); border-radius:18px;
     background:linear-gradient(135deg,#edf6ff,#fff); }.chapter-title-page .ctp-no { color:#247bd6; }
   .chapter-title-page .ctp-name { color:#0b2a55; font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif; }
@@ -179,18 +181,44 @@
   .ch-anchor-section .ch-no,.ch-anchor-section .ch-name { color:#164f88; }
   @media (max-width:900px) {
     html,body { max-width:100%; overflow-x:hidden; }
-    .toc-side { position:sticky; inset:auto; top:0; z-index:50; display:flex; align-items:center; gap:10px;
-      width:100%; max-width:100vw; height:auto; padding:10px 14px; overflow-x:auto; scrollbar-width:none;
-      border-bottom:1px solid rgba(255,255,255,.12); }
-    .toc-side::-webkit-scrollbar { display:none; }
-    .toc-side .brand { flex:0 0 auto; margin:0; padding:0 14px 0 0; border:0; border-right:1px solid rgba(255,255,255,.18); }
-    .toc-side .brand .s { display:none; }.toc-side nav ol { display:flex; gap:5px; }.toc-side nav li { flex:0 0 auto; }
-    .toc-side nav a.lvl-section { display:none; }.toc-side nav a.lvl-chapter { margin:0; padding:8px 11px; border:0; white-space:nowrap; }
+    body.toc-open { overflow:hidden; }
+    .toc-side { position:sticky; inset:auto; top:0; z-index:70; display:flex; align-items:center; justify-content:space-between; gap:10px;
+      width:100%; max-width:100vw; height:62px; padding:9px 12px 9px 14px; overflow:visible; border-bottom:1px solid rgba(255,255,255,.14); }
+    .toc-side .brand { flex:0 1 auto; min-width:0; margin:0; padding:0 12px 0 0; border:0; }
+    .toc-side .brand .t { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; }
+    .toc-side .brand .s { display:none; }
+    .toc-toggle { display:flex; flex:0 0 auto; align-items:center; gap:9px; min-height:44px; max-width:62vw; padding:7px 11px;
+      border:1px solid rgba(255,255,255,.28); border-radius:12px; background:rgba(255,255,255,.12); color:#fff;
+      font:750 14px/1.15 Inter,"PingFang SC","Microsoft YaHei",sans-serif; cursor:pointer; }
+    .toc-toggle::before { content:"☰"; font-size:17px; }
+    .toc-toggle small { max-width:34vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#bcd8ee; font-size:11px; font-weight:600; }
+    .toc-side nav { position:fixed; inset:0 0 0 auto; z-index:90; width:min(90vw,420px); height:100dvh; padding:0 14px 30px;
+      overflow-y:auto; overscroll-behavior:contain; background:#f8fbff; box-shadow:-18px 0 55px rgba(7,35,67,.25);
+      transform:translateX(105%); visibility:hidden; transition:transform .24s ease,visibility .24s; }
+    body.toc-open .toc-side nav { transform:translateX(0); visibility:visible; }
+    .toc-mobile-head { position:sticky; top:0; z-index:2; display:flex; align-items:center; justify-content:space-between; min-height:62px;
+      margin:0 -14px 10px; padding:9px 14px; border-bottom:1px solid #dce8f5; background:rgba(248,251,255,.96); backdrop-filter:blur(14px); color:#0b2a55; }
+    .toc-mobile-head strong { font-size:17px; }.toc-close { min-width:54px; min-height:40px; padding:0 12px; border:0; border-radius:10px;
+      background:#e7f2ff; color:#176cbe; font-weight:750; cursor:pointer; }
+    .toc-search { display:block; margin:0 0 12px; }.toc-search input { width:100%; min-height:46px; padding:0 14px; border:1px solid #cfe0f2;
+      border-radius:12px; outline:none; background:#fff; color:#183b62; font-size:16px; }
+    .toc-search input:focus { border-color:#247bd6; box-shadow:0 0 0 3px rgba(36,123,214,.12); }
+    .toc-side nav ol { display:block; margin:0; padding:0; }.toc-side nav li { display:block; }
+    .toc-side nav a,.toc-side nav a.lvl-chapter,.toc-side nav a.lvl-section { display:block; margin:0; border:0; border-radius:10px; color:#44617f; white-space:normal; }
+    .toc-side nav a.lvl-chapter { margin-top:8px; padding:12px 11px; background:#eaf4ff; color:#0d5599; font-weight:800; }
+    .toc-side nav a.lvl-section { padding:10px 11px 10px 22px; color:#526e8b; line-height:1.5; }
+    .toc-side nav a:hover,.toc-side nav a.is-current { background:#d9edff; color:#0b4f8d; }
+    .toc-side nav li[hidden] { display:none; }
+    .toc-backdrop { position:fixed; inset:0; z-index:80; display:block; border:0; background:rgba(6,28,52,.42); opacity:0; visibility:hidden;
+      transition:opacity .24s ease,visibility .24s; }
+    body.toc-open .toc-backdrop { opacity:1; visibility:visible; }
     .main-inner { padding:20px 14px 60px; }.series-toolbar { margin-bottom:24px; }.series-toolbar span { display:none; }
     .page { padding:23px 20px; border-radius:15px; }.chapter-title-page { padding:42px 16px 28px; }
+    .ch-anchor { scroll-margin-top:76px; }
   }
   @media (max-width:560px) {
     html,body { font-size:16px; line-height:1.82; }.main-inner { padding:16px 8px 48px; }
+    .toc-side { height:58px; }.toc-toggle { min-height:40px; max-width:64vw; }.toc-toggle small { max-width:31vw; }
     .series-toolbar { padding:6px 7px 14px; }.series-toolbar a { padding:7px 9px; font-size:11px; }
     h1.book-title { font-size:2.05em; }.book-sub { margin-bottom:24px; }
     .volume-strip { justify-content:flex-start; padding:0 7px; }.content-scope { margin-left:7px!important; margin-right:7px!important; }
@@ -206,106 +234,206 @@
     <div class="t">华斌笔记</div>
     <div class="s">第3辑 · 正文版</div>
   </div>
-  <nav><ol>
-    <li><a href="#ch1" class="lvl-chapter">甲状腺</a></li>
-    <li><a href="#ch1s1" class="lvl-section">第一节 关于甲状腺癌的读书笔记</a></li>
-    <li><a href="#ch1s2" class="lvl-section">第二节 甲状腺中的“赵子龙”</a></li>
-    <li><a href="#ch1s3" class="lvl-section">第三节 甲状腺里的“长颈鹿”</a></li>
-    <li><a href="#ch1s4" class="lvl-section">第四节 甲状腺里的“海绵宝宝”</a></li>
-    <li><a href="#ch1s5" class="lvl-section">第五节 甲状腺内的“地狱之火”</a></li>
-    <li><a href="#ch1s6" class="lvl-section">第六节 甲状腺里的“彗星”</a></li>
-    <li><a href="#ch1s7" class="lvl-section">第七节 甲状腺癌被过度诊断和过度治疗了</a></li>
-    <li><a href="#ch1s8" class="lvl-section">第八节 砂粒体</a></li>
-    <li><a href="#ch1s9" class="lvl-section">第九节 已经成为历史的“冲洗过征”</a></li>
-    <li><a href="#ch1s10" class="lvl-section">第十节 环状软骨和环甲肌</a></li>
-    <li><a href="#ch1s11" class="lvl-section">第十一节 胶态晶体</a></li>
-    <li><a href="#ch1s12" class="lvl-section">第十二节 甲状腺滤泡性肿瘤</a></li>
-    <li><a href="#ch1s13" class="lvl-section">第十三节 甲状旁腺中的脂肪</a></li>
-    <li><a href="#ch1s14" class="lvl-section">第十四节 谨慎使用超声检查甲状腺</a></li>
-    <li><a href="#ch1s15" class="lvl-section">第十五节 甲状腺癌的多中心性和消融治疗</a></li>
-    <li><a href="#ch1s16" class="lvl-section">第十六节 为什么穿刺病理不能鉴别某些甲状腺结节的良恶性？</a></li>
-    <li><a href="#ch1s17" class="lvl-section">第十七节 甲状腺髓样癌与多发性内分泌腺瘤综合征</a></li>
-    <li><a href="#ch1s18" class="lvl-section">第十八节 老年人的甲状腺癌（1）：Hürthle 细胞癌</a></li>
-    <li><a href="#ch1s19" class="lvl-section">第十九节 老年人的甲状腺癌（2）：未分化癌</a></li>
-    <li><a href="#ch1s20" class="lvl-section">第二十节 老年人的甲状腺癌（3）：淋巴瘤</a></li>
-    <li><a href="#ch1s21" class="lvl-section">第二十一节 老年人的甲状腺癌（4）：甲状腺转移癌</a></li>
-    <li><a href="#ch1s22" class="lvl-section">第二十二节 关于TI-RADS分类系统的一点看法</a></li>
-    <li><a href="#ch1s23" class="lvl-section">第二十三节 经典病例分享：累及甲状腺的弥漫性大B细胞淋巴瘤</a></li>
-    <li><a href="#ch1s24" class="lvl-section">第二十四节 “典型”其实不典型</a></li>
-    <li><a href="#ch1s25" class="lvl-section">第二十五节 梨状窝瘘——反复发作甲状腺脓肿的元凶</a></li>
-    <li><a href="#ch1s26" class="lvl-section">第二十六节 急性甲状腺炎：此炎非彼炎</a></li>
-    <li><a href="#ch1s27" class="lvl-section">第二十七节 甲状腺结节内的安全之“桥”</a></li>
-    <li><a href="#ch1s28" class="lvl-section">第二十八节 《新英格兰医学杂志》：世界范围的甲状腺癌流行？ 过度诊断是罪魁祸首！</a></li>
-    <li><a href="#ch1s29" class="lvl-section">第二十九节 两种需要分别对待的甲状腺高回声结节</a></li>
-    <li><a href="#ch1s30" class="lvl-section">第三十节 甲状腺内的“木乃伊”</a></li>
-    <li><a href="#ch1s31" class="lvl-section">第三十一节 儿童甲状腺及甲状腺周围的“星空”——颈部胸腺</a></li>
-    <li><a href="#ch1s32" class="lvl-section">第三十二节 颈部囊实性包块——甲状腺乳头状癌的指示器</a></li>
-    <li><a href="#ch2" class="lvl-chapter">乳腺</a></li>
-    <li><a href="#ch2s1" class="lvl-section">第一节 乳腺少见病</a></li>
-    <li><a href="#ch2s2" class="lvl-section">第二节 边界清晰，乳腺恶性肿瘤</a></li>
-    <li><a href="#ch2s3" class="lvl-section">第三节 乳腺 Mondor 病</a></li>
-    <li><a href="#ch2s4" class="lvl-section">第四节 糖尿病性乳腺病</a></li>
-    <li><a href="#ch2s5" class="lvl-section">第五节 乳腺增生：一个不准确的疾病名称</a></li>
-    <li><a href="#ch2s6" class="lvl-section">第六节 “乳腺纤维腺瘤”不是“乳腺纤维瘤”</a></li>
-    <li><a href="#ch2s7" class="lvl-section">第七节 “三阴乳腺癌”的声像图特点</a></li>
-    <li><a href="#ch2s8" class="lvl-section">第八节 乳腺和甲状腺中的高回声“晕”意义大不同</a></li>
-    <li><a href="#ch2s9" class="lvl-section">第九节 高回声的乳腺癌</a></li>
-    <li><a href="#ch2s10" class="lvl-section">第十节 “乳房中的乳房”</a></li>
-    <li><a href="#ch2s11" class="lvl-section">第十一节 后方回声增强：特殊类型乳腺癌的有价值的征象</a></li>
-    <li><a href="#ch2s12" class="lvl-section">第十二节 老年患者乳腺内的“软”包块：别忘了可能是黏液癌</a></li>
-    <li><a href="#ch2s13" class="lvl-section">第十三节 要重视乳腺第二眼超声评估的价值</a></li>
-    <li><a href="#ch3" class="lvl-chapter">淋巴结</a></li>
-    <li><a href="#ch3s1" class="lvl-section">第一节 门结构消失的淋巴结未必一定要干预</a></li>
-    <li><a href="#ch3s2" class="lvl-section">第二节 滑车上淋巴结</a></li>
-    <li><a href="#ch3s3" class="lvl-section">第三节 一半是海水，一半是火焰</a></li>
-    <li><a href="#ch3s4" class="lvl-section">第四节 “门中门征”：与病毒感染有关的淋巴结肿大</a></li>
-    <li><a href="#ch3s5" class="lvl-section">第五节 美丽的马尔代夫与甲状腺乳头状癌颈部淋巴结转移</a></li>
-    <li><a href="#ch3s6" class="lvl-section">第六节 Rosai-Dorfman 病</a></li>
-    <li><a href="#ch3s7" class="lvl-section">第七节 淋巴结的“超声皮髓质”等于“组织学皮髓质”吗？</a></li>
-    <li><a href="#ch3s8" class="lvl-section">第八节 颈内静脉二腹肌淋巴结肿大</a></li>
-    <li><a href="#ch4" class="lvl-chapter">阴囊</a></li>
-    <li><a href="#ch4s1" class="lvl-section">第一节 表皮样囊肿、皮脂腺囊肿及其他</a></li>
-    <li><a href="#ch4s2" class="lvl-section">第二节 一颗没有价值的“珍珠”</a></li>
-    <li><a href="#ch4s3" class="lvl-section">第三节 睾丸错构瘤</a></li>
-    <li><a href="#ch4s4" class="lvl-section">第四节 腹股沟直疝和斜疝的超声鉴别</a></li>
-    <li><a href="#ch4s5" class="lvl-section">第五节 阴囊内的“孤精”</a></li>
-    <li><a href="#ch4s6" class="lvl-section">第六节 要特别警惕非典型腮腺炎性睾丸炎</a></li>
-    <li><a href="#ch4s7" class="lvl-section">第七节 睾丸微石症</a></li>
-    <li><a href="#ch4s8" class="lvl-section">第八节 睾丸网扩张</a></li>
-    <li><a href="#ch5" class="lvl-chapter">其他</a></li>
-    <li><a href="#ch5s1" class="lvl-section">第一节 由灰灰菜想到一个医学名词的翻译</a></li>
-    <li><a href="#ch5s2" class="lvl-section">第二节 弹力纤维瘤</a></li>
-    <li><a href="#ch5s3" class="lvl-section">第三节 正常胸腺</a></li>
-    <li><a href="#ch5s4" class="lvl-section">第四节 “铺路石征”</a></li>
-    <li><a href="#ch5s5" class="lvl-section">第五节 血管球瘤</a></li>
-    <li><a href="#ch5s6" class="lvl-section">第六节 血管球瘤与血管瘤</a></li>
-    <li><a href="#ch5s7" class="lvl-section">第七节 毛母质瘤</a></li>
-    <li><a href="#ch5s8" class="lvl-section">第八节 腰背部的“小老鼠”：筋膜脂肪病</a></li>
-    <li><a href="#ch5s9" class="lvl-section">第九节 纤维瘤病不应该归类为恶性肿瘤</a></li>
-    <li><a href="#ch5s10" class="lvl-section">第十节 相知无远近，万里尚为邻</a></li>
-    <li><a href="#ch5s11" class="lvl-section">第十一节 脂膜炎和相关综合征</a></li>
-    <li><a href="#ch5s12" class="lvl-section">第十二节 “落雪征”</a></li>
-    <li><a href="#ch5s13" class="lvl-section">第十三节 痛性脂肪病</a></li>
-    <li><a href="#ch5s14" class="lvl-section">第十四节 纤维瘤和纤维瘤病</a></li>
-    <li><a href="#ch5s15" class="lvl-section">第十五节 软组织肿瘤的定性原则</a></li>
-    <li><a href="#ch5s16" class="lvl-section">第十六节 脂肪母细胞瘤</a></li>
-    <li><a href="#ch5s17" class="lvl-section">第十七节 藏毛窦和藏毛囊肿</a></li>
-    <li><a href="#ch5s18" class="lvl-section">第十八节 马松瘤</a></li>
-    <li><a href="#ch5s19" class="lvl-section">第十九节 特殊类型的脂肪瘤</a></li>
-    <li><a href="#ch5s20" class="lvl-section">第二十节 臀部注射部位肉芽肿</a></li>
-    <li><a href="#ch5s21" class="lvl-section">第二十一节 “纽扣样” 骨瘤</a></li>
-    <li><a href="#ch5s22" class="lvl-section">第二十二节 纤维瘤病与 Gardner 综合征</a></li>
-    <li><a href="#ch5s23" class="lvl-section">第二十三节 四大痛性软组织肿瘤</a></li>
-    <li><a href="#ch5s24" class="lvl-section">第二十四节 “爆米花样” 钙化——软组织软骨肉瘤的特异性征象</a></li>
-    <li><a href="#ch5s25" class="lvl-section">第二十五节 积油囊肿</a></li>
-    <li><a href="#ch5s26" class="lvl-section">第二十六节 第七颈椎的横突到底长什么样子？</a></li>
-    <li><a href="#ch5s27" class="lvl-section">第二十七节 腮腺的深层</a></li>
-    <li><a href="#ch5s28" class="lvl-section">第二十八节 颈纤维瘤病（先天性斜颈）</a></li>
-    <li><a href="#ch5s29" class="lvl-section">第二十九节 食管壁间血肿</a></li>
-    <li><a href="#ch6" class="lvl-chapter">趣味超声</a></li>
-    <li><a href="#ch6s1" class="lvl-section">第一节 钻进女性乳房的医生们</a></li>
-    <li><a href="#ch6s2" class="lvl-section">第二节 趣味超声：软组织中的木屑</a></li>
-    <li><a href="#appendix1" class="lvl-chapter">附录1 第二版超声 BI-RADS 解读</a></li>
+  <button class="toc-toggle" type="button" aria-controls="tocNav" aria-expanded="false"><span>目录</span><small>选择章节</small></button>
+  <nav id="tocNav" aria-label="第3辑内容目录"><div class="toc-mobile-head"><strong>第3辑目录</strong><button class="toc-close" type="button">关闭</button></div><label class="toc-search"><span hidden>搜索目录</span><input type="search" placeholder="搜索章节或小节" autocomplete="off"></label><ol>
+    <li><a href="#ch1" class="lvl-chapter">甲状腺</a></li>
+
+    <li><a href="#ch1s1" class="lvl-section">第一节 关于甲状腺癌的读书笔记</a></li>
+
+    <li><a href="#ch1s2" class="lvl-section">第二节 甲状腺中的“赵子龙”</a></li>
+
+    <li><a href="#ch1s3" class="lvl-section">第三节 甲状腺里的“长颈鹿”</a></li>
+
+    <li><a href="#ch1s4" class="lvl-section">第四节 甲状腺里的“海绵宝宝”</a></li>
+
+    <li><a href="#ch1s5" class="lvl-section">第五节 甲状腺内的“地狱之火”</a></li>
+
+    <li><a href="#ch1s6" class="lvl-section">第六节 甲状腺里的“彗星”</a></li>
+
+    <li><a href="#ch1s7" class="lvl-section">第七节 甲状腺癌被过度诊断和过度治疗了</a></li>
+
+    <li><a href="#ch1s8" class="lvl-section">第八节 砂粒体</a></li>
+
+    <li><a href="#ch1s9" class="lvl-section">第九节 已经成为历史的“冲洗过征”</a></li>
+
+    <li><a href="#ch1s10" class="lvl-section">第十节 环状软骨和环甲肌</a></li>
+
+    <li><a href="#ch1s11" class="lvl-section">第十一节 胶态晶体</a></li>
+
+    <li><a href="#ch1s12" class="lvl-section">第十二节 甲状腺滤泡性肿瘤</a></li>
+
+    <li><a href="#ch1s13" class="lvl-section">第十三节 甲状旁腺中的脂肪</a></li>
+
+    <li><a href="#ch1s14" class="lvl-section">第十四节 谨慎使用超声检查甲状腺</a></li>
+
+    <li><a href="#ch1s15" class="lvl-section">第十五节 甲状腺癌的多中心性和消融治疗</a></li>
+
+    <li><a href="#ch1s16" class="lvl-section">第十六节 为什么穿刺病理不能鉴别某些甲状腺结节的良恶性？</a></li>
+
+    <li><a href="#ch1s17" class="lvl-section">第十七节 甲状腺髓样癌与多发性内分泌腺瘤综合征</a></li>
+
+    <li><a href="#ch1s18" class="lvl-section">第十八节 老年人的甲状腺癌（1）：Hürthle 细胞癌</a></li>
+
+    <li><a href="#ch1s19" class="lvl-section">第十九节 老年人的甲状腺癌（2）：未分化癌</a></li>
+
+    <li><a href="#ch1s20" class="lvl-section">第二十节 老年人的甲状腺癌（3）：淋巴瘤</a></li>
+
+    <li><a href="#ch1s21" class="lvl-section">第二十一节 老年人的甲状腺癌（4）：甲状腺转移癌</a></li>
+
+    <li><a href="#ch1s22" class="lvl-section">第二十二节 关于TI-RADS分类系统的一点看法</a></li>
+
+    <li><a href="#ch1s23" class="lvl-section">第二十三节 经典病例分享：累及甲状腺的弥漫性大B细胞淋巴瘤</a></li>
+
+    <li><a href="#ch1s24" class="lvl-section">第二十四节 “典型”其实不典型</a></li>
+
+    <li><a href="#ch1s25" class="lvl-section">第二十五节 梨状窝瘘——反复发作甲状腺脓肿的元凶</a></li>
+
+    <li><a href="#ch1s26" class="lvl-section">第二十六节 急性甲状腺炎：此炎非彼炎</a></li>
+
+    <li><a href="#ch1s27" class="lvl-section">第二十七节 甲状腺结节内的安全之“桥”</a></li>
+
+    <li><a href="#ch1s28" class="lvl-section">第二十八节 《新英格兰医学杂志》：世界范围的甲状腺癌流行？ 过度诊断是罪魁祸首！</a></li>
+
+    <li><a href="#ch1s29" class="lvl-section">第二十九节 两种需要分别对待的甲状腺高回声结节</a></li>
+
+    <li><a href="#ch1s30" class="lvl-section">第三十节 甲状腺内的“木乃伊”</a></li>
+
+    <li><a href="#ch1s31" class="lvl-section">第三十一节 儿童甲状腺及甲状腺周围的“星空”——颈部胸腺</a></li>
+
+    <li><a href="#ch1s32" class="lvl-section">第三十二节 颈部囊实性包块——甲状腺乳头状癌的指示器</a></li>
+
+    <li><a href="#ch2" class="lvl-chapter">乳腺</a></li>
+
+    <li><a href="#ch2s1" class="lvl-section">第一节 乳腺少见病</a></li>
+
+    <li><a href="#ch2s2" class="lvl-section">第二节 边界清晰，乳腺恶性肿瘤</a></li>
+
+    <li><a href="#ch2s3" class="lvl-section">第三节 乳腺 Mondor 病</a></li>
+
+    <li><a href="#ch2s4" class="lvl-section">第四节 糖尿病性乳腺病</a></li>
+
+    <li><a href="#ch2s5" class="lvl-section">第五节 乳腺增生：一个不准确的疾病名称</a></li>
+
+    <li><a href="#ch2s6" class="lvl-section">第六节 “乳腺纤维腺瘤”不是“乳腺纤维瘤”</a></li>
+
+    <li><a href="#ch2s7" class="lvl-section">第七节 “三阴乳腺癌”的声像图特点</a></li>
+
+    <li><a href="#ch2s8" class="lvl-section">第八节 乳腺和甲状腺中的高回声“晕”意义大不同</a></li>
+
+    <li><a href="#ch2s9" class="lvl-section">第九节 高回声的乳腺癌</a></li>
+
+    <li><a href="#ch2s10" class="lvl-section">第十节 “乳房中的乳房”</a></li>
+
+    <li><a href="#ch2s11" class="lvl-section">第十一节 后方回声增强：特殊类型乳腺癌的有价值的征象</a></li>
+
+    <li><a href="#ch2s12" class="lvl-section">第十二节 老年患者乳腺内的“软”包块：别忘了可能是黏液癌</a></li>
+
+    <li><a href="#ch2s13" class="lvl-section">第十三节 要重视乳腺第二眼超声评估的价值</a></li>
+
+    <li><a href="#ch3" class="lvl-chapter">淋巴结</a></li>
+
+    <li><a href="#ch3s1" class="lvl-section">第一节 门结构消失的淋巴结未必一定要干预</a></li>
+
+    <li><a href="#ch3s2" class="lvl-section">第二节 滑车上淋巴结</a></li>
+
+    <li><a href="#ch3s3" class="lvl-section">第三节 一半是海水，一半是火焰</a></li>
+
+    <li><a href="#ch3s4" class="lvl-section">第四节 “门中门征”：与病毒感染有关的淋巴结肿大</a></li>
+
+    <li><a href="#ch3s5" class="lvl-section">第五节 美丽的马尔代夫与甲状腺乳头状癌颈部淋巴结转移</a></li>
+
+    <li><a href="#ch3s6" class="lvl-section">第六节 Rosai-Dorfman 病</a></li>
+
+    <li><a href="#ch3s7" class="lvl-section">第七节 淋巴结的“超声皮髓质”等于“组织学皮髓质”吗？</a></li>
+
+    <li><a href="#ch3s8" class="lvl-section">第八节 颈内静脉二腹肌淋巴结肿大</a></li>
+
+    <li><a href="#ch4" class="lvl-chapter">阴囊</a></li>
+
+    <li><a href="#ch4s1" class="lvl-section">第一节 表皮样囊肿、皮脂腺囊肿及其他</a></li>
+
+    <li><a href="#ch4s2" class="lvl-section">第二节 一颗没有价值的“珍珠”</a></li>
+
+    <li><a href="#ch4s3" class="lvl-section">第三节 睾丸错构瘤</a></li>
+
+    <li><a href="#ch4s4" class="lvl-section">第四节 腹股沟直疝和斜疝的超声鉴别</a></li>
+
+    <li><a href="#ch4s5" class="lvl-section">第五节 阴囊内的“孤精”</a></li>
+
+    <li><a href="#ch4s6" class="lvl-section">第六节 要特别警惕非典型腮腺炎性睾丸炎</a></li>
+
+    <li><a href="#ch4s7" class="lvl-section">第七节 睾丸微石症</a></li>
+
+    <li><a href="#ch4s8" class="lvl-section">第八节 睾丸网扩张</a></li>
+
+    <li><a href="#ch5" class="lvl-chapter">其他</a></li>
+
+    <li><a href="#ch5s1" class="lvl-section">第一节 由灰灰菜想到一个医学名词的翻译</a></li>
+
+    <li><a href="#ch5s2" class="lvl-section">第二节 弹力纤维瘤</a></li>
+
+    <li><a href="#ch5s3" class="lvl-section">第三节 正常胸腺</a></li>
+
+    <li><a href="#ch5s4" class="lvl-section">第四节 “铺路石征”</a></li>
+
+    <li><a href="#ch5s5" class="lvl-section">第五节 血管球瘤</a></li>
+
+    <li><a href="#ch5s6" class="lvl-section">第六节 血管球瘤与血管瘤</a></li>
+
+    <li><a href="#ch5s7" class="lvl-section">第七节 毛母质瘤</a></li>
+
+    <li><a href="#ch5s8" class="lvl-section">第八节 腰背部的“小老鼠”：筋膜脂肪病</a></li>
+
+    <li><a href="#ch5s9" class="lvl-section">第九节 纤维瘤病不应该归类为恶性肿瘤</a></li>
+
+    <li><a href="#ch5s10" class="lvl-section">第十节 相知无远近，万里尚为邻</a></li>
+
+    <li><a href="#ch5s11" class="lvl-section">第十一节 脂膜炎和相关综合征</a></li>
+
+    <li><a href="#ch5s12" class="lvl-section">第十二节 “落雪征”</a></li>
+
+    <li><a href="#ch5s13" class="lvl-section">第十三节 痛性脂肪病</a></li>
+
+    <li><a href="#ch5s14" class="lvl-section">第十四节 纤维瘤和纤维瘤病</a></li>
+
+    <li><a href="#ch5s15" class="lvl-section">第十五节 软组织肿瘤的定性原则</a></li>
+
+    <li><a href="#ch5s16" class="lvl-section">第十六节 脂肪母细胞瘤</a></li>
+
+    <li><a href="#ch5s17" class="lvl-section">第十七节 藏毛窦和藏毛囊肿</a></li>
+
+    <li><a href="#ch5s18" class="lvl-section">第十八节 马松瘤</a></li>
+
+    <li><a href="#ch5s19" class="lvl-section">第十九节 特殊类型的脂肪瘤</a></li>
+
+    <li><a href="#ch5s20" class="lvl-section">第二十节 臀部注射部位肉芽肿</a></li>
+
+    <li><a href="#ch5s21" class="lvl-section">第二十一节 “纽扣样” 骨瘤</a></li>
+
+    <li><a href="#ch5s22" class="lvl-section">第二十二节 纤维瘤病与 Gardner 综合征</a></li>
+
+    <li><a href="#ch5s23" class="lvl-section">第二十三节 四大痛性软组织肿瘤</a></li>
+
+    <li><a href="#ch5s24" class="lvl-section">第二十四节 “爆米花样” 钙化——软组织软骨肉瘤的特异性征象</a></li>
+
+    <li><a href="#ch5s25" class="lvl-section">第二十五节 积油囊肿</a></li>
+
+    <li><a href="#ch5s26" class="lvl-section">第二十六节 第七颈椎的横突到底长什么样子？</a></li>
+
+    <li><a href="#ch5s27" class="lvl-section">第二十七节 腮腺的深层</a></li>
+
+    <li><a href="#ch5s28" class="lvl-section">第二十八节 颈纤维瘤病（先天性斜颈）</a></li>
+
+    <li><a href="#ch5s29" class="lvl-section">第二十九节 食管壁间血肿</a></li>
+
+    <li><a href="#ch6" class="lvl-chapter">趣味超声</a></li>
+
+    <li><a href="#ch6s1" class="lvl-section">第一节 钻进女性乳房的医生们</a></li>
+
+    <li><a href="#ch6s2" class="lvl-section">第二节 趣味超声：软组织中的木屑</a></li>
+
+    <li><a href="#appendix1" class="lvl-chapter">附录1 第二版超声 BI-RADS 解读</a></li>
+
     <li><a href="#appendix2" class="lvl-chapter">附录2 第二版超声 BI-RADS 解读（第二部分）</a></li>
   </ol></nav>
 </aside>
@@ -315,13 +443,15 @@
   <div class="meta-top">医学影像 · 华斌笔记系列</div>
   <h1 class="book-title">华斌笔记</h1>
   <div class="book-sub">第3辑 · 超声临床笔记正文</div>
-  <div class="volume-strip" aria-label="系列进度">
-    <a href="../index.html">华斌笔记系列</a>
-    <a href="../volume-2/index.html">第2辑 · 已上线</a>
-    <span class="active">第3辑 · 已上线</span>
-    <span>其余4辑 · 待更新</span>
+  <div class="volume-strip" aria-label="六辑入口">
+    <a href="../volume-1/index.html">第1辑</a>
+    <a href="../volume-2/index.html">第2辑</a>
+    <span class="active">第3辑</span>
+    <a href="../volume-4/index.html">第4辑</a>
+    <a href="../volume-5/index.html">第5辑</a>
+    <a href="../volume-6/index.html">第6辑</a>
   </div>
-  <p class="content-scope">本页保留第3辑正文内容（P19–P276），OCR生成说明不展示。</p>
+  <p class="content-scope">第3辑正文范围：P19–P276。章节、文字与图片按原书顺序对应展示。</p>
 
 <div class="chapter-title-page" id="ch1">
   <div class="ctp-no">第一章</div>
@@ -3293,5 +3423,53 @@
   });
   lb.addEventListener('click', () => lb.classList.remove('show'));
   document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('show'); });
+</script>
+
+<script>
+(() => {
+  const toc = document.querySelector('.toc-side');
+  const nav = toc && toc.querySelector('nav');
+  const toggle = toc && toc.querySelector('.toc-toggle');
+  const close = toc && toc.querySelector('.toc-close');
+  const backdrop = document.querySelector('.toc-backdrop');
+  const search = toc && toc.querySelector('.toc-search input');
+  const status = toggle && toggle.querySelector('small');
+  if (!toc || !nav || !toggle) return;
+
+  const links = [...nav.querySelectorAll('a[href^="#"]')];
+  const targets = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+  const setOpen = open => {
+    document.body.classList.toggle('toc-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => search && search.focus(), 80);
+  };
+
+  toggle.addEventListener('click', () => setOpen(!document.body.classList.contains('toc-open')));
+  close && close.addEventListener('click', () => setOpen(false));
+  backdrop && backdrop.addEventListener('click', () => setOpen(false));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') setOpen(false); });
+  links.forEach(link => link.addEventListener('click', () => setOpen(false)));
+
+  search && search.addEventListener('input', () => {
+    const query = search.value.trim().toLocaleLowerCase('zh-CN');
+    links.forEach(link => { link.closest('li').hidden = query && !link.textContent.toLocaleLowerCase('zh-CN').includes(query); });
+  });
+
+  let ticking = false;
+  const updateCurrent = () => {
+    ticking = false;
+    let current = 0;
+    for (let i = 0; i < targets.length; i += 1) {
+      if (targets[i] && targets[i].getBoundingClientRect().top <= 130) current = i;
+      else if (targets[i]) break;
+    }
+    links.forEach((link, index) => link.classList.toggle('is-current', index === current));
+    if (status && links[current]) status.textContent = links[current].textContent.trim();
+  };
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(updateCurrent); }
+  }, { passive:true });
+  updateCurrent();
+})();
 </script>
 </body></html>
