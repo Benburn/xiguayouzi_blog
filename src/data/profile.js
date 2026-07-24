@@ -336,11 +336,11 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
     category: "imaging",
     title: "华斌笔记",
     excerpt:
-      "华斌超声笔记全六辑在线合集，共29章506节、2828张正文图片，覆盖肌骨、神经、浅表、腹部、血管及超声基础等主题。",
-    date: "2026-07-23",
-    readTime: "全6辑",
+      "华斌超声笔记全六辑与知识海报特殊合集，包含29章506节、2828张正文图片，以及24个主题的96张交互式海报。",
+    date: "2026-07-24",
+    readTime: "6辑+海报合集",
     cover: null,
-    tags: ["华斌笔记", "超声学习", "医学影像"],
+    tags: ["华斌笔记", "超声学习", "医学影像", "知识海报"],
     body: `# 华斌笔记
 
 这是一个面向超声学习者的系列化在线笔记入口。全6辑现已上线，每一辑均保留原书的章节顺序，并将文字、图注与图片放在对应位置。
@@ -355,6 +355,12 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 - 第6辑：血管与腹部超声，共2章104节。
 
 全集共29章506节、1548个正文页面块和2828张正文图片。已剔除前言、生成说明、封底识别噪声等非正文内容，并修正可确认的异常符号和上下标显示。
+
+## 特殊合集：华斌超声知识海报全集
+
+知识海报合集包含24个部位主题、96张海报，每个主题依次提供总览、正常或低风险、异常或高危、判读流程四张内容。网页支持目录直达、前后翻页、图片缩放、手机触屏滑动和当前海报PNG导出。
+
+<p><a class="knowledge-card-launch" href="/huabin-ultrasound-notes/poster-atlas/index.html">打开“华斌超声知识海报全集” <span>→</span></a></p>
 
 ## 阅读方式
 

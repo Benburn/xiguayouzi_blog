@@ -1,0 +1,14 @@
+.tpl-thyroid{height:100vh;min-height:100vh!important;overflow:hidden}
+.tpl-thyroid .deck{flex:0 0 810px}
+.atlas-blog-controls{position:fixed;right:12px;top:12px;z-index:120;display:flex;align-items:center;gap:6px;padding:7px;border:1px solid rgba(255,255,255,.7);border-radius:14px;background:rgba(30,26,23,.9);box-shadow:0 8px 28px rgba(0,0,0,.22);backdrop-filter:blur(10px);font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif}
+.atlas-blog-controls a,.atlas-blog-controls button{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:36px;padding:0 11px;border:0;border-radius:9px;background:rgba(255,255,255,.12);color:#fff;text-decoration:none;font:800 12px/1 inherit;cursor:pointer;white-space:nowrap}
+.atlas-blog-controls a{background:#247bd6}.atlas-blog-controls button:hover,.atlas-blog-controls a:hover{background:#398de3}.atlas-blog-controls button:disabled{opacity:.35;cursor:default}
+.atlas-blog-controls .atlas-page{min-width:56px;color:rgba(255,255,255,.76);font-size:11px;text-align:center;font-variant-numeric:tabular-nums}
+.render-mode .atlas-blog-controls{display:none!important}
+@media(max-width:640px){
+  .atlas-blog-controls{left:50%;right:auto;top:auto;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100vw - 14px);padding:6px;gap:4px}
+  .atlas-blog-controls a,.atlas-blog-controls button{min-width:39px;height:40px;padding:0 9px;font-size:12px}
+  .atlas-blog-controls a{font-size:0}.atlas-blog-controls a::before{content:"返回";font-size:12px}
+  .atlas-blog-controls .atlas-page{min-width:48px}
+  .tpl-thyroid .export-tools{transform:scale(.76);transform-origin:top left}
+}

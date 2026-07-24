@@ -6,7 +6,6 @@ import {
   getCategoryById,
   getPostsByCategory,
 } from "../data/profile.js";
-import Navbar from "../components/Navbar.jsx";
 
 // 配置 marked
 marked.setOptions({
@@ -32,15 +31,12 @@ export default function BlogPost() {
 
   if (!post || !category) {
     return (
-      <>
-        <Navbar />
-        <main className="blog-page blog-page--empty">
-          <div className="container">
-            <h1>文章未找到</h1>
-            <Link to="/" className="btn btn-ghost">返回首页</Link>
-          </div>
-        </main>
-      </>
+      <main className="blog-page blog-page--empty">
+        <div className="container">
+          <h1>文章未找到</h1>
+          <Link to="/" className="btn btn-ghost">返回首页</Link>
+        </div>
+      </main>
     );
   }
 
@@ -51,7 +47,6 @@ export default function BlogPost() {
 
   return (
     <>
-      <Navbar />
       <main className="post-page">
         <header className="post-hero">
           <div className="post-hero__bg" aria-hidden="true">

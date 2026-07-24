@@ -1,6 +1,5 @@
 import { useParams, Link } from "react-router-dom";
 import { getCategoryById, getPostsByCategory, blogCategories } from "../data/profile.js";
-import Navbar from "../components/Navbar.jsx";
 
 /**
  * 博客分类页：展示该分类下所有文章
@@ -13,21 +12,17 @@ export default function BlogCategory() {
 
   if (!category) {
     return (
-      <>
-        <Navbar />
-        <main className="blog-page blog-page--empty">
-          <div className="container">
-            <h1>未找到该分类</h1>
-            <Link to="/" className="btn btn-ghost">返回首页</Link>
-          </div>
-        </main>
-      </>
+      <main className="blog-page blog-page--empty">
+        <div className="container">
+          <h1>未找到该分类</h1>
+          <Link to="/" className="btn btn-ghost">返回首页</Link>
+        </div>
+      </main>
     );
   }
 
   return (
     <>
-      <Navbar />
       <main className="blog-page">
         <header className="blog-hero">
           <div className="blog-hero__bg" aria-hidden="true">
