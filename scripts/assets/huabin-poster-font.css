@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "XY Poster Sans";
+  src: url("huabin-poster-noto-sans-sc.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: block;
+}
+
+:root {
+  --font-sans: "XY Poster Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "XY Poster Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.tpl-thyroid,
+.tpl-thyroid button,
+.tpl-thyroid select {
+  font-family: "XY Poster Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+

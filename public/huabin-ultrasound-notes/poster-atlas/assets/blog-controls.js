@@ -66,14 +66,18 @@
   }, { passive:true });
 
   function fitDeck() {
-    var mobile = innerWidth <= 640;
-    var availableWidth = Math.max(280, innerWidth - 12);
-    var availableHeight = Math.max(360, innerHeight - (mobile ? 88 : 16));
+    var viewport = window.visualViewport;
+    var viewWidth = viewport ? viewport.width : innerWidth;
+    var viewHeight = viewport ? viewport.height : innerHeight;
+    var mobile = viewWidth <= 640;
+    var availableWidth = Math.max(280, viewWidth - 12);
+    var availableHeight = Math.max(360, viewHeight - (mobile ? 104 : 16));
     var scale = Math.min(1, availableWidth / 810, availableHeight / 1080);
     deck.style.transform = "scale(" + scale + ")";
     deck.style.transformOrigin = "center center";
   }
   window.addEventListener("resize", fitDeck, { passive:true });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", fitDeck, { passive:true });
   fitDeck();
   update();
 })();

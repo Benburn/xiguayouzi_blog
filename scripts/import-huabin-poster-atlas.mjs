@@ -13,27 +13,32 @@ let html = await readFile(path.join(sourceDir, "index.html"), "utf8");
 html = html
   .replace("<title>华斌六辑超声知识海报全集</title>", "<title>华斌超声知识海报全集 · 西瓜柚子</title>")
   .replace('<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">',
-    '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="华斌超声知识海报全集：24个部位主题、96张可交互知识海报。">')
+    '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="华斌超声知识海报全集：24个部位主题、96张可交互知识海报。">')
   .replace('<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="atlas.css">',
-    '<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="atlas.css"><link rel="stylesheet" href="assets/blog-controls.css">')
+    '<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="atlas.css"><link rel="stylesheet" href="assets/poster-font.css"><link rel="stylesheet" href="assets/blog-controls.css">')
   .replace("</body>", '<script src="assets/blog-controls.js"></script>\n</body>')
   .replace(/\r\n?/g, "\n")
   .replace(/[ \t]+$/gm, "");
 
 const controlsCss = `
-.tpl-thyroid{height:100vh;min-height:100vh!important;overflow:hidden}
+html{height:100%;background:#eee8e1}
+.tpl-thyroid{height:100vh;height:100svh;height:100dvh;min-height:0!important;overflow:hidden}
 .tpl-thyroid .deck{flex:0 0 810px}
-.atlas-blog-controls{position:fixed;right:12px;top:12px;z-index:120;display:flex;align-items:center;gap:6px;padding:7px;border:1px solid rgba(255,255,255,.7);border-radius:14px;background:rgba(30,26,23,.9);box-shadow:0 8px 28px rgba(0,0,0,.22);backdrop-filter:blur(10px);font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif}
+.atlas-blog-controls{position:fixed;right:max(12px,env(safe-area-inset-right));top:max(12px,env(safe-area-inset-top));z-index:120;display:flex;align-items:center;gap:6px;padding:7px;border:1px solid rgba(255,255,255,.7);border-radius:14px;background:rgba(30,26,23,.9);box-shadow:0 8px 28px rgba(0,0,0,.22);backdrop-filter:blur(10px);font-family:"XY Poster Sans","PingFang SC","Microsoft YaHei",sans-serif}
 .atlas-blog-controls a,.atlas-blog-controls button{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:36px;padding:0 11px;border:0;border-radius:9px;background:rgba(255,255,255,.12);color:#fff;text-decoration:none;font:800 12px/1 inherit;cursor:pointer;white-space:nowrap}
 .atlas-blog-controls a{background:#247bd6}.atlas-blog-controls button:hover,.atlas-blog-controls a:hover{background:#398de3}.atlas-blog-controls button:disabled{opacity:.35;cursor:default}
 .atlas-blog-controls .atlas-page{min-width:56px;color:rgba(255,255,255,.76);font-size:11px;text-align:center;font-variant-numeric:tabular-nums}
 .render-mode .atlas-blog-controls{display:none!important}
 @media(max-width:640px){
-  .atlas-blog-controls{left:50%;right:auto;top:auto;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100vw - 14px);padding:6px;gap:4px}
-  .atlas-blog-controls a,.atlas-blog-controls button{min-width:39px;height:40px;padding:0 9px;font-size:12px}
-  .atlas-blog-controls a{font-size:0}.atlas-blog-controls a::before{content:"返回";font-size:12px}
+  .atlas-blog-controls{left:50%;right:auto;top:auto;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);width:max-content;max-width:calc(100vw - 20px);padding:6px;gap:4px}
+  .atlas-blog-controls a,.atlas-blog-controls button{min-width:42px;height:44px;padding:0 10px;font-size:13px}
+  .atlas-blog-controls a{font-size:0}.atlas-blog-controls a::before{content:"返回";font-size:13px}
   .atlas-blog-controls .atlas-page{min-width:48px}
-  .tpl-thyroid .export-tools{transform:scale(.76);transform-origin:top left}
+  .tpl-thyroid .export-tools{left:max(12px,env(safe-area-inset-left));top:max(12px,env(safe-area-inset-top));transform:scale(.78);transform-origin:top left}
+}
+@media(min-width:396px) and (max-width:430px) and (min-height:850px){
+  .tpl-thyroid .export-tools{transform:scale(.82)}
+  .atlas-blog-controls a,.atlas-blog-controls button{min-width:44px}
 }
 `;
 
@@ -106,14 +111,18 @@ const controlsJs = `
   }, { passive:true });
 
   function fitDeck() {
-    var mobile = innerWidth <= 640;
-    var availableWidth = Math.max(280, innerWidth - 12);
-    var availableHeight = Math.max(360, innerHeight - (mobile ? 88 : 16));
+    var viewport = window.visualViewport;
+    var viewWidth = viewport ? viewport.width : innerWidth;
+    var viewHeight = viewport ? viewport.height : innerHeight;
+    var mobile = viewWidth <= 640;
+    var availableWidth = Math.max(280, viewWidth - 12);
+    var availableHeight = Math.max(360, viewHeight - (mobile ? 104 : 16));
     var scale = Math.min(1, availableWidth / 810, availableHeight / 1080);
     deck.style.transform = "scale(" + scale + ")";
     deck.style.transformOrigin = "center center";
   }
   window.addEventListener("resize", fitDeck, { passive:true });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", fitDeck, { passive:true });
   fitDeck();
   update();
 })();
@@ -131,6 +140,10 @@ if (forbidden.some(pattern => pattern.test(html))) throw new Error("海报HTML�
 await rm(outputDir, { recursive:true, force:true });
 await mkdir(path.join(outputDir, "images"), { recursive:true });
 await cp(path.join(sourceDir, "assets"), path.join(outputDir, "assets"), { recursive:true });
+await copyFile(path.join("E:\\Web\\xiguayouzi_blog\\scripts\\assets", "huabin-poster-noto-sans-sc.woff2"), path.join(outputDir, "assets", "huabin-poster-noto-sans-sc.woff2"));
+await copyFile(path.join("E:\\Web\\xiguayouzi_blog\\scripts\\assets", "NotoSansSC-OFL.txt"), path.join(outputDir, "assets", "NotoSansSC-OFL.txt"));
+await copyFile(path.join("E:\\Web\\xiguayouzi_blog\\scripts\\assets", "huabin-poster-font.css"), path.join(outputDir, "assets", "poster-font.css"));
+await copyFile(path.join("E:\\Web\\xiguayouzi_blog\\scripts\\assets", "huabin-poster-export.js"), path.join(outputDir, "assets", "export.js"));
 await copyFile(path.join(sourceDir, "style.css"), path.join(outputDir, "style.css"));
 await copyFile(path.join(sourceDir, "atlas.css"), path.join(outputDir, "atlas.css"));
 for (const imageName of imageNames) {
