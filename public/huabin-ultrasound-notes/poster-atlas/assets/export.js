@@ -87,6 +87,10 @@
 
     var dpi = Number(select.value) || 300;
     var scale = dpi / 96;
+    var pageBackground = getComputedStyle(slide).backgroundColor;
+    if (!pageBackground || pageBackground === "transparent" || pageBackground === "rgba(0, 0, 0, 0)") {
+      pageBackground = "#fffaf4";
+    }
     var imageStates = Array.from(slide.querySelectorAll(".zoom-frame img")).map(function (image) {
       return {
         transform: image.style.transform,
@@ -121,7 +125,7 @@
         windowHeight: 1080,
         scrollX: 0,
         scrollY: 0,
-        backgroundColor: null,
+        backgroundColor: pageBackground,
         logging: false,
         useCORS: true,
         allowTaint: false,
@@ -129,8 +133,9 @@
           clonedDocument.documentElement.classList.add("render-mode");
           var style = clonedDocument.createElement("style");
           style.textContent =
+            'html,body,.deck{background:' + pageBackground + '!important}' +
             '.deck{width:810px!important;height:1080px!important;transform:none!important}' +
-            '.deck>.slide.is-active{position:absolute!important;inset:0!important;opacity:1!important;transform:none!important}' +
+            '.deck>.slide.is-active{position:absolute!important;inset:0!important;opacity:1!important;transform:none!important;border-radius:0!important;background-color:' + pageBackground + '!important}' +
             '.deck>.slide.is-active,.deck>.slide.is-active *{font-family:' + exportFont + '!important}';
           clonedDocument.head.appendChild(style);
 
