@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-themes="academic-paper,corporate-clean,minimal-white,blueprint,tokyo-night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="华斌笔记自学笔记：肺部超声诊断要求与特殊征象，支持目录、主题切换、全屏与触控翻页。">
+<title>自学笔记｜肺部超声诊断要求与特殊征象</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<style>
+/* ─── 肺部超声PPT 自定义样式（演讲者大字版+逐字稿） ─── */
+:root {
+  --accent-blue: #1a73e8;
+  --accent-teal: #0d9488;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
+  --accent-green: #10b981;
+  --accent-purple: #8b5cf6;
+  --tag-round: 6px;
+}
+
+/* ★ 核心：slide 基准字体增大到 32px（≈ 2× 常规 16px） */
+.slide {
+  font-size: 32px;
+  padding: 40px 60px;
+}
+
+/* 覆盖 base.css 的 px 单位排版 */
+.kicker { font-size: 20px !important; }
+.lede { font-size: 28px !important; }
+.h1, h1.title { font-size: 52px !important; }
+.h2, h2.title { font-size: 40px !important; }
+.h3, h3 { font-size: 34px !important; }
+.h4, h4 { font-size: 28px !important; }
+.deck-footer, .deck-header { font-size: 18px !important; }
+.slide-number { font-size: inherit !important; }
+.pill { font-size: 16px !important; }
+.eyebrow { font-size: 18px !important; }
+.card { padding: 22px 24px !important; }
+
+/* 目录卡片内标题 */
+.grid .card h4 { font-size: 24px !important; }
+.grid .card p { font-size: 20px !important; }
+
+/* 图片包装 */
+.img-wrap {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  margin: 0.4rem 0;
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-cap {
+  font-size: 0.72em;
+  text-align: center;
+  padding: 0.35rem 0.7rem;
+  color: var(--text-2);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  line-height: 1.35;
+}
+
+/* ▸ 征象卡片 */
+.sign-card {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 0.8rem 1.1rem;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 1px 6px rgba(0,0,0,.06);
+}
+.sign-card .sign-name { font-size: 1.15em; font-weight: 700; margin-bottom: 0.25rem; }
+.sign-card .sign-en { font-size: 0.78em; font-family: 'JetBrains Mono', monospace; opacity: 0.65; margin-bottom: 0.3rem; }
+.sign-card p { margin: 0.2rem 0; font-size: 1em; line-height: 1.55; }
+.diag-req {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.2em 0.7em;
+  border-radius: 6px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-top: 0.4rem;
+}
+
+/* 并排图片容器 */
+.img-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.img-pair .img-wrap { margin: 0; }
+
+/* 标签 */
+.tag {
+  display: inline-block;
+  padding: 0.15em 0.7em;
+  border-radius: var(--tag-round);
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.tag-blue   { background: #dbeafe; color: #1d4ed8; }
+.tag-teal   { background: #ccfbf1; color: #0f766e; }
+.tag-amber  { background: #fef3c7; color: #b45309; }
+.tag-red    { background: #fee2e2; color: #dc2626; }
+.tag-green  { background: #d1fae5; color: #059669; }
+.tag-purple { background: #ede9fe; color: #7c3aed; }
+
+/* 数据表格 */
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.8em; margin: 0.8rem 0; }
+.data-table th { background: var(--accent); color: #fff; padding: 0.4rem 0.7rem; text-align: left; font-weight: 600; }
+.data-table td { padding: 0.35rem 0.7rem; border-bottom: 1px solid var(--border); }
+.data-table tr:hover td { background: var(--surface-2); }
+
+/* 布局辅助 */
+.flex { display: flex; }
+.flex-c { display: flex; align-items: center; }
+.flex-b { display: flex; justify-content: space-between; align-items: center; }
+.mt-s { margin-top: 0.6rem; }
+.mt-m { margin-top: 1rem; }
+.mt-l { margin-top: 1.6rem; }
+.mb-s { margin-bottom: 0.6rem; }
+.mb-m { margin-bottom: 1rem; }
+.tc { text-align: center; }
+.dim { opacity: 0.7; }
+.dim2 { opacity: 0.55; }
+.gap-l { gap: 1.6rem; }
+.gap-m { gap: 1rem; }
+
+.num-badge {
+  display: inline-flex;
+  width: 28px; height: 28px;
+  align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-weight: 700; font-size: 0.7em;
+  flex-shrink: 0;
+}
+
+/* 图文混合布局 - 网格系统 */
+.split-content-right { display: grid; grid-template-columns: 1fr 1.4fr; gap: 1rem; align-items: start; }
+.split-content-left { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; align-items: start; }
+.img-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.4rem 0; }
+.img-trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 0.4rem 0; }
+.card-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin: 0.4rem 0; }
+.card-trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin: 0.4rem 0; }
+
+/* 紧凑型卡片 */
+.sign-card-compact {
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  font-size: 0.78em;
+}
+.sign-card-compact .sc-title { font-weight: 700; font-size: 1.05em; margin-bottom: 0.2rem; }
+.sign-card-compact .sc-title .sc-en { font-weight: 400; opacity: 0.6; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+.sign-card-compact p { font-size: 0.95em; line-height: 1.5; margin: 0.2rem 0; }
+.sign-card-compact .diag-req { font-size: 0.78em; padding: 0.12em 0.5em; }
+
+/* 提示条 */
+.tip-bar {
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.72em;
+  color: var(--accent);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tip-bar.warn { background: #fef3c7; color: #92400e; }
+.tip-bar.success { background: #d1fae5; color: #065f46; }
+.tip-bar.danger { background: #fee2e2; color: #dc2626; }
+
+.text-sm { font-size: 0.88em; line-height: 1.6; }
+.text-xs { font-size: 0.78em; line-height: 1.5; }
+
+.info-panel {
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  box-shadow: 0 1px 8px rgba(0,0,0,.06);
+  border: 1px solid var(--border);
+  height: fit-content;
+}
+
+/* ★ Slides 3/4/5/6/7/11 专用：文本 2/3 + 图片 1/3 */
+.slide-text-img-32 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  align-items: start;
+  margin-top: 0.6rem;
+}
+.slide-text-img-32 .img-wrap { margin: 0; }
+.slide-text-img-32 .img-wrap img {
+  max-height: 38vh;
+  object-fit: contain;
+  width: 100%;
+}
+
+/* Slide11 图片对专用约束 */
+.slide11-img-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.slide11-img-pair .img-wrap { margin: 0; }
+.slide11-img-pair .img-wrap img {
+  max-height: 20vh;
+  object-fit: contain;
+  width: 100%;
+}
+</style>
+<link rel="stylesheet" href="assets/blog-study-controls.css">
+</head>
+<body>
+<div class="deck">
+
+<!-- ======================================================================== -->
+<!-- SLIDE 1: 封面                                                            -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="封面">
+  <div style="display:flex;flex-direction:column;justify-content:center;height:100%;">
+    <p class="kicker anim-fade-up" data-anim="fade-up" style="font-size:1.05em;">基于《华斌的超声笔记·第2辑·第三章》</p>
+    <h1 class="h1 anim-fade-up" data-anim="fade-up" style="font-size:4rem;line-height:1.2;">
+      肺部超声<br>
+      <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;">诊断要求与特殊征象</span>
+    </h1>
+    <p class="lede mt-m" style="max-width:680px;font-size:1.15em;line-height:1.6;">
+      系统解析胸腔与肺部超声的十余种特征性征象，<br>
+      从诊断标准到临床应用，一站讲清。
+    </p>
+    <div style="display:flex;gap:0.8rem;margin-top:2.4rem;flex-wrap:wrap;">
+      <span class="tag tag-blue">四边形征</span>
+      <span class="tag tag-teal">正弦波征</span>
+      <span class="tag tag-amber">实性组织征</span>
+      <span class="tag tag-red">破布征</span>
+      <span class="tag tag-purple">肺火箭征</span>
+      <span class="tag tag-green">空气支气管征</span>
+    </div>
+    <div class="deck-footer" style="margin-top:auto;">
+      <span class="dim2">肺部超声 · 诊断要求与特殊征象</span>
+      <span class="slide-number" data-current="1" data-total="19"></span>
+    </div>
+  </div>
+  <aside class="notes">各位好，今天分享<strong>肺部超声的核心征象和诊断标准</strong>。内容来自华斌超声笔记第三章，全程大约三分钟，帮你快速掌握胸腔与肺部超声的要点。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 2: 目录                                                            -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="目录">
+  <p class="kicker" style="font-size:1em;">Agenda</p>
+  <h2 class="h2">目录</h2>
+  <div class="grid g3 mt-m anim-stagger-list" data-anim-target style="gap:0.8rem;">
+    <div class="card"><h4 style="font-size:1.1em;">01 · 肺部超声基础</h4><p class="dim" style="font-size:0.92em;">A线、B线基本概念</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">02 · 四边形征</h4><p class="dim" style="font-size:0.92em;">胸腔积液特征性征象</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">03 · 正弦波征</h4><p class="dim" style="font-size:0.92em;">M型超声的动态改变</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">04 · 实性组织征</h4><p class="dim" style="font-size:0.92em;">肺实变的实质样回声</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">05 · 破布征</h4><p class="dim" style="font-size:0.92em;">局限性肺炎的主要征象</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">06 · B线与肺火箭征</h4><p class="dim" style="font-size:0.92em;">间质综合征的诊断</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">07 · 空气支气管征</h4><p class="dim" style="font-size:0.92em;">肺炎 vs 梗阻性肺不张</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">08 · 肺泡-间质综合征</h4><p class="dim" style="font-size:0.92em;">超声的早期预警价值</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">09 · 胸腔积液定量</h4><p class="dim" style="font-size:0.92em;">坐位/平卧位估算方法</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">10 · 气胸超声诊断</h4><p class="dim" style="font-size:0.92em;">胸膜滑动征与彗星尾征</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">11 · BLUE &amp; FALLS 协议</h4><p class="dim" style="font-size:0.92em;">急性呼吸衰竭的标准流程</p></div>
+    <div class="card"><h4 style="font-size:1.1em;">12 · 小儿肺炎</h4><p class="dim" style="font-size:0.92em;">即时超声的独特价值</p></div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="2" data-total="19"></span></div>
+  <aside class="notes">一共讲<strong>十二个板块</strong>——从基础A线B线，到胸腔积液、肺实变、间质综合征、气胸，最后是BLUE协议和小儿肺炎应用。我们快速过一遍。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 3: 肺部超声基础 ★ 修复：文本2/3 + 图片1/3 + 大字体               -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="基础">
+  <p class="kicker" style="font-size:1em;">01 · Foundation</p>
+  <h2 class="h2">肺部超声基础</h2>
+  <div class="slide-text-img-32">
+    <div>
+      <p style="line-height:1.8;font-size:1.05em;">长期以来，超声被认为不适用于肺部检查——因为超声不能穿过肺-软组织界面。但<strong>法国医生 Daniel Lichtenstein</strong> 系统研究了超声与 CT 的对比，彻底改变了这一认知。</p>
+      <div class="sign-card" style="margin-top:1rem;">
+        <div class="sign-name">A线 <span class="sign-en">A-line</span></div>
+        <p>胸膜肺界面强回声及与其平行的<strong>多重反射强回声线</strong>。在正常状况下可清晰显示。</p>
+      </div>
+      <div class="sign-card" style="margin-top:0.8rem;border-left-color:var(--accent-amber);">
+        <div class="sign-name">B线 <span class="sign-en">B-line / 彗星尾征</span></div>
+        <p>与A线<strong>垂直</strong>的条带样强回声，也叫胸膜彗尾线。B线增多（&gt;3条/肋间）与肺间质综合征相关。</p>
+        <span class="diag-req">诊断要求：起自胸膜线、激光样、长而无衰减、遮挡A线</span>
+      </div>
+      <p class="mt-m dim" style="font-size:0.95em;">床旁超声已成为急诊室和 ICU 的必备检查手段。</p>
+    </div>
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0300_img_in_image_box_396_1156_1716_1636.jpg" alt="正常肺A线">
+        <div class="img-cap">图3-11 正常肺 · A.CT显示正常肺部；B.超声显示A线</div>
+      </div>
+      <div class="img-wrap mt-s">
+        <img src="images/p0300_img_in_image_box_399_1849_1720_2311.jpg" alt="急性肺水肿B线">
+        <div class="img-cap">图3-12 急性肺水肿 · 超声显示多条与胸膜垂直的B线</div>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="3" data-total="19"></span></div>
+  <aside class="notes">肺部超声核心就是<strong>A线和B线</strong>。A线是平行于胸膜的多重反射——正常肺的标志。B线是垂直于胸膜的激光样条带——起自胸膜、长而不衰减。<strong>一个肋间隙超过3条B线</strong>，就要警惕间质问题了。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 4: 四边形征 ★ 修复                                                 -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="四边形征">
+  <p class="kicker" style="font-size:1em;">02 · Pleural Effusion</p>
+  <h2 class="h2">四边形征 <span class="sign-en">Quad Sign</span></h2>
+  <div class="slide-text-img-32">
+    <div>
+      <div class="sign-card" style="border-left-color:var(--accent-blue);">
+        <div class="sign-name">定义</div>
+        <p>胸腔积液（pleural effusion）将<strong>胸膜线</strong>与<strong>肺表面</strong>分离，与上下肋骨的声影一起构成<strong>四边形的形状</strong>。</p>
+        <span class="diag-req">诊断要求：肋间扫查见胸膜线与肺表面被无回声/低回声区分离，形成四边形</span>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-teal);">
+        <div class="sign-name">特点</div>
+        <p>无论积液有回声（积血、积脓等）还是无回声，"四边形征"可以作为<strong>各种胸腔积液的特征性征象</strong>。</p>
+      </div>
+      <p class="mt-m dim" style="font-size:0.9em;">图3-1 箭头显示胸膜线与肺表面之间的无回声积液区，上下肋骨声影形成四边形的两侧边界。</p>
+    </div>
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0294_img_in_image_box_413_1156_1733_1668.jpg" alt="四边形征声像图">
+        <div class="img-cap">图3-1 "四边形征"声像图 · 胸膜线与肺表面分离，与肋骨声影构成四边形</div>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="4" data-total="19"></span></div>
+  <aside class="notes"><strong>四边形征</strong>是胸腔积液的特征性征象——积液把胸膜线和肺表面撑开，加上上下肋骨声影，刚好围成一个四边形。<strong>不管积液是清的还是浑浊的</strong>，这个征象都成立。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 5: 正弦波征 ★ 修复                                                -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="正弦波征">
+  <p class="kicker" style="font-size:1em;">03 · Dynamic Sign</p>
+  <h2 class="h2">正弦波征 <span class="sign-en">Sinusoid Sign</span></h2>
+  <div class="slide-text-img-32">
+    <div>
+      <div class="sign-card" style="border-left-color:var(--accent-purple);">
+        <div class="sign-name">定义</div>
+        <p>利用<strong>M型超声</strong>扫查时，显示的肺表面线随呼吸的搏动向胸膜线方向运动，呈现类似<strong>正弦波样</strong>的改变。</p>
+        <span class="diag-req">诊断要求：M型超声下观察到肺表面随呼吸周期呈波浪形运动</span>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-amber);">
+        <div class="sign-name">临床意义</div>
+        <p>正弦波征是<strong>胸腔积液</strong>的又一个重要动态征象，与四边形征联合应用可提高诊断准确性。</p>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-blue);">
+        <div class="sign-name">检查方法</div>
+        <p>将M型取样线置于肺表面线处，观察呼吸周期中肺表面线的运动轨迹。</p>
+      </div>
+    </div>
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0294_img_in_image_box_597_1785_1550_2349.jpg" alt="正弦波征M型超声">
+        <div class="img-cap">图3-2 胸腔积液"正弦波征"M型超声声像图 · 肺表面线呈正弦波样搏动</div>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="5" data-total="19"></span></div>
+  <aside class="notes">四边形征是静态的，那<strong>正弦波征</strong>就是动态的。M型下一看——肺表面线随着呼吸一上一下，像波浪一样。<strong>两个征象结合起来</strong>，诊断胸腔积液的把握就更大了。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 6: 实性组织征 ★ 修复                                              -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="实性组织征">
+  <p class="kicker" style="font-size:1em;">04 · Consolidation</p>
+  <h2 class="h2">实性组织征 <span class="sign-en">Tissue-like Sign</span></h2>
+  <div class="slide-text-img-32">
+    <div>
+      <div class="sign-card" style="border-left-color:var(--accent-green);">
+        <div class="sign-name">定义</div>
+        <p>含气的肺泡被<strong>渗出液填充</strong>后呈现类<strong>肝实质或脾实质</strong>的实性组织样回声。</p>
+        <span class="diag-req">诊断要求：肺实变区域回声类似肝/脾实质，可见支气管分支</span>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-red);">
+        <div class="sign-name">临床意义</div>
+        <p>是<strong>肺实变</strong>（consolidation）的一种主要超声征象。当肺实变范围较大时尤为明显。</p>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-teal);">
+        <div class="sign-name">鉴别要点</div>
+        <p>需注意与肝/脾实质对比，同时观察是否存在"空气支气管征"以确认肺实变诊断。</p>
+      </div>
+    </div>
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0295_img_in_image_box_447_1163_1285_1681.jpg" alt="实性组织征声像图">
+        <div class="img-cap">图3-3 "实性组织征"声像图 · P：实变的肺；L：肝脏；E：胸腔积液；箭头：膈</div>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="6" data-total="19"></span></div>
+  <aside class="notes">肺泡里灌满了渗出液，肺看起来就跟肝或脾一样——这叫<strong>实性组织征</strong>，是<strong>肺实变</strong>的标志。注意和旁边的肝脏对比，再找找有没有空气支气管征来确认。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 7: 破布征 ★ 修复                                                  -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="破布征">
+  <p class="kicker" style="font-size:1em;">05 · Shred Sign</p>
+  <h2 class="h2">破布征 <span class="sign-en">Shred Sign</span></h2>
+  <div class="slide-text-img-32">
+    <div>
+      <div class="sign-card" style="border-left-color:var(--accent-red);">
+        <div class="sign-name">定义</div>
+        <p>实变的肺呈现实性组织样回声，其<strong>深部边界</strong>与含气的肺部之间的界限呈<strong>碎片样不规则</strong>，状如一块撕下来的破布。</p>
+        <span class="diag-req">诊断要求：实变肺的深部边界呈不规则碎片状，与含气肺组织分界不清</span>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-amber);">
+        <div class="sign-name">重要特征</div>
+        <p>这是<strong>局限性肺炎</strong>的主要征象，具有<strong>很高的灵敏度和特异度</strong>。一般在较大的全叶性肺实变时不会出现。</p>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-purple);">
+        <div class="sign-name">与实性组织征的关系</div>
+        <p>破布征是<strong>实性组织征的延伸</strong>——先有实性组织征，再看深部边界的形态来判断。</p>
+      </div>
+    </div>
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0295_img_in_image_box_455_1833_1286_2406.jpg" alt="破布征声像图">
+        <div class="img-cap">图3-4 "破布征"声像图 · ChW：胸壁；ShS：破布征；PL：胸膜线</div>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="7" data-total="19"></span></div>
+  <aside class="notes">实性组织征的深部边界如果像<strong>撕碎的破布</strong>一样不规整，那就是<strong>破布征</strong>——这是<strong>局限性肺炎</strong>的特异征象。全叶性实变反而不会出现。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 8: B线与肺火箭征                                                   -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="B线与肺火箭征">
+  <p class="kicker" style="font-size:1em;">06 · B-line / Lung Rockets</p>
+  <h2 class="h2" style="font-size:2rem;">B线与肺火箭征 <span class="sign-en" style="font-size:0.55em;">Lung Rockets Sign</span></h2>
+
+  <div class="img-duo" style="margin:0.3rem 0;">
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0296_img_in_image_box_581_1018_1555_1818.jpg" alt="B线征" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-5 B线征声像图 · 激光样强回声起自胸膜线</div>
+    </div>
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0297_img_in_image_box_422_356_1329_1115.jpg" alt="弥漫性肺火箭征" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-6 "弥漫性肺火箭征"声像图</div>
+    </div>
+  </div>
+
+  <div class="card-duo" style="margin:0.2rem 0;gap:0.8rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;">
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);">
+        <div class="sc-title">① 彗星尾伪像</div>
+        <p class="dim" style="margin:0;">多重反射伪像</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);">
+        <div class="sc-title">② 起自胸膜线</div>
+        <p class="dim" style="margin:0;">非胸膜外</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);">
+        <div class="sc-title">③ 边缘清晰激光样</div>
+        <p class="dim" style="margin:0;">边界锐利</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);">
+        <div class="sc-title">④ 强回声</div>
+        <p class="dim" style="margin:0;">亮度高</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);">
+        <div class="sc-title">⑤ 长而无衰减</div>
+        <p class="dim" style="margin:0;">直达屏幕边缘</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);">
+        <div class="sc-title">⑥ 遮挡A线</div>
+        <p class="dim" style="margin:0;">A线不可见</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-amber);grid-column:1/3;">
+        <div class="sc-title">⑦ 随肺滑动而移动</div>
+        <p class="dim" style="margin:0;">实时动态观察</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <div class="sign-card-compact" style="border-left-color:var(--accent-red);background:#fef2f2;">
+        <div class="sc-title">🔥 肺火箭征阳性</div>
+        <p style="margin:0.2rem 0;font-size:1.05em;"><strong>&gt;3条B线</strong>/视野</p>
+        <p class="dim" style="font-size:0.88em;">提示：肺间质综合征</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-purple);background:#faf5ff;">
+        <div class="sc-title">🌐 弥漫性肺火箭征</div>
+        <p style="margin:0.2rem 0;font-size:1em;">前胸部<strong>上下左右4区</strong>均阳性</p>
+        <p class="dim" style="font-size:0.88em;">提示：<strong>肺水肿</strong>（心源性/感染性）</p>
+      </div>
+      <div class="tip-bar warn" style="font-size:0.82em;padding:0.4rem 0.8rem;margin:0;">
+        💡 B线 = 胸膜彗尾线，是评估间质水肿的关键指标
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="8" data-total="19"></span></div>
+  <aside class="notes">B线有<strong>七个特征</strong>：彗星尾、起自胸膜线、激光样边缘、强回声、长而不衰减、遮挡A线、随肺滑动移动。一个视野超过3条就叫<strong>肺火箭征</strong>——提示间质综合征。如果前胸四个区都是阳性，那就是<strong>弥漫性肺水肿</strong>了。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 9: B线的临床意义                                                   -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="B线临床意义">
+  <p class="kicker" style="font-size:1em;">06b · Clinical Significance</p>
+  <h2 class="h2">B线的临床意义与应用</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;">
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0301_img_in_image_box_214_353_1536_817.jpg" alt="急性肺水肿严重">
+        <div class="img-cap">图3-13 急性肺水肿（较严重）· CT与超声B线对比</div>
+      </div>
+    </div>
+    <div>
+      <div class="img-wrap">
+        <img src="images/p0301_img_in_image_box_227_1026_1550_1462.jpg" alt="弥漫性非间质纤维化">
+        <div class="img-cap">图3-14 弥漫性非间质纤维化 · 一个肋间显示多条明显的B线</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.8rem;">
+    <div class="sign-card" style="border-left-color:var(--accent-green);">
+      <div class="sign-name">临床应用价值</div>
+      <p>B线增多（&gt;3条/肋间）与<strong>肺间质综合征</strong>相关，特别是肺水肿前期的肺间质水肿。</p>
+      <p class="mt-s">在急诊/ICU/CCU床旁超声检查中，超声能<strong>比X线更灵敏</strong>地提示早期<strong>亚临床肺水肿</strong>。</p>
+    </div>
+    <div class="sign-card" style="border-left-color:var(--accent-blue);">
+      <div class="sign-name">分级评估</div>
+      <p><strong>局灶性</strong>肺火箭征 → 局灶性间质病变</p>
+      <p><strong>弥漫性</strong>肺火箭征 → 弥漫性间质病变/肺水肿</p>
+      <p class="mt-s">B线分布可随病情变化动态监测</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="9" data-total="19"></span></div>
+  <aside class="notes">B线的价值在于<strong>早期预警</strong>。超声比X线更早发现<strong>亚临床肺水肿</strong>，而且可以分级——局灶性的火箭征还是弥漫性的四区阳性，对应不同的临床状态，还可以动态监测病情变化。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 10: 空气支气管征                                                   -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="空气支气管征">
+  <p class="kicker" style="font-size:1em;">07 · Air Bronchogram</p>
+  <h2 class="h2" style="font-size:2rem;">超声空气支气管征 <span class="sign-en" style="font-size:0.55em;">Ultrasound Air Bronchogram</span></h2>
+
+  <div class="img-duo" style="margin:0.3rem 0;">
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0298_img_in_image_box_398_932_1726_1626.jpg" alt="空气支气管征" style="max-height:30vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-8 实变肺内的线状强回声（箭头）代表含气支气管</div>
+    </div>
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0299_img_in_image_box_221_362_875_881.jpg" alt="动态空气支气管征" style="max-height:30vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-9 动态空气支气管征 · 呼气(A) / 吸气(B) 气体离心移动</div>
+    </div>
+  </div>
+
+  <div class="card-duo" style="margin:0;gap:0.8rem;">
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <div class="sign-card-compact" style="border-left-color:var(--accent-purple);">
+        <div class="sc-title">定义</div>
+        <p style="margin:0.2rem 0;">实变肺内出现<strong>点状或线状强回声</strong>，代表含气的支气管/细支气管，与实变肺组织形成对比。</p>
+        <span class="diag-req" style="font-size:0.82em;">诊断：实变肺内见点/线状强回声</span>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-green);">
+        <div class="sc-title">动态空气支气管征</div>
+        <p style="margin:0.2rem 0;">气体强回声随呼吸出现<strong>离心性改变</strong>，变化距离 &gt; 1mm 为阳性。</p>
+        <p class="dim" style="margin:0.1rem 0;font-size:0.88em;">可在实时超声或M型超声下观察</p>
+      </div>
+    </div>
+    <div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-blue);height:100%;">
+        <div class="sc-title">核心临床意义</div>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;margin-top:0.4rem;">
+          <div style="background:#dcfce7;border-radius:8px;padding:0.6rem 0.8rem;font-size:0.92em;">
+            <strong style="color:#065f46;">✅ 吸收性肺不张（肺炎）</strong>
+            <p style="margin:0.1rem 0;color:#065f46;font-size:0.9em;">空气支气管征 + 动态空气支气管征均阳性</p>
+          </div>
+          <div style="background:#fee2e2;border-radius:8px;padding:0.6rem 0.8rem;font-size:0.92em;">
+            <strong style="color:#dc2626;">❌ 可排除梗阻性肺不张</strong>
+            <p style="margin:0.1rem 0;color:#dc2626;font-size:0.9em;">无动态空气支气管征 → 需考虑中央型占位</p>
+          </div>
+          <div class="tip-bar" style="font-size:0.82em;padding:0.4rem 0.8rem;margin:0;">
+            🔬 含气支气管内气体 = 强回声，与实变肺形成天然对比
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="10" data-total="19"></span></div>
+  <aside class="notes">实变肺里看到<strong>点线状强回声</strong>，那是含气的支气管——叫<strong>空气支气管征</strong>。关键是看它动不动：吸气时气体往外跑，移动超过1mm，叫<strong>动态空气支气管征</strong>——这是肺炎、吸收性肺不张的表现。如果不动，要警惕中央型占位导致的梗阻性肺不张。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 11: 肺泡-间质综合征 ★ 修复                                        -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="肺泡-间质综合征">
+  <p class="kicker" style="font-size:1em;">08 · Alveolar-Interstitial Syndrome</p>
+  <h2 class="h2">肺泡-间质综合征的超声诊断</h2>
+  <div class="slide-text-img-32">
+    <div>
+      <p style="line-height:1.8;font-size:1.05em;">肺泡-间质综合征是急诊和监护病房常见的临床状况。床旁超声检查能够在很大程度上提示肺泡-间质综合征，提示<strong>间质增厚水肿的程度</strong>，而且方便易行。</p>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-blue);">
+        <div class="sign-name">超声诊断依据</div>
+        <p>① B线增多（&gt;3条/肋间）</p>
+        <p>② 肺火箭征阳性</p>
+        <p>③ 超声<strong>比X线更灵敏</strong>地提示早期亚临床肺水肿</p>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-amber);">
+        <div class="sign-name">关键优势</div>
+        <p>床旁胸部X线片由于受到技术条件限制，常不能满足临床需要。床旁超声已成为急诊室和监护病房的<strong>必备检查手段</strong>。</p>
+      </div>
+    </div>
+    <div>
+      <div class="slide11-img-pair">
+        <div class="img-wrap">
+          <img src="images/p0299_img_in_image_box_211_1475_867_1961.jpg" alt="正常肺">
+          <div class="img-cap">图3-10A 正常肺声像图</div>
+        </div>
+        <div class="img-wrap">
+          <img src="images/p0299_img_in_image_box_880_1482_1536_1963.jpg" alt="间质性肺炎">
+          <div class="img-cap">图3-10B 间质性肺炎声像图</div>
+        </div>
+      </div>
+      <p class="dim tc mt-s" style="font-size:0.9em;">正常肺 vs 间质性肺炎的超声对比</p>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="11" data-total="19"></span></div>
+  <aside class="notes">肺泡-间质综合征在急诊和ICU特别常见。超声的诊断标准就是<strong>B线增多＋肺火箭征阳性</strong>。关键优势是——<strong>超声比床旁胸片灵敏得多</strong>，能在X线还没看出来的时候就发现早期肺水肿。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 12: 胸腔积液量估计                                                 -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="胸腔积液定量">
+  <p class="kicker" style="font-size:1em;">09 · Quantification</p>
+  <h2 class="h2" style="margin-bottom:0.6rem;">胸腔积液量的估计</h2>
+  
+  <div class="img-trio" style="max-height:50%;">
+    <div class="img-wrap" style="border-radius:10px;">
+      <img src="images/p0302_img_in_image_box_625_1441_1465_2171.jpg" alt="测量参数" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-15 测量参数示意图</div>
+    </div>
+    <div class="img-wrap" style="border-radius:10px;">
+      <img src="images/p0303_img_in_image_box_436_362_1323_962.jpg" alt="估测实例" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-16 估测实例（LH+SH）×70</div>
+    </div>
+    <div class="sign-card-compact" style="border-left-color:#1a73e8;display:flex;flex-direction:column;justify-content:center;">
+      <div class="sc-title">坐位法（Goecke &amp; Schwerk）</div>
+      <p style="font-size:1.8rem;font-weight:800;color:#1a73e8;margin:0.4rem 0;text-align:center;">E = (LH+SH) × 70</p>
+      <p class="dim" style="margin:0;font-size:0.88em;">LH=侧壁高度 · SH=肺下高度 · r=0.87</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:0.6rem 0;">
+      <div class="sc-title">平卧位法</div>
+      <p style="margin:0.2rem 0;font-size:0.92em;"><strong>PLD &gt; 5cm</strong> → &gt; 500ml (Sen 83% · Sp 90%)</p>
+      <p style="margin:0.2rem 0;font-size:0.92em;"><strong>PLD = 20mm</strong> → ~380ml · <strong>40mm</strong> → ~1000ml</p>
+      <p class="dim" style="margin:0.2rem 0;font-size:0.85em;">公式：E(ml)=20×sep(mm) · r=0.72</p>
+    </div>
+  </div>
+  <div class="tip-bar" style="margin-top:0.5rem;font-size:0.88em;">
+    💡 坐位法最为简便可靠。PLD = 肺表面到胸侧壁距离
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="12" data-total="19"></span></div>
+  <aside class="notes">积液量的估算法。坐位最简便——侧壁高度加上肺下高度，乘以70。平卧位看PLD，也就是肺表面到侧壁的距离——PLD大于5厘米，积液量一般就超过500毫升了。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 13: 气胸的超声诊断                                                 -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="气胸诊断">
+  <p class="kicker" style="font-size:1em;">10 · Pneumothorax</p>
+    <h2 class="h2">气胸的超声诊断</h2>
+
+  <div class="card-duo" style="margin:0.4rem 0;gap:1rem;">
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <div class="sign-card-compact" style="border-left-color:var(--accent-blue);">
+        <div class="sc-title">为什么用超声？</div>
+        <p style="margin:0;font-size:0.95em;">平卧位X线灵敏度仅<strong>36%~48%</strong>。CT是金标准但不便携。<br>床旁超声已成为<strong>首诊影像学方法</strong>，灵敏度/特异度极高。</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-red);">
+        <div class="sc-title">两个缺乏 = 怀疑气胸</div>
+        <p style="margin:0.2rem 0;font-size:0.95em;"><strong>① 缺乏"胸膜滑动征"</strong><br>壁层胸膜呼吸时相对滑动消失</p>
+        <p style="margin:0.2rem 0;font-size:0.95em;"><strong>② 缺乏"彗星尾征"</strong><br>正常每肋间1-2条的彗星尾伪像消失</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-purple);">
+        <div class="sc-title">M型超声的价值</div>
+        <p style="margin:0;font-size:0.95em;">M型可清晰显示胸膜滑动有无。<br><strong>正常</strong> → 海岸沙滩征<br><strong>气胸</strong> → 平流层征</p>
+      </div>
+      <div class="tip-bar warn" style="font-size:0.85em;padding:0.4rem 0.8rem;margin:0;">
+        🔍 "肺点征"可有确诊价值并判断气胸范围
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <div class="img-wrap" style="border-radius:10px;margin:0;">
+        <img src="images/p0305_img_in_image_box_434_836_1322_1416.jpg" alt="蝙蝠征" style="max-height:28vh;object-fit:contain;width:100%;">
+        <div class="img-cap" style="font-size:0.82em;">图3-17 "蝙蝠征" · 肋骨如翅膀，胸膜线如身体</div>
+      </div>
+      <div class="img-wrap" style="border-radius:10px;margin:0;">
+        <img src="images/p0305_img_in_image_box_435_1633_1322_2178.jpg" alt="平流层征" style="max-height:28vh;object-fit:contain;width:100%;">
+        <div class="img-cap" style="font-size:0.82em;">图3-18 "平流层征" M型 · 平行线样回声</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="13" data-total="19"></span></div>
+  <aside class="notes">诊断气胸，<strong>超声比X线强多了</strong>——平卧位X线漏掉一半以上。两个关键缺失：没有胸膜滑动、没有彗星尾征。M型一看：正常是海岸沙滩征，气胸就变成<strong>平流层征</strong>——一条条平行线。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 14: 气胸诊断的关键征象                                             -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="气胸诊断征象">
+  <p class="kicker" style="font-size:1em;">10b · Key Signs</p>
+  <h2 class="h2" style="margin-bottom:0.5rem;">气胸诊断的关键征象</h2>
+  
+  <div class="card-duo" style="margin:0.4rem 0;">
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0306_img_in_image_box_617_389_1502_896.jpg" alt="海岸沙滩征" style="max-height:34vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-19 "海岸沙滩征" · 正常肺M型 · 颗粒状回声（沙滩）→ 胸膜滑动存在</div>
+    </div>
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0306_img_in_image_box_616_1706_1503_2336.jpg" alt="彗星尾征" style="max-height:34vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-20 "彗星尾征" · 正常胸膜线后可见几条彗星尾伪像</div>
+    </div>
+  </div>
+  
+  <div class="card-trio" style="margin:0.2rem 0;">
+    <div class="sign-card-compact" style="border-left-color:var(--accent-green);">
+      <div class="sc-title">海岸沙滩征 <span class="sc-en">Seashore Sign</span></div>
+      <p style="margin:0.2rem 0;">正常肺M型：胸膜线深方呈<strong>颗粒状</strong>（沙滩），与前方平行线（大海）共同构成。</p>
+      <span class="diag-req" style="font-size:0.82em;padding:0.2em 0.7em;background:#d1fae5;color:#065f46;">✅ 正常 · 排除气胸</span>
+    </div>
+    <div class="sign-card-compact" style="border-left-color:var(--accent-red);">
+      <div class="sc-title">肺点征 <span class="sc-en">Lung Point Sign</span></div>
+      <p style="margin:0.2rem 0;">正常肺征象与游离气体征象<strong>交替出现</strong>。需连续观察数个呼吸周期。</p>
+      <span class="diag-req" style="font-size:0.82em;padding:0.2em 0.7em;background:#fee2e2;color:#dc2626;">🔥 具有确诊价值</span>
+    </div>
+    <div class="sign-card-compact" style="border-left-color:var(--accent-purple);">
+      <div class="sc-title">彗星尾征 <span class="sc-en">Comet-tail Sign</span></div>
+      <p style="margin:0.2rem 0;">脏壁层胸膜间少量不规则液体的多重反射伪像。正常每肋间1-2条。</p>
+      <span class="diag-req" style="font-size:0.82em;padding:0.2em 0.7em;background:#fef3c7;color:#92400e;">气胸时消失</span>
+    </div>
+  </div>
+
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="14" data-total="19"></span></div>
+  <aside class="notes">三个关键征象：<strong>海岸沙滩征</strong>是正常的M型表现，颗粒状回声说明胸膜在滑动；<strong>肺点征</strong>——正常和气体征象来回交替——有确诊价值；<strong>彗星尾征</strong>消失也是气胸的重要线索。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 15: BLUE 协议                                                      -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="BLUE协议">
+  <p class="kicker" style="font-size:1em;">11 · BLUE Protocol</p>
+  <h2 class="h2" style="font-size:2rem;">BLUE 协议 <span class="sign-en" style="font-size:0.55em;">Bedside Lung Ultrasound in Emergency</span></h2>
+
+  <div class="img-trio" style="margin:0.3rem 0;">
+    <div class="img-wrap" style="border-radius:8px;margin:0;">
+      <img src="images/p0309_img_in_image_box_211_359_1532_770.jpg" alt="Profile" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.78em;">图3-22 A/B/AB Profile</div>
+    </div>
+    <div class="img-wrap" style="border-radius:8px;margin:0;">
+      <img src="images/p0309_img_in_image_box_210_865_1535_1432.jpg" alt="扫查步骤" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.78em;">图3-23 三区扫查法</div>
+    </div>
+    <div class="img-wrap" style="border-radius:8px;margin:0;">
+      <img src="images/p0310_img_in_image_box_408_391_1701_1116.jpg" alt="决策图" style="max-height:28vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.78em;">图3-24 BLUE协议决策图</div>
+    </div>
+  </div>
+
+  <div class="card-duo" style="margin:0.2rem 0;gap:0.6rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+      <div class="sign-card-compact" style="border-left-color:#1a73e8;">
+        <div class="sc-title">🎯 目的</div>
+        <p style="margin:0;font-size:0.95em;">5种病因判定覆盖<strong>97%</strong>病例</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:#8b5cf6;">
+        <div class="sc-title">五大病因</div>
+        <p style="margin:0;font-size:0.88em;">
+          <span class="tag tag-red" style="font-size:0.75em;">肺水肿</span>
+          <span class="tag tag-amber" style="font-size:0.75em;">COPD/哮喘</span>
+          <span class="tag tag-purple" style="font-size:0.75em;">肺栓塞</span>
+          <span class="tag tag-blue" style="font-size:0.75em;">气胸</span>
+          <span class="tag tag-green" style="font-size:0.75em;">肺炎</span>
+        </p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:#f59e0b;grid-column:1/3;">
+        <div class="sc-title">七个特征资料</div>
+        <p style="margin:0;font-size:0.92em;">①肺滑动征 ②A线 ③<strong>B profile</strong>（弥漫B线+肺滑动）④<strong>A profile</strong>（A线+肺滑动）⑤<strong>AB/C profile</strong> ⑥<strong>B' profile</strong>（B线+无滑动）⑦肺点征</p>
+      </div>
+    </div>
+    <div class="info-panel" style="padding:0.8rem 1rem;">
+      <div class="sc-title" style="font-size:1em;">决策树流程</div>
+      <div style="display:flex;flex-direction:column;gap:0.35rem;margin-top:0.4rem;font-size:0.82em;">
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <span class="num-badge" style="width:22px;height:22px;font-size:0.7em;">1</span>
+          <span>前胸部<strong>肺滑动征</strong>？→ 有则排除气胸</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <span class="num-badge" style="width:22px;height:22px;font-size:0.7em;background:var(--accent-blue);">2</span>
+          <span><span class="tag tag-blue" style="font-size:0.7em;">B</span> → <strong>肺水肿</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <span class="num-badge" style="width:22px;height:22px;font-size:0.7em;background:var(--accent-amber);">3</span>
+          <span><span class="tag tag-amber" style="font-size:0.7em;">B'</span> → <span class="tag tag-amber" style="font-size:0.7em;">A/B</span> → <strong>肺炎</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <span class="num-badge" style="width:22px;height:22px;font-size:0.7em;background:var(--accent-green);">4</span>
+          <span><span class="tag tag-green" style="font-size:0.7em;">A</span> → 外周静脉超声查血栓 → 有则<strong>肺栓塞</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;">
+          <span class="num-badge" style="width:22px;height:22px;font-size:0.7em;background:var(--accent-purple);">5</span>
+          <span>A profile + <strong>PLAPS</strong> → 肺炎；否则 → <strong>COPD/哮喘</strong></span>
+        </div>
+      </div>
+      <div class="tip-bar warn" style="font-size:0.78em;margin-top:0.4rem;padding:0.4rem 0.8rem;">
+        🔬 PLAPS = 后侧胸部肺泡/胸膜综合征（破布征/实性组织征/胸腔积液）
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="15" data-total="19"></span></div>
+  <aside class="notes">BLUE协议是一个<strong>标准化的决策流程</strong>，用来快速鉴别急性呼吸衰竭的五大病因——肺水肿、COPD、肺栓塞、气胸、肺炎，覆盖了97%的病例。先看有没有肺滑动，再看是A profile还是B profile，按流程走就行。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 16: FALLS 协议                                                     -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="FALLS协议">
+  <p class="kicker" style="font-size:1em;">12 · FALLS Protocol</p>
+  <h2 class="h2" style="font-size:2rem;">FALLS 协议 <span class="sign-en" style="font-size:0.55em;">Fluid Administration Limited by Lung Sonography</span></h2>
+
+  <div class="split-content-right" style="margin:0;">
+    <div class="img-wrap" style="border-radius:10px;margin:0;">
+      <img src="images/p0311_img_in_image_box_473_1327_1827_2428.jpg" alt="FALLS决策图" style="max-height:60vh;object-fit:contain;width:100%;">
+      <div class="img-cap" style="font-size:0.82em;">图3-25 "FALLS协议"决策图</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <div class="sign-card-compact" style="border-left-color:var(--accent-red);">
+        <div class="sc-title">休克分类与液体管理</div>
+        <p style="margin:0;font-size:0.95em;">肺超声 + 心脏超声 + 腔静脉超声 → 快速鉴别休克类型并指导补液</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-blue);">
+        <div class="sc-title">第一步：排除梗阻性休克</div>
+        <p style="margin:0.2rem 0;font-size:0.95em;">① 心脏超声 → 排除<strong>心脏压塞</strong>、<strong>肺栓塞</strong><br>② 肺超声 → 排除<strong>张力性气胸</strong></p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-green);">
+        <div class="sc-title">第二步：评估血容量</div>
+        <p style="margin:0.2rem 0;font-size:0.95em;"><span class="tag tag-blue" style="font-size:0.7em;">B Profile</span> → <strong>心源性休克</strong>（补液+升压药）</p>
+        <p style="margin:0.2rem 0;font-size:0.95em;"><span class="tag tag-green" style="font-size:0.7em;">A Profile</span> → <strong>低血容量/分布性休克</strong>（积极补液）</p>
+      </div>
+      <div class="sign-card-compact" style="border-left-color:var(--accent-purple);">
+        <div class="sc-title">来源</div>
+        <p style="margin:0;font-size:0.95em;">FALLS是<strong>BLUE 协议</strong>的衍生，利用肺征象评估血容量状态。</p>
+      </div>
+      <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.2rem;">
+        <span class="tag tag-red" style="font-size:0.7em;">梗阻性休克</span>
+        <span class="tag tag-blue" style="font-size:0.7em;">心源性休克</span>
+        <span class="tag tag-amber" style="font-size:0.7em;">低血容量性</span>
+        <span class="tag tag-green" style="font-size:0.7em;">分布性休克</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="16" data-total="19"></span></div>
+  <aside class="notes">FALLS协议是BLUE的衍生，用来<strong>管理休克病人的液体治疗</strong>。先排除梗阻性休克——心脏压塞、肺栓塞、张力性气胸。然后看肺：B profile是心源性，要限制补液；A profile是低血容量或分布性，可以积极补液。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 17: 小儿肺炎                                                       -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="小儿肺炎">
+  <p class="kicker" style="font-size:1em;">13 · Pediatric Pneumonia</p>
+  <h2 class="h2">即时超声在小儿肺炎诊断中的价值</h2>
+  <div class="grid g2 mt-m" style="gap:1.2rem;">
+    <div>
+      <div class="sign-card" style="border-left-color:var(--accent-red);">
+        <div class="sign-name">全球背景</div>
+        <p>肺炎是导致<strong>儿童死亡的首要病因</strong>。约3/4的患儿不能得到即时的影像学诊断。</p>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-green);">
+        <div class="sign-name">超声的独特优势</div>
+        <p>即时超声具有<strong>很高的特异度和灵敏度</strong>。高频探头提高了检出微小病变的可能性。</p>
+        <p class="mt-s">Vaishali Shah 等人的研究证实：<strong>儿科医师在诊室内即可实施</strong>即时超声诊断肺炎。</p>
+      </div>
+    </div>
+    <div>
+      <div class="sign-card" style="border-left-color:var(--accent-amber);">
+        <div class="sign-name">典型超声征象</div>
+        <p>① 肺实变（实性组织征）</p>
+        <p>② 实变肺边缘的<strong>破布征</strong></p>
+        <p>③ 实变肺内的<strong>空气支气管征</strong>和<strong>动态空气支气管征</strong></p>
+      </div>
+      <div class="sign-card mt-m" style="border-left-color:var(--accent-purple);">
+        <div class="sign-name">易于推广</div>
+        <p>操作医师经过<strong>1小时</strong>的培训即可掌握，与有经验的影像医师结果<strong>无明显差异</strong>。</p>
+        <p class="mt-s dim">部分X线阴性的患儿，超声/CT可确诊小范围（~1cm）实变。</p>
+      </div>
+    </div>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="17" data-total="19"></span></div>
+  <aside class="notes">小儿肺炎是儿童死亡的头号原因，但很多孩子得不到及时诊断。超声的优势在于——<strong>儿科医生培训一小时就能上手</strong>，结果和影像专家没有显著差异，而且能发现X线阴性的小范围实变。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 18: 总结速查表                                                     -->
+<!-- ======================================================================== -->
+<section class="slide" data-title="总结表">
+  <p class="kicker" style="font-size:1em;">Summary</p>
+  <h2 class="h2">特殊征象速查表</h2>
+  <table class="data-table mt-m">
+    <thead>
+      <tr><th>征象</th><th>英文</th><th>适用病症</th><th>诊断要求</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="font-weight:700;">四边形征</td><td>Quad Sign</td><td>胸腔积液</td><td>胸膜线-肺表面分离 + 肋骨声影成四边形</td></tr>
+      <tr><td style="font-weight:700;">正弦波征</td><td>Sinusoid Sign</td><td>胸腔积液</td><td>M型：肺表面随呼吸呈正弦波样运动</td></tr>
+      <tr><td style="font-weight:700;">实性组织征</td><td>Tissue-like Sign</td><td>肺实变</td><td>肺泡充填渗出呈肝/脾样实性回声</td></tr>
+      <tr><td style="font-weight:700;">破布征</td><td>Shred Sign</td><td>局限性肺炎</td><td>实变肺边缘碎片样不规则</td></tr>
+      <tr><td style="font-weight:700;">肺火箭征</td><td>Lung Rockets</td><td>间质综合征</td><td>&gt;3条B线/视野（起自胸膜线、激光样）</td></tr>
+      <tr><td style="font-weight:700;">空气支气管征</td><td>Air Bronchogram</td><td>肺炎性实变</td><td>实变肺内点/线状强回声</td></tr>
+      <tr><td style="font-weight:700;">动态空气支气管征</td><td>Dynamic AB</td><td>肺炎 vs 梗阻性</td><td>气体强回声随呼吸离心移动&gt;1mm</td></tr>
+      <tr><td style="font-weight:700;">海岸沙滩征</td><td>Seashore Sign</td><td>正常肺</td><td>M型：颗粒状回声（排除气胸）</td></tr>
+      <tr><td style="font-weight:700;">平流层征</td><td>Stratosphere Sign</td><td>气胸</td><td>M型：胸膜线深方平行线样</td></tr>
+      <tr><td style="font-weight:700;">肺点征</td><td>Lung Point Sign</td><td>气胸（确诊）</td><td>正常/气胸征象交替出现</td></tr>
+      <tr><td style="font-weight:700;">蝙蝠征</td><td>Bat Sign</td><td>解剖定位</td><td>肋骨+胸膜线呈蝙蝠形</td></tr>
+    </tbody>
+  </table>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="18" data-total="19"></span></div>
+  <aside class="notes">这是今天讲的<strong>11个核心征象速查表</strong>——四边形征、正弦波征、实性组织征、破布征、肺火箭征、空气支气管征、动态空气支气管征、海岸沙滩征、平流层征、肺点征、蝙蝠征。每个都标明了适用病症和诊断要求，可以截图保存。</aside>
+</section>
+
+<!-- ======================================================================== -->
+<!-- SLIDE 19: 总结 + 致谢                                                    -->
+<!-- ======================================================================== -->
+<section class="slide center tc" data-title="总结">
+  <div style="max-width:780px;margin:0 auto;">
+    <p class="kicker anim-fade-up" data-anim="fade-up" style="font-size:1.05em;">Takeaways</p>
+    <h1 class="h1 anim-fade-up" data-anim="fade-up" style="font-size:2.8rem;line-height:1.3;">
+      肺部超声 <span style="background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;">从基础到临床</span>
+    </h1>
+    <div style="text-align:left;margin-top:1.6rem;">
+      <div class="sign-card mb-s" style="border-left-color:var(--accent-blue);">
+        <p>✅ 肺部超声已成为<strong>急诊、ICU、儿科</strong>的必备检查手段</p>
+      </div>
+      <div class="sign-card mb-s" style="border-left-color:var(--accent-green);">
+        <p>✅ 掌握关键征象可快速诊断<strong>胸腔积液、肺实变、间质综合征、气胸</strong></p>
+      </div>
+      <div class="sign-card mb-s" style="border-left-color:var(--accent-amber);">
+        <p>✅ <strong>BLUE 协议</strong>与<strong>FALLS 协议</strong>为急性呼吸衰竭和休克提供标准化流程</p>
+      </div>
+      <div class="sign-card mb-s" style="border-left-color:var(--accent-purple);">
+        <p>✅ 床旁超声具有<strong>便捷、无创、可重复</strong>的优势，比X线更灵敏</p>
+      </div>
+      <div class="sign-card mb-s" style="border-left-color:var(--accent-red);">
+        <p>✅ 即时超声诊断肺炎灵敏度、特异度均高，<strong>仅需1小时培训</strong>即可掌握</p>
+      </div>
+    </div>
+    <p class="lede mt-l" style="font-size:1em;">来源：《华斌的超声笔记·第2辑·第三章 · 胸腔与肺部超声》</p>
+    <p class="dim2 mt-s" style="font-size:0.9em;">⌨ <span class="mono">← →</span> 翻页 · <span class="mono">T</span> 切换主题 · <span class="mono">F</span> 全屏 · <span class="mono">O</span> 概览 · <span class="mono">S</span> 演讲者模式</p>
+  </div>
+  <div class="deck-footer"><span class="dim2">肺部超声 · 诊断要求与特殊征象</span><span class="slide-number" data-current="19" data-total="19"></span></div>
+  <aside class="notes">总结五个要点。肺部超声已经成为急诊、ICU、儿科的必备技能。今天讲的每个征象都有明确的诊断标准。BLUE和FALLS协议提供了标准化的临床流程。相比X线，超声更便捷、更灵敏。而且——<strong>一小时培训就能上手</strong>。谢谢大家！</aside>
+</section>
+
+</div><!-- /deck -->
+<script src="assets/runtime.js"></script>
+<script src="assets/blog-study-controls.js"></script>
+</body>
+</html>
