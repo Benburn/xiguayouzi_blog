@@ -332,6 +332,38 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "ultrasound-standard-planes",
+    category: "imaging",
+    title: "超声标准切面图解",
+    excerpt:
+      "按原书14章拆分的超声标准切面图文学习入口，提供准确章节索引、章内搜索、原图放大及电脑与手机端适配。",
+    date: "2026-07-26",
+    readTime: "14章 · 476页",
+    cover: null,
+    tags: ["超声基础", "标准切面", "解剖", "医学影像"],
+    body: `# 超声标准切面图解
+
+这是一套面向超声初学者和临床学习者的标准切面图文资料。内容不再以单个超长 HTML 整体呈现，而是按照原书结构拆分为 **14 个独立章节**，让正文、图注与图片保持对应，同时缩短单页加载时间。
+
+## 内容与索引
+
+- 14 个独立章节；
+- 476 个原书页面区块；
+- 章内目录可搜索并支持锚点直达；
+- 全书入口可搜索章节名称和标准切面名称；
+- 图片支持点击放大，表格支持横向滚动；
+- 支持章节切换、前后章导航和正文字号调整。
+
+## 阅读设备
+
+桌面端提供固定章内目录，手机和平板端使用顶部“目录”按钮展开导航。页面已针对竖屏阅读及 iPhone 17 尺寸优化。
+
+<p><a class="knowledge-card-launch" href="/ultrasound-standard-planes/index.html">打开《超声标准切面图解》 <span>→</span></a></p>
+
+> 内容用于医学教育与个人学习，不构成诊断或操作建议。原始资料可能存在少量文字识别偏差，涉及临床判断时请结合原书及权威指南核对。
+`,
+  },
+  {
     slug: "huabin-ultrasound-notes",
     category: "imaging",
     title: "华斌笔记",
