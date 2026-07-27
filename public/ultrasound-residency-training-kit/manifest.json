@@ -1,0 +1,14 @@
+{
+  "title": "超声医学规培三件套",
+  "textbook": {
+    "href": "../ultrasound-medicine-2e/index.html"
+  },
+  "cases2016": {
+    "cases": 127,
+    "images": 468
+  },
+  "cases2024": {
+    "cases": 264,
+    "images": 1224
+  }
+}
