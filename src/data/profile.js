@@ -130,6 +130,29 @@ export const blogCategories = [
 // 实际使用时可替换为 MD 文件 + 解析器
 export const blogPosts = [
   {
+    slug: "calcium-phosphate-silicon-guideline",
+    category: "device",
+    title: "钙磷/硅类骨填充材料注册审查指导原则",
+    excerpt:
+      "围绕钙磷/硅类骨填充材料的产品技术要求、风险控制与注册审查思路整理的交互式学习资料，附官方指导原则与 PPT 入口。",
+    date: "2026-07-28",
+    readTime: "PPT · 13页",
+    cover: null,
+    tags: ["骨填充材料", "医疗器械", "注册审查", "钙磷", "硅类材料"],
+    body: `# 钙磷/硅类骨填充材料注册审查指导原则
+
+这是一份面向医疗器械研发、注册与临床/工程学习者的交互式 PPT 学习资料，围绕钙磷/硅类骨填充材料的产品技术要求、风险控制和注册审查思路进行整理。建议结合实际产品属性、现行法规和审评要求使用。
+
+## 参考与入口
+
+官方参考页面：[国家药监局医疗器械技术审评中心：钙磷/硅类骨填充材料注册审查指导原则](https://www.cmde.org.cn/flfg/zdyz/zdyzwbk/20260209093036180.html)
+
+<p><a class="knowledge-card-launch" href="/calcium-phosphate-silicon-guideline/index.html">打开交互式 PPT <span>→</span></a></p>
+
+> 本资料仅供医学教育、研发与注册学习交流，不构成法律意见、注册申报承诺、诊断或治疗建议。具体项目请以现行法规、指导原则及官方审评要求为准。
+`,
+  },
+  {
     slug: "calcium-hydroxylapatite-soft-tissue-fillers-2e",
     category: "device",
     title: "羟基磷灰石钙软组织填充剂：专家治疗技术（第2版）",
