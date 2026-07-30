@@ -427,6 +427,27 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 `,
   },
   {
+    slug: "clinical-ultrasound-practice",
+    category: "imaging",
+    title: "临床超声医学实践",
+    excerpt:
+      "围绕心脏、腹部及妇产等常见临床场景整理的超声医学实践书籍网页版，保留原书章节结构与配图，适合电脑、平板和手机检索阅读。",
+    date: "2026-07-30",
+    readTime: "3章 · 385张图",
+    cover: null,
+    tags: ["临床超声", "超声医学", "医学影像", "实践"],
+    body: `# 临床超声医学实践
+
+这套网页版资料保留原书的三章正文结构与本地配图，覆盖心脏、腹部、妇产及常见脏器疾病等临床超声实践内容，适合超声医学学生、规培生和临床学习者按目录检索、对照图像学习。
+
+## 在线阅读
+
+<p><a class="knowledge-card-launch" href="/clinical-ultrasound-practice/index.html">打开《临床超声医学实践》在线版 <span>→</span></a></p>
+
+> 本资料用于个人学习与教学交流，不能替代原版书籍、正式培训或临床诊疗规范；涉及临床判断时请以现行指南、原始资料和专业医师意见为准。
+`,
+  },
+  {
     slug: "pocus-appendicitis-cn",
     category: "imaging",
     title: "急性阑尾炎床旁超声（POCUS）中文图解教程",
