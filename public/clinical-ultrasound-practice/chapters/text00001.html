@@ -2626,5 +2626,41 @@
 <font size="2">图4-18-6　节育器嵌顿</font>
 </p><p height="10pt" width="0pt">
 <b>【难点解析】</b>
-</p><p height="10pt" width="2em">1.节育器外移至盆腔　因肠道气体干扰不易寻找，应多角度仔细观察。节育器外移至肠间与肠道气体相混不易分辨，超声亦无能为力，需借助X线检查。节育器外移至膀胱需与膀胱结石相鉴别，结石随患者体位不同而改变，位置变化较大，节育器多因炎性粘连而固定不动。</p><p height="6pt" width="2em">2.带尾丝的T形和V形节育器正常位置时其下缘接近内口，尾丝为中强回声带伸到颈管内，因此判断这类节育器移位时应注意其上缘距宫底的距离，而不应将内口处的节育器下缘误认为移位。轻度部分性浅嵌顿，超声检出有一定困难。超声图像表现似环非环时，诊断需谨慎。</p><p height="6pt" width="2em">3.带有节育器而有早孕表现者，需注意鉴别有否为带器妊娠。</p></main><footer class="book-footer"><a href="../index.html">返回全书目录</a></footer><a class="xigua-book-back" href="/blog/imaging/clinical-ultrasound-practice">返回医学影像文章</a></body>
+</p><p height="10pt" width="2em">1.节育器外移至盆腔　因肠道气体干扰不易寻找，应多角度仔细观察。节育器外移至肠间与肠道气体相混不易分辨，超声亦无能为力，需借助X线检查。节育器外移至膀胱需与膀胱结石相鉴别，结石随患者体位不同而改变，位置变化较大，节育器多因炎性粘连而固定不动。</p><p height="6pt" width="2em">2.带尾丝的T形和V形节育器正常位置时其下缘接近内口，尾丝为中强回声带伸到颈管内，因此判断这类节育器移位时应注意其上缘距宫底的距离，而不应将内口处的节育器下缘误认为移位。轻度部分性浅嵌顿，超声检出有一定困难。超声图像表现似环非环时，诊断需谨慎。</p><p height="6pt" width="2em">3.带有节育器而有早孕表现者，需注意鉴别有否为带器妊娠。</p></main><footer class="book-footer"><a href="../index.html">返回全书目录</a></footer><script id="xigua-anchor-runtime">
+(() => {
+  if (!location.hash) return;
+  const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (!target) return;
+
+  let timer = 0;
+  let lastTop = -1;
+  const startedAt = Date.now();
+
+  const stop = () => {
+    if (timer) window.clearInterval(timer);
+    timer = 0;
+  };
+
+  const align = () => {
+    const absoluteTop = target.getBoundingClientRect().top + window.scrollY;
+    if (Math.abs(absoluteTop - lastTop) > 2) {
+      target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      lastTop = absoluteTop;
+    }
+    if (Date.now() - startedAt > 6000) stop();
+  };
+
+  const start = () => {
+    align();
+    timer = window.setInterval(align, 120);
+  };
+
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((eventName) => {
+    window.addEventListener(eventName, stop, { once: true, passive: true });
+  });
+
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+})();
+</script><a class="xigua-book-back" href="/blog/imaging/clinical-ultrasound-practice">返回医学影像文章</a></body>
 </html>

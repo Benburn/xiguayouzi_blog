@@ -19,7 +19,7 @@
       <h1>临床超声医学实践</h1>
       <p class="index-hero__meta">主编：穆玉明　|　人民卫生出版社</p>
       <p class="index-hero__intro">保留原书章节结构与配图，适合在浏览器中离线阅读、检索和教学使用。</p>
-      <a class="primary-link" href="chapters/text00000.html">从正文开始阅读</a>
+      <a class="primary-link" href="chapters/text00000.html#filepos0000023118">从第一章开始阅读</a>
     </div>
     <img class="index-cover" src="assets/Image00132.jpg" alt="《临床超声医学实践》封面" loading="eager">
   </header>
@@ -48,7 +48,7 @@
   const createGroup = (title, href = '') => {
     const details = document.createElement('details');
     details.className = 'toc-chapter';
-    details.open = chapterIndex < 2;
+    details.open = chapterIndex < 1;
     const summary = document.createElement('summary');
     const label = href ? document.createElement('a') : document.createElement('span');
     if (href) label.href = href;
@@ -74,7 +74,7 @@
       return;
     }
 
-    if (!group) group = createGroup('书前信息');
+    if (!group) return;
 
     if (/^第\d+节/.test(text)) {
       const section = document.createElement('section');

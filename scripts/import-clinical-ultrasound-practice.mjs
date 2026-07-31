@@ -13,6 +13,43 @@ const enhancement = `
   @media (prefers-reduced-motion: reduce) { .xigua-book-back { transition:none; } }
 </style>`;
 const backLink = `<a class="xigua-book-back" href="/blog/imaging/clinical-ultrasound-practice">返回医学影像文章</a>`;
+const anchorRuntime = `<script id="xigua-anchor-runtime">
+(() => {
+  if (!location.hash) return;
+  const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (!target) return;
+
+  let timer = 0;
+  let lastTop = -1;
+  const startedAt = Date.now();
+
+  const stop = () => {
+    if (timer) window.clearInterval(timer);
+    timer = 0;
+  };
+
+  const align = () => {
+    const absoluteTop = target.getBoundingClientRect().top + window.scrollY;
+    if (Math.abs(absoluteTop - lastTop) > 2) {
+      target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      lastTop = absoluteTop;
+    }
+    if (Date.now() - startedAt > 6000) stop();
+  };
+
+  const start = () => {
+    align();
+    timer = window.setInterval(align, 120);
+  };
+
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((eventName) => {
+    window.addEventListener(eventName, stop, { once: true, passive: true });
+  });
+
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+})();
+</script>`;
 const tocTools = `<div class="toc-tools"><label class="toc-search" for="toc-search"><span>搜索目录</span><input id="toc-search" type="search" placeholder="输入章节、器官或疾病名称" autocomplete="off"></label><div class="toc-actions"><button id="toc-expand" type="button">展开全部</button><button id="toc-collapse" type="button">收起全部</button></div><p id="toc-result" aria-live="polite">按原书章节浏览</p></div>`;
 const tocRuntime = `<script id="xigua-toc-runtime">
 (() => {
@@ -28,7 +65,7 @@ const tocRuntime = `<script id="xigua-toc-runtime">
   const createGroup = (title, href = '') => {
     const details = document.createElement('details');
     details.className = 'toc-chapter';
-    details.open = chapterIndex < 2;
+    details.open = chapterIndex < 1;
     const summary = document.createElement('summary');
     const label = href ? document.createElement('a') : document.createElement('span');
     if (href) label.href = href;
@@ -54,7 +91,7 @@ const tocRuntime = `<script id="xigua-toc-runtime">
       return;
     }
 
-    if (!group) group = createGroup('书前信息');
+    if (!group) return;
 
     if (/^第\\d+节/.test(text)) {
       const section = document.createElement('section');
@@ -140,6 +177,7 @@ async function main() {
   let indexHtml = await readFile(path.join(sourceRoot, "index.html"), "utf8");
   indexHtml = indexHtml
     .replace(/\s*<aside class="note-panel">[\s\S]*?<\/aside>/i, "")
+    .replace('href="chapters/text00000.html">从正文开始阅读', 'href="chapters/text00000.html#filepos0000023118">从第一章开始阅读')
     .replace(/<ol class="toc-list">/i, `${tocTools}<ol class="toc-list">`)
     .replace(/<\/head>/i, `${enhancement}</head>`)
     .replace(/<\/body>/i, `${tocRuntime}${backLink}</body>`);
@@ -153,13 +191,14 @@ async function main() {
     html = html
       .replace(/<\/nav>/i, `${prev}<a class="book-nav__toc" href="../index.html">目录</a>${next}</nav>`)
       .replace(/<\/head>/i, `${enhancement}</head>`)
-      .replace(/<\/body>/i, `${backLink}</body>`);
+      .replace(/<\/body>/i, `${anchorRuntime}${backLink}</body>`);
     await writeFile(file, html, "utf8");
   }
   const cssFile = path.join(outputRoot, "css", "book.css");
   let css = await readFile(cssFile, "utf8");
   css += `\n/* 西瓜柚子：目录与移动端图文阅读优化 */
 .book-image { max-width:100%; height:auto; }
+.book-prose :target { scroll-margin-top:76px; }
 .index-hero { min-height:min(520px,62vh); padding-top:44px; padding-bottom:34px; }
 .index-main { display:block; max-width:1200px; }
 .toc-panel { max-width:1040px; }

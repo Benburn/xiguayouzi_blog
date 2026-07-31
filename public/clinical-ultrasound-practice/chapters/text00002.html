@@ -466,5 +466,41 @@
 </p><p align="center" height="5pt" width="0pt"><img align="baseline" alt="书中插图" class="book-image" decoding="async" height="204" loading="lazy" src="../assets/Image00128.jpg" width="291"/>
 </p><p align="center" height="0pt" width="0pt">
 <font size="2">图4-24-11　右侧纤细、通畅，左侧不通</font>
-</p></main><footer class="book-footer"><a href="../index.html">返回全书目录</a></footer><a class="xigua-book-back" href="/blog/imaging/clinical-ultrasound-practice">返回医学影像文章</a></body>
+</p></main><footer class="book-footer"><a href="../index.html">返回全书目录</a></footer><script id="xigua-anchor-runtime">
+(() => {
+  if (!location.hash) return;
+  const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (!target) return;
+
+  let timer = 0;
+  let lastTop = -1;
+  const startedAt = Date.now();
+
+  const stop = () => {
+    if (timer) window.clearInterval(timer);
+    timer = 0;
+  };
+
+  const align = () => {
+    const absoluteTop = target.getBoundingClientRect().top + window.scrollY;
+    if (Math.abs(absoluteTop - lastTop) > 2) {
+      target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      lastTop = absoluteTop;
+    }
+    if (Date.now() - startedAt > 6000) stop();
+  };
+
+  const start = () => {
+    align();
+    timer = window.setInterval(align, 120);
+  };
+
+  ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((eventName) => {
+    window.addEventListener(eventName, stop, { once: true, passive: true });
+  });
+
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+})();
+</script><a class="xigua-book-back" href="/blog/imaging/clinical-ultrasound-practice">返回医学影像文章</a></body>
 </html>
