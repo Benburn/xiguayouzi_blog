@@ -13,7 +13,118 @@ const enhancement = `
   @media (prefers-reduced-motion: reduce) { .xigua-book-back { transition:none; } }
 </style>`;
 const backLink = `<a class="xigua-book-back" href="/blog/imaging/clinical-ultrasound-practice">返回医学影像文章</a>`;
-const chapterStrip = `<section class="chapter-strip" aria-label="章节入口"><a href="chapters/text00000.html"><strong>第 1 章</strong><span>前部与心脏超声</span></a><a href="chapters/text00001.html"><strong>第 2 章</strong><span>腹部与妇产超声</span></a><a href="chapters/text00002.html"><strong>第 3 章</strong><span>妇产超声进阶</span></a></section>`;
+const tocTools = `<div class="toc-tools"><label class="toc-search" for="toc-search"><span>搜索目录</span><input id="toc-search" type="search" placeholder="输入章节、器官或疾病名称" autocomplete="off"></label><div class="toc-actions"><button id="toc-expand" type="button">展开全部</button><button id="toc-collapse" type="button">收起全部</button></div><p id="toc-result" aria-live="polite">按原书章节浏览</p></div>`;
+const tocRuntime = `<script id="xigua-toc-runtime">
+(() => {
+  const source = document.querySelector('.toc-list');
+  if (!source) return;
+
+  const browser = document.createElement('div');
+  browser.className = 'toc-browser';
+  let group = null;
+  let sectionItems = null;
+  let chapterIndex = 0;
+
+  const createGroup = (title, href = '') => {
+    const details = document.createElement('details');
+    details.className = 'toc-chapter';
+    details.open = chapterIndex < 2;
+    const summary = document.createElement('summary');
+    const label = href ? document.createElement('a') : document.createElement('span');
+    if (href) label.href = href;
+    label.textContent = title;
+    summary.append(label);
+    const body = document.createElement('div');
+    body.className = 'toc-chapter__body';
+    details.append(summary, body);
+    browser.append(details);
+    chapterIndex += 1;
+    return body;
+  };
+
+  [...source.children].forEach((item) => {
+    const original = item.querySelector(':scope > a');
+    if (!original) return;
+    const text = original.textContent.trim();
+    const href = original.getAttribute('href') || '';
+
+    if (/^第[一二三四五六七八九十百\\d]+章/.test(text)) {
+      group = createGroup(text, href);
+      sectionItems = null;
+      return;
+    }
+
+    if (!group) group = createGroup('书前信息');
+
+    if (/^第\\d+节/.test(text)) {
+      const section = document.createElement('section');
+      section.className = 'toc-section';
+      const title = original.cloneNode(true);
+      title.className = 'toc-section__title';
+      sectionItems = document.createElement('div');
+      sectionItems.className = 'toc-section__items';
+      section.append(title, sectionItems);
+      group.append(section);
+      return;
+    }
+
+    const link = original.cloneNode(true);
+    link.className = 'toc-subitem';
+    (sectionItems || group).append(link);
+  });
+
+  source.replaceWith(browser);
+
+  const input = document.getElementById('toc-search');
+  const result = document.getElementById('toc-result');
+  const groups = [...browser.querySelectorAll('.toc-chapter')];
+
+  const filter = () => {
+    const query = input.value.trim().toLocaleLowerCase('zh-CN');
+    let matches = 0;
+
+    groups.forEach((details) => {
+      const chapterLabel = details.querySelector('summary').textContent.trim().toLocaleLowerCase('zh-CN');
+      const chapterMatch = Boolean(query && chapterLabel.includes(query));
+      const standalone = [...details.querySelectorAll(':scope > .toc-chapter__body > .toc-subitem')];
+
+      standalone.forEach((link) => {
+        const match = !query || chapterMatch || link.textContent.toLocaleLowerCase('zh-CN').includes(query);
+        link.hidden = !match;
+        if (query && link.textContent.toLocaleLowerCase('zh-CN').includes(query)) matches += 1;
+      });
+
+      let visibleSections = 0;
+      details.querySelectorAll('.toc-section').forEach((section) => {
+        const title = section.querySelector('.toc-section__title');
+        const titleMatch = Boolean(query && title.textContent.toLocaleLowerCase('zh-CN').includes(query));
+        let childMatches = 0;
+        section.querySelectorAll('.toc-subitem').forEach((link) => {
+          const directMatch = Boolean(query && link.textContent.toLocaleLowerCase('zh-CN').includes(query));
+          const show = !query || chapterMatch || titleMatch || directMatch;
+          link.hidden = !show;
+          if (directMatch) childMatches += 1;
+        });
+        section.hidden = Boolean(query && !chapterMatch && !titleMatch && childMatches === 0);
+        if (!section.hidden) visibleSections += 1;
+        if (titleMatch) matches += 1;
+        matches += childMatches;
+      });
+
+      const hasStandalone = standalone.some((link) => !link.hidden);
+      details.hidden = Boolean(query && !chapterMatch && !hasStandalone && visibleSections === 0);
+      if (query && !details.hidden) details.open = true;
+      if (chapterMatch) matches += 1;
+    });
+
+    result.textContent = query ? '找到 ' + matches + ' 个匹配目录' : '按原书章节浏览';
+  };
+
+  input.addEventListener('input', filter);
+  document.getElementById('toc-expand').addEventListener('click', () => groups.forEach((item) => { item.open = true; }));
+  document.getElementById('toc-collapse').addEventListener('click', () => groups.forEach((item) => { item.open = false; }));
+})();
+</script>`;
 
 async function main() {
   await rm(outputRoot, { recursive: true, force: true });
@@ -29,9 +140,9 @@ async function main() {
   let indexHtml = await readFile(path.join(sourceRoot, "index.html"), "utf8");
   indexHtml = indexHtml
     .replace(/\s*<aside class="note-panel">[\s\S]*?<\/aside>/i, "")
-    .replace(/<\/header>/i, `</header>${chapterStrip}`)
+    .replace(/<ol class="toc-list">/i, `${tocTools}<ol class="toc-list">`)
     .replace(/<\/head>/i, `${enhancement}</head>`)
-    .replace(/<\/body>/i, `${backLink}</body>`);
+    .replace(/<\/body>/i, `${tocRuntime}${backLink}</body>`);
   await writeFile(path.join(outputRoot, "index.html"), indexHtml, "utf8");
 
   for (const name of ["text00000.html", "text00001.html", "text00002.html"]) {
@@ -47,7 +158,57 @@ async function main() {
   }
   const cssFile = path.join(outputRoot, "css", "book.css");
   let css = await readFile(cssFile, "utf8");
-  css += `\n/* 西瓜柚子：目录与移动端图文阅读优化 */\n.book-image { max-width:100%; height:auto; }\n.index-hero { min-height:min(560px,68vh); padding-top:48px; padding-bottom:38px; }\n.chapter-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; width:min(1200px,calc(100% - 36px)); margin:0 auto; padding:0 0 22px; }\n.chapter-strip a { display:flex; flex-direction:column; gap:3px; padding:14px 16px; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); text-decoration:none; }\n.chapter-strip strong { color:var(--accent-dark); } .chapter-strip span { color:var(--muted); font-size:.9rem; }\n.book-nav__toc { font-weight:700; text-decoration:none; } .book-nav__prev { text-decoration:none; font-size:.88rem; }\n@media (max-width:720px) { body { font-size:15px; line-height:1.82; } .index-hero__inner, .index-main, .book-page { width:min(100% - 24px, 960px); } .index-hero { min-height:auto; padding-top:34px; } .chapter-strip { grid-template-columns:1fr; width:min(100% - 28px,720px); padding-bottom:10px; } .toc-list { padding-left:1.2rem; } .toc-list a { overflow-wrap:anywhere; } .book-nav { flex-wrap:wrap; } .book-nav__next { margin-left:auto; } }\n`;
+  css += `\n/* 西瓜柚子：目录与移动端图文阅读优化 */
+.book-image { max-width:100%; height:auto; }
+.index-hero { min-height:min(520px,62vh); padding-top:44px; padding-bottom:34px; }
+.index-main { display:block; max-width:1200px; }
+.toc-panel { max-width:1040px; }
+.toc-tools { position:sticky; top:0; z-index:8; display:grid; grid-template-columns:minmax(280px,1fr) auto; gap:10px 18px; align-items:end; margin:0 0 22px; padding:14px 0; background:rgba(247,250,249,.94); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+.toc-search { display:grid; gap:7px; color:var(--accent-dark); font-size:.82rem; font-weight:700; }
+.toc-search input { width:100%; min-height:48px; padding:0 16px; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--ink); font:inherit; outline:none; }
+.toc-search input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(20,125,114,.12); }
+.toc-actions { display:flex; gap:8px; }
+.toc-actions button { min-height:44px; padding:0 14px; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--accent-dark); font:700 .84rem/1 inherit; cursor:pointer; }
+.toc-actions button:hover { border-color:var(--accent); color:var(--accent); }
+.toc-actions button:active { transform:translateY(1px); }
+#toc-result { grid-column:1 / -1; margin:0; color:var(--muted); font-size:.8rem; }
+.toc-browser { border-top:2px solid var(--accent-dark); }
+.toc-chapter { border-bottom:1px solid var(--line); }
+.toc-chapter[hidden], .toc-section[hidden], .toc-subitem[hidden] { display:none !important; }
+.toc-chapter > summary { position:relative; display:flex; align-items:center; min-height:70px; padding:14px 48px 14px 0; cursor:pointer; list-style:none; }
+.toc-chapter > summary::-webkit-details-marker { display:none; }
+.toc-chapter > summary::after { content:'＋'; position:absolute; right:4px; color:var(--accent); font-size:1.4rem; font-weight:400; }
+.toc-chapter[open] > summary::after { content:'−'; }
+.toc-chapter > summary a, .toc-chapter > summary span { color:var(--ink); font-size:clamp(1.18rem,2vw,1.55rem); font-weight:800; text-decoration:none; }
+.toc-chapter__body { padding:0 0 22px 22px; }
+.toc-section { display:grid; grid-template-columns:minmax(220px,.8fr) minmax(0,1.7fr); gap:20px; padding:18px 0; border-top:1px solid rgba(16,80,74,.11); }
+.toc-section__title { color:var(--accent-dark); font-weight:750; line-height:1.55; text-decoration:none; }
+.toc-section__items { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 18px; }
+.toc-subitem { display:block; padding:5px 0; color:var(--muted); font-size:.92rem; line-height:1.55; text-decoration:none; overflow-wrap:anywhere; }
+.toc-section__title:hover, .toc-subitem:hover { color:var(--accent); }
+.toc-chapter__body > .toc-subitem { max-width:560px; }
+.book-nav__toc { font-weight:700; text-decoration:none; }
+.book-nav__prev { text-decoration:none; font-size:.88rem; }
+@media (max-width:720px) {
+  body { font-size:15px; line-height:1.82; }
+  .index-hero__inner, .index-main, .book-page { width:min(100% - 24px,960px); }
+  .index-hero { min-height:auto; padding-top:34px; }
+  .index-main { padding-top:24px; }
+  .section-heading { padding-bottom:16px; }
+  .toc-tools { grid-template-columns:1fr; top:0; padding:10px 0 12px; }
+  .toc-actions { grid-row:2; }
+  .toc-actions button { flex:1; }
+  #toc-result { grid-row:3; }
+  .toc-chapter > summary { min-height:62px; padding-right:40px; }
+  .toc-chapter__body { padding-left:0; }
+  .toc-section { grid-template-columns:1fr; gap:8px; padding:16px 0; }
+  .toc-section__items { grid-template-columns:1fr; padding-left:16px; border-left:2px solid rgba(20,125,114,.14); }
+  .toc-subitem { min-height:42px; display:flex; align-items:center; padding:7px 0; }
+  .book-nav { flex-wrap:wrap; }
+  .book-nav__next { margin-left:auto; }
+}
+@media (prefers-reduced-motion:reduce) { .toc-actions button { transition:none; } }
+`;
   await writeFile(cssFile, css, "utf8");
   console.log("已导入临床超声医学实践，已排除第11节美化版。");
 }
