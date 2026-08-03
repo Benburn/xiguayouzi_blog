@@ -5,13 +5,39 @@ const sourceRoot = "E:\\Book2Know\\Huabin";
 const publicRoot = "E:\\Web\\xiguayouzi_blog\\public\\huabin-ultrasound-notes";
 
 const volumes = [
-  { number: 1, pages: 215, images: 391, chapters: 9, sections: 68, firstPage: 17, lastPage: 243 },
-  { number: 2, pages: 385, images: 644, chapters: 4, sections: 25, firstPage: 15, lastPage: 402, cutoffPage: 403 },
-  { number: 3, pages: 250, images: 361, chapters: 6, sections: 92, firstPage: 19, lastPage: 276 },
-  { number: 4, pages: 265, images: 519, chapters: 3, sections: 94, firstPage: 18, lastPage: 284 },
-  { number: 5, pages: 222, images: 471, chapters: 5, sections: 123, firstPage: 19, lastPage: 245, cutoffPage: 246 },
-  { number: 6, pages: 211, images: 442, chapters: 2, sections: 104, firstPage: 17, lastPage: 228, cutoffPage: 230 },
+  { number: 1, pages: 215, images: 388, decorativeImages: 3, chapters: 9, sections: 68, firstPage: 17, lastPage: 243 },
+  { number: 2, pages: 385, images: 644, decorativeImages: 0, chapters: 4, sections: 25, firstPage: 15, lastPage: 402, cutoffPage: 403 },
+  { number: 3, pages: 250, images: 361, decorativeImages: 0, chapters: 6, sections: 92, firstPage: 19, lastPage: 276 },
+  { number: 4, pages: 265, images: 465, decorativeImages: 54, chapters: 3, sections: 94, firstPage: 18, lastPage: 284 },
+  { number: 5, pages: 222, images: 470, decorativeImages: 1, chapters: 5, sections: 123, firstPage: 19, lastPage: 245, cutoffPage: 246 },
+  { number: 6, pages: 211, images: 437, decorativeImages: 5, chapters: 2, sections: 104, firstPage: 17, lastPage: 228, cutoffPage: 230 },
 ];
+
+const explicitDecorativeImages = new Map([
+  [1, new Set([
+    "p0026_img_in_image_box_134_395_470_857.jpg",
+    "p0084_img_in_image_box_208_411_466_857.jpg",
+    "p0146_img_in_image_box_222_1098_478_1655.jpg",
+  ])],
+  [5, new Set(["p0198_img_in_image_box_1448_635_1713_1126.jpg"])],
+  [6, new Set([
+    "p0047_img_in_image_box_1333_333_1847_822.jpg",
+    "p0047_img_in_image_box_157_336_703_829.jpg",
+    "p0047_img_in_image_box_164_1579_468_2070.jpg",
+    "p0125_img_in_image_box_132_1786_630_2266.jpg",
+    "p0125_img_in_image_box_1352_1790_1825_2268.jpg",
+  ])],
+]);
+
+const isDecorativeImage = (volumeNumber, imageName) => {
+  if (explicitDecorativeImages.get(volumeNumber)?.has(imageName)) return true;
+  if (volumeNumber !== 4) return false;
+  const box = imageName.match(/_box_(\d+)_(\d+)_(\d+)_(\d+)\.[^.]+$/i);
+  if (!box) return false;
+  const width = Number(box[3]) - Number(box[1]);
+  const height = Number(box[4]) - Number(box[2]);
+  return width <= 130 && height >= 340;
+};
 
 const sharedCss = `
   /* 西瓜柚子博客统一阅读样式 */
@@ -45,7 +71,8 @@ const sharedCss = `
     background:#fff; box-shadow:0 14px 38px rgba(22,67,115,.07); }
   .page:last-child { border-bottom:1px solid var(--rule); }.page .pageno { color:#7d93ad; }
   .page h1,.page h2 { color:#0b2a55; font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif; }
-  .page h3 { color:#244b75; }.page div[style*="text-align: center"] img { border-radius:10px; box-shadow:0 10px 28px rgba(14,48,86,.14); }
+  .page h3 { color:#244b75; }.page div[style*="text-align: center"] img { display:block; width:auto; max-width:min(100%,860px); height:auto;
+    margin:12px auto; border-radius:10px; box-shadow:0 8px 22px rgba(14,48,86,.11); }
   .page sup,.page sub { font-size:.72em; line-height:0; }
   .chapter-title-page { margin:38px 0 20px; padding:56px 20px 34px; border:1px solid var(--rule); border-radius:18px;
     background:linear-gradient(135deg,#edf6ff,#fff); }.chapter-title-page .ctp-no { color:#247bd6; }
@@ -209,6 +236,16 @@ for (const volume of volumes) {
     .replaceAll('<img ', '<img loading="lazy" decoding="async" ')
     .replace('</style>', `${sharedCss}\n</style>`)
     .replace('</body>', `${navigationScript}\n</body>`);
+
+  let removedDecorativeImages = 0;
+  html = html.replace(/<div style="text-align: center;">\s*<img\b[^>]*src="images\/([^"]+)"[^>]*>\s*<\/div>/g, (block, imageName) => {
+    if (!isDecorativeImage(volume.number, imageName)) return block;
+    removedDecorativeImages += 1;
+    return "";
+  });
+  if (removedDecorativeImages !== volume.decorativeImages) {
+    throw new Error(`第${volume.number}辑装饰图片：预期移除${volume.decorativeImages}张，实际移除${removedDecorativeImages}张`);
+  }
   html = html.replace(/\r\n?/g, "\n").replace(/[ \t]+$/gm, "");
 
   const imageNames = [...new Set([...html.matchAll(/src="images\/([^"]+)"/g)].map(match => match[1]))];
@@ -244,5 +281,5 @@ for (const volume of volumes) {
   }
   if (missing.length) throw new Error(`第${volume.number}辑缺少 ${missing.length} 张图片：${missing.slice(0, 5).join("、")}`);
   await writeFile(path.join(outputDir, "index.html"), html, "utf8");
-  console.log(`第${volume.number}辑完成：${actual.pages}页 / ${actual.chapters}章 / ${actual.sections}节 / ${actual.images}图`);
+  console.log(`第${volume.number}辑完成：${actual.pages}页 / ${actual.chapters}章 / ${actual.sections}节 / ${actual.images}图 / 清理${removedDecorativeImages}张装饰图`);
 }
