@@ -1,0 +1,19 @@
+{
+  "title": "超声扫查系列丛书",
+  "books": [
+    {
+      "slug": "diagnosis-and-scanning-guide",
+      "title": "超声疾病诊断及扫查技巧图解",
+      "subtitle": "以疾病为线索，串起典型声像图与扫查思路。",
+      "image": "p0000_001_img_in_image_box_35_190_263_463.jpg",
+      "accent": "coral"
+    },
+    {
+      "slug": "anatomy-and-scanning-guide",
+      "title": "超声解剖及扫查技巧图解",
+      "subtitle": "从断层解剖出发，理解探头移动与标准切面。",
+      "image": "p0000_001_img_in_image_box_681_0_1171_428.jpg",
+      "accent": "cyan"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+import { access, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import path from "node:path";
+
+const repoRoot = path.resolve(import.meta.dirname, "..");
+const sourceRoot = "E:/Book2Know/Us-rumen/超声扫查系列丛书";
+const outputRoot = path.join(repoRoot, "public", "ultrasound-scanning-series");
+
+const books = [
+  {
+    slug: "diagnosis-and-scanning-guide",
+    sourceDir: "超声疾病诊断及扫查技巧图解_OCR",
+    title: "超声疾病诊断及扫查技巧图解",
+    subtitle: "以疾病为线索，串起典型声像图与扫查思路。",
+    image: "p0000_001_img_in_image_box_35_190_263_463.jpg",
+    accent: "coral",
+  },
+  {
+    slug: "anatomy-and-scanning-guide",
+    sourceDir: "超声解剖及扫查技巧图解_OCR",
+    title: "超声解剖及扫查技巧图解",
+    subtitle: "从断层解剖出发，理解探头移动与标准切面。",
+    image: "p0000_001_img_in_image_box_681_0_1171_428.jpg",
+    accent: "cyan",
+  },
+];
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function normalizeBookHtml(source, book) {
+  const backLink = '<a class="series-back" href="../index.html">返回系列目录</a>';
+  const extraStyle = `
+<style id="xigua-series-enhancements">
+  .series-back { display:inline-flex; align-items:center; flex:0 0 auto; min-height:34px; padding:0 12px; border:1px solid var(--line); border-radius:999px; color:var(--brand); background:#fff; text-decoration:none; font-size:12px; font-weight:700; }
+  .series-back:hover { background:#f8ecee; }
+  @media (max-width:720px) { .series-back { min-height:36px; padding:0 10px; font-size:11px; } }
+  @media (prefers-reduced-motion:reduce) { .series-back { transition:none; } }
+</style>`;
+
+  return source
+    .replace(/<meta name="generator"[^>]*>/i, '<meta name="generator" content="Xigua Yuzi content pipeline">')
+    .replace(/\s+data-ocr-image="[^"]*"/gi, "")
+    .replace(/<div class="notice">[\s\S]*?<\/div>/i, '<div class="notice">本在线版用于医学教育与个人学习，章节、文字和图片按原书页面顺序整理。涉及临床判断时，请结合原书、现行指南与实际临床情况核对。</div>')
+    .replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(book.title)} | 超声扫查系列丛书 | 西瓜柚子</title>`)
+    .replace(/<header class="topbar">/i, `<header class="topbar">${backLink}`)
+    .replace(/<\/head>/i, `${extraStyle}</head>`)
+    .replaceAll("—", "-")
+    .replaceAll("–", "-");
+}
+
+const landingCss = `
+:root { --ink:#102d52; --muted:#5b7190; --line:#d9e5f2; --paper:#f7fbff; --accent:#1d79d5; --accent-dark:#125ca8; --coral:#cf6654; --cyan:#218ea7; }
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { margin:0; color:var(--ink); background:var(--paper); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+a { color:inherit; }
+.series-page { min-height:100dvh; background: radial-gradient(circle at 85% 14%, rgba(201,229,250,.55), transparent 34%), linear-gradient(180deg,#f8fbff 0%,#eef6fd 100%); }
+.series-shell { width:min(1180px,calc(100% - 48px)); margin:0 auto; }
+.series-header { display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:76px; border-bottom:1px solid rgba(217,229,242,.9); }
+.brand { display:inline-flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; font-size:12px; font-weight:800; letter-spacing:.18em; }
+.brand-mark { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; color:#fff; background:linear-gradient(135deg,#1f8dd5,#0e5ab0); box-shadow:0 8px 18px rgba(29,121,213,.22); }
+.brand-mark::after { content:""; width:6px; height:6px; border-radius:50%; background:#fff; }
+.back-link { color:var(--accent-dark); text-decoration:none; font-size:13px; font-weight:700; }
+.back-link:hover { color:var(--accent); }
+.series-hero { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:56px; align-items:end; padding:82px 0 72px; }
+.eyebrow { margin:0 0 20px; color:var(--accent); font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
+h1 { max-width:720px; margin:0; font-size:clamp(42px,7vw,82px); line-height:.98; letter-spacing:-.06em; }
+.hero-lead { max-width:620px; margin:28px 0 0; color:var(--muted); font-size:clamp(18px,2.2vw,24px); line-height:1.65; }
+.hero-note { align-self:stretch; display:flex; flex-direction:column; justify-content:flex-end; padding:26px 0 0 28px; border-left:1px solid var(--line); }
+.hero-note strong { display:block; margin-bottom:10px; font-size:22px; line-height:1.35; }
+.hero-note p { margin:0; color:var(--muted); line-height:1.8; }
+.book-list { display:grid; grid-template-columns:1.1fr .9fr; gap:22px; padding:24px 0 86px; }
+.book-card { display:grid; grid-template-columns:minmax(150px,.8fr) minmax(0,1.2fr); min-height:360px; overflow:hidden; border:1px solid var(--line); border-radius:20px; background:rgba(255,255,255,.88); box-shadow:0 18px 50px rgba(36,93,140,.09); text-decoration:none; transition:transform .25s ease,box-shadow .25s ease; }
+.book-card:nth-child(2) { grid-template-columns:minmax(0,1fr); min-height:310px; }
+.book-card:hover { transform:translateY(-4px); box-shadow:0 24px 62px rgba(36,93,140,.15); }
+.book-visual { min-height:100%; display:flex; align-items:flex-end; justify-content:center; padding:20px; background:linear-gradient(145deg,#e5f3fc,#d3e9f9); }
+.book-card:nth-child(2) .book-visual { min-height:160px; align-items:center; }
+.book-visual img { display:block; width:100%; max-width:260px; max-height:250px; object-fit:contain; mix-blend-mode:multiply; }
+.book-card:nth-child(2) .book-visual img { max-width:330px; max-height:190px; }
+.book-copy { display:flex; flex-direction:column; padding:34px 32px 30px; }
+.book-index { margin-bottom:24px; color:var(--coral); font:700 12px/1 ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.15em; }
+.book-card:nth-child(2) .book-index { color:var(--cyan); }
+.book-copy h2 { margin:0; font-size:clamp(24px,3vw,38px); line-height:1.16; letter-spacing:-.04em; }
+.book-copy p { margin:16px 0 0; color:var(--muted); line-height:1.75; }
+.book-open { display:inline-flex; align-items:center; gap:8px; margin-top:auto; padding-top:26px; color:var(--accent-dark); font-size:14px; font-weight:800; }
+.book-open::after { content:"→"; font-size:20px; transition:transform .2s ease; }
+.book-card:hover .book-open::after { transform:translateX(4px); }
+.series-footer { display:flex; justify-content:space-between; gap:24px; padding:22px 0 34px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; line-height:1.7; }
+.series-footer p { margin:0; }
+@media (max-width:820px) { .series-hero { grid-template-columns:1fr; gap:28px; padding:58px 0 46px; } .hero-note { padding:18px 0 0; border-left:0; border-top:1px solid var(--line); } .book-list { grid-template-columns:1fr; } .book-card:nth-child(2) { grid-template-columns:minmax(150px,.7fr) minmax(0,1.3fr); min-height:280px; } .book-card:nth-child(2) .book-visual { min-height:100%; } }
+@media (max-width:600px) { .series-shell { width:min(100% - 28px,520px); } .series-header { min-height:64px; } .brand { font-size:10px; letter-spacing:.12em; } .brand-mark { width:27px; height:27px; } .back-link { font-size:12px; } .series-hero { padding:46px 0 34px; } h1 { font-size:clamp(40px,14vw,64px); } .hero-lead { margin-top:20px; font-size:17px; } .book-list { gap:16px; padding-bottom:56px; } .book-card,.book-card:nth-child(2) { grid-template-columns:1fr; min-height:0; border-radius:16px; } .book-visual,.book-card:nth-child(2) .book-visual { min-height:180px; } .book-visual img,.book-card:nth-child(2) .book-visual img { max-height:150px; } .book-copy { padding:24px 22px 22px; } .book-index { margin-bottom:17px; } .book-copy h2 { font-size:27px; } .book-open { padding-top:22px; } .series-footer { flex-direction:column; gap:8px; padding-bottom:24px; } }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .book-card,.book-open::after { transition:none; } }
+`;
+
+const landingHtml = `<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="超声扫查系列丛书在线阅读入口，收录超声疾病诊断及扫查技巧图解、超声解剖及扫查技巧图解。"><title>超声扫查系列丛书 | 西瓜柚子</title><style>${landingCss}</style></head>
+<body class="series-page"><div class="series-shell"><header class="series-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>XIGUA · YUZI</span></a><a class="back-link" href="/blog/imaging">返回医学影像</a></header><main><section class="series-hero"><div><p class="eyebrow">Ultrasound scanning series</p><h1>超声扫查<br>系列丛书</h1><p class="hero-lead">超声人的必读经典。把解剖、探头移动、标准切面与疾病声像图放回同一条学习路径。</p></div><aside class="hero-note"><strong>两本书，两个入口</strong><p>保留原书章节、正文与配图的对应关系。点击书目后进入完整在线阅读页，可使用原有目录、搜索、图片放大与移动端导航。</p></aside></section><section class="book-list" aria-label="书籍列表"><a class="book-card" href="diagnosis-and-scanning-guide/index.html"><div class="book-visual"><img src="diagnosis-and-scanning-guide/images/${books[0].image}" alt="${books[0].title} 内容示意图" loading="eager"></div><div class="book-copy"><div class="book-index">01 / DIAGNOSIS</div><h2>${books[0].title}</h2><p>${books[0].subtitle}</p><span class="book-open">进入在线阅读</span></div></a><a class="book-card" href="anatomy-and-scanning-guide/index.html"><div class="book-visual"><img src="anatomy-and-scanning-guide/images/${books[1].image}" alt="${books[1].title} 内容示意图" loading="lazy"></div><div class="book-copy"><div class="book-index">02 / ANATOMY</div><h2>${books[1].title}</h2><p>${books[1].subtitle}</p><span class="book-open">进入在线阅读</span></div></a></section></main><footer class="series-footer"><p>西瓜柚子 · 医学影像</p><p>内容用于医学教育与个人学习，请结合原书和临床规范核对。</p></footer></div></body></html>`;
+
+async function main() {
+  await rm(outputRoot, { recursive: true, force: true });
+  await mkdir(outputRoot, { recursive: true });
+
+  for (const book of books) {
+    const sourceDir = path.join(sourceRoot, book.sourceDir);
+    const sourceHtmlPath = path.join(sourceDir, `${book.title}.html`);
+    const outputDir = path.join(outputRoot, book.slug);
+    await mkdir(outputDir, { recursive: true });
+    await cp(path.join(sourceDir, "images"), path.join(outputDir, "images"), { recursive: true });
+    const sourceHtml = await readFile(sourceHtmlPath, "utf8");
+    const html = normalizeBookHtml(sourceHtml, book);
+    if (/\bOCR\b/i.test(html)) throw new Error(`输出仍包含 OCR 字样：${book.title}`);
+    await writeFile(path.join(outputDir, "index.html"), html, "utf8");
+
+    const imageRefs = [...html.matchAll(/(?:src|href)=["']images\/([^"']+)["']/gi)].map((match) => match[1]);
+    const missing = [];
+    for (const name of new Set(imageRefs)) {
+      try {
+        await access(path.join(outputDir, "images", name));
+      } catch {
+        missing.push(name);
+      }
+    }
+    if (missing.length) throw new Error(`${book.title} 存在缺失图片：${missing.slice(0, 5).join(", ")}`);
+  }
+
+  await writeFile(path.join(outputRoot, "index.html"), landingHtml, "utf8");
+  await writeFile(path.join(outputRoot, "manifest.json"), JSON.stringify({ title: "超声扫查系列丛书", books: books.map(({ sourceDir, ...book }) => book) }, null, 2), "utf8");
+  console.log(`已生成 ${outputRoot}，包含 ${books.length} 本书籍。`);
+}
+
+await main();

@@ -387,6 +387,39 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 `,
   },
   {
+    slug: "ultrasound-scanning-series",
+    category: "imaging",
+    title: "超声扫查系列丛书",
+    excerpt:
+      "超声人的必读经典，收录《超声疾病诊断及扫查技巧图解》和《超声解剖及扫查技巧图解》两本在线书籍。",
+    date: "2026-08-07",
+    readTime: "2 本在线书籍",
+    cover: null,
+    tags: ["超声扫查", "超声解剖", "疾病诊断", "医学影像"],
+    body: `# 超声扫查系列丛书
+
+超声人的必读经典。这个专栏收录两本围绕解剖、探头移动、标准切面与疾病声像图展开的超声学习书籍，适合超声医学学生、规培生和临床学习者按章节检索、对照图片阅读。
+
+## 两本书籍
+
+### 超声疾病诊断及扫查技巧图解
+
+以常见疾病为线索，整理典型声像图、诊断要点与扫查思路。正文、图注和图片均按原书页面顺序对应。
+
+<p><a class="knowledge-card-launch" href="/ultrasound-scanning-series/diagnosis-and-scanning-guide/index.html">打开《超声疾病诊断及扫查技巧图解》 <span>→</span></a></p>
+
+### 超声解剖及扫查技巧图解
+
+从断层解剖出发，理解探头握持、移动方式与标准切面。适合建立系统的扫查路径和空间定位能力。
+
+<p><a class="knowledge-card-launch" href="/ultrasound-scanning-series/anatomy-and-scanning-guide/index.html">打开《超声解剖及扫查技巧图解》 <span>→</span></a></p>
+
+两个在线版本均保留章节内容与配图对应关系，并支持原有目录导航、目录搜索、图片放大和移动端阅读。
+
+> 本专栏用于医学教育与个人学习，不构成诊断或操作建议。涉及临床判断时，请结合原书、现行指南与实际临床情况核对。
+`,
+  },
+  {
     slug: "huabin-ultrasound-notes",
     category: "imaging",
     title: "华斌笔记",
