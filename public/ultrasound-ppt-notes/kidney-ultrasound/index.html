@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="academic-paper">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>肾脏超声知识精讲 | 超声PPT笔记 | 西瓜柚子</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/base.css">
+<link rel="stylesheet" id="theme-link" href="assets/themes/academic-paper.css">
+<link rel="stylesheet" href="assets/animations/animations.css">
+<style>
+/* ===== 自定义：图片卡片 / 图注 / 图文行 ===== */
+.pic{display:flex;align-items:center;justify-content:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;padding:10px;box-shadow:var(--shadow)}
+.pic img{width:100%;height:100%;object-fit:contain}
+.pic-h180{height:180px}.pic-h200{height:200px}.pic-h210{height:210px}.pic-h220{height:220px}.pic-h240{height:240px}.pic-h260{height:260px}.pic-h300{height:300px}.pic-h340{height:340px}.pic-h380{height:380px}.pic-h440{height:440px}
+.imgcap{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.figrow{display:grid;gap:16px;margin-top:18px}
+.figrow.g2{grid-template-columns:repeat(2,1fr)}
+.figrow.g3{grid-template-columns:repeat(3,1fr)}
+.figrow.g4{grid-template-columns:repeat(4,1fr)}
+/* ===== 表格 ===== */
+.t{width:100%;border-collapse:collapse;font-size:15px}
+.t th,.t td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.t th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);font-weight:600}
+.t tr:hover td{background:var(--surface-2)}
+.t td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.up{color:var(--good)}.dn{color:var(--bad)}.hl{color:var(--accent);font-weight:700}
+/* ===== 流程 ===== */
+.flow{display:flex;align-items:stretch;gap:12px;margin-top:22px}
+.flow .node{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;text-align:center;box-shadow:var(--shadow);position:relative}
+.flow .node .ic{font-size:26px;margin-bottom:4px}
+.flow .node h4{font-size:15px;margin:0 0 4px}
+.flow .node p{font-size:11px;color:var(--text-3);margin:0;line-height:1.4}
+.flow .arr{color:var(--text-3);font-size:24px;display:flex;align-items:center;flex-shrink:0}
+.flow .node.hl{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent),var(--shadow)}
+/* 紧凑版流程（减少画面占比） */
+.flow-compact{gap:6px}
+.flow-compact .node{padding:10px 12px;border-radius:var(--radius-sm)}
+.flow-compact .node .ic{font-size:18px;margin-bottom:2px}
+.flow-compact .node h4{font-size:13px}
+.flow-compact .node p{font-size:11px}
+.flow-compact .arr{font-size:16px}
+/* ===== 步骤 ===== */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:22px}
+.step{position:relative;padding:20px 18px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+.step .num{position:absolute;top:-18px;left:18px;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;box-shadow:var(--shadow)}
+.step h4{margin:16px 0 6px;font-size:15px}
+.step p{font-size:12px;color:var(--text-2);line-height:1.55;margin:0}
+/* ===== 对比 ===== */
+.vs{display:grid;grid-template-columns:1fr 72px 1fr;gap:22px;align-items:stretch;margin-top:22px}
+.vs .side{padding:24px}
+.vs .mid{font-size:46px;font-weight:800;color:var(--text-3);display:flex;align-items:center;justify-content:center}
+.vs .bad-side{border-top:3px solid var(--bad)}
+.vs .good-side{border-top:3px solid var(--good)}
+.vs h3{font-size:21px;margin-bottom:10px}
+.vs ul{padding-left:20px;font-size:14px;line-height:1.75;color:var(--text-2);margin:0}
+.vs li::marker{color:var(--bad)}
+.vs .good-side li::marker{color:var(--good)}
+/* ===== 公式 ===== */
+.formula{font-size:40px;font-weight:800;text-align:center;padding:20px;background:var(--surface-2);border-radius:var(--radius);font-family:var(--font-mono);letter-spacing:.01em}
+/* ===== 提示条 ===== */
+.tip{border-left:4px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent);padding:12px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:14px;line-height:1.6}
+.warnbox{border-left:4px solid var(--bad);background:color-mix(in srgb,var(--bad) 7%,transparent);padding:12px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:14px;line-height:1.6}
+/* ===== 紧凑列表 ===== */
+ul.tight{padding-left:22px;margin:8px 0 0;font-size:16px;line-height:1.8;color:var(--text-2)}
+ul.tight li::marker{color:var(--accent)}
+/* ===== 图片九宫格 ===== */
+.gg{display:grid;grid-template-columns:repeat(5,1fr);grid-auto-rows:250px;gap:12px;margin-top:20px}
+.gg .cell{border-radius:var(--radius);overflow:hidden;position:relative;box-shadow:var(--shadow);background:var(--surface-2);border:1px solid var(--border)}
+.gg .cell img{width:100%;height:100%;object-fit:contain}
+.gg .cell span{position:absolute;inset:auto 0 0 0;padding:8px 10px;color:#fff;font-size:12px;font-weight:600;background:linear-gradient(transparent,rgba(0,0,0,.72));line-height:1.35}
+.gg4{grid-template-columns:repeat(4,1fr);grid-auto-rows:220px}
+.gg4 .cell img{object-fit:cover}
+/* ===== 检查清单 ===== */
+.ck{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
+.ck li{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;font-size:16px;line-height:1.6;box-shadow:var(--shadow)}
+.ck .box{flex-shrink:0;width:22px;height:22px;border:2px solid var(--accent);border-radius:6px;margin-top:2px}
+.ck b{color:var(--accent)}
+/* ===== 图片点击放大（lightbox） ===== */
+.pic img,.gg .cell img{cursor:zoom-in}
+.lightbox{position:fixed;inset:0;background:rgba(8,10,16,.93);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;padding:44px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:92vw;max-height:82vh;object-fit:contain;border-radius:10px;box-shadow:0 24px 80px rgba(0,0,0,.65)}
+.lightbox .lbcap{color:#e6e9f2;margin-top:18px;font-size:16px;text-align:center;max-width:82vw;line-height:1.5}
+.lightbox .lbclose{position:absolute;top:18px;right:30px;color:#fff;font-size:40px;line-height:1;cursor:pointer;background:none;border:none;font-weight:300}
+.lightbox .lbhint{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:rgba(255,255,255,.45);font-size:13px}
+</style>
+<meta name="description" content="肾脏超声知识精讲，超声PPT笔记 HTML 学习演示。">
+<style id="xigua-ppt-enhancements">
+  .xigua-ppt-back {
+    position: fixed;
+    top: 54px;
+    left: 20px;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid rgba(33, 97, 160, .24);
+    border-radius: 999px;
+    color: #174a82;
+    background: rgba(255, 255, 255, .88);
+    box-shadow: 0 8px 24px rgba(23, 74, 130, .12);
+    text-decoration: none;
+    font: 700 12px/1 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    backdrop-filter: blur(10px);
+  }
+  .xigua-ppt-back:hover { background: #fff; }
+  .xigua-ppt-zoomable { cursor: zoom-in; pointer-events: auto !important; }
+  .xigua-ppt-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px 36px;
+    background: rgba(7, 18, 33, .92);
+  }
+  .xigua-ppt-lightbox.is-open { display: flex; }
+  .xigua-ppt-lightbox img {
+    display: block;
+    max-width: min(96vw, 1800px);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 28px 90px rgba(0, 0, 0, .42);
+  }
+  .xigua-ppt-lightbox button {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(255, 255, 255, .14);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .xigua-ppt-lightbox button:hover { background: rgba(255, 255, 255, .24); }
+  @media (max-width: 640px) {
+    .xigua-ppt-back { top: 46px; left: 12px; min-height: 34px; padding: 0 11px; font-size: 11px; }
+    .xigua-ppt-lightbox { padding: 44px 10px 24px; }
+    .xigua-ppt-lightbox img { max-width: 96vw; max-height: 84vh; border-radius: 5px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .xigua-ppt-back { transition: none; }
+  }
+</style><style id="xigua-ppt-native-enhancements">.pic img,.gg .cell img,.fig img,.poster img,.banner img{cursor:zoom-in;pointer-events:auto!important}@media(max-width:640px){.lightbox{padding:44px 10px 24px}.lightbox img{max-width:96vw;max-height:84vh}.lightbox .lbclose{top:10px;right:14px}}</style></head>
+<body data-themes="academic-paper,minimal-white,corporate-clean,editorial-serif,swiss-grid" data-theme-base="assets/themes/"><a class="xigua-ppt-back" href="../index.html" aria-label="返回超声PPT笔记目录">返回专栏目录</a>
+<div class="deck">
+  <div class="deck-header"><span class="eyebrow">Renal Ultrasound · 干货系列</span><span class="eyebrow">解剖 → 实质病变 → 多普勒 → 肿块</span></div>
+
+  <!-- ============ 01 封面 ============ -->
+  <section class="slide" data-title="封面">
+    <div class="anim-stagger-list">
+      <p class="kicker">医学超声精讲 · Renal Ultrasound Masterclass</p>
+      <h1 class="h1 anim-fade-up" data-anim="fade-up" style="font-size:88px">
+        肾脏超声<br><span class="gradient-text">全面知识精讲</span>
+      </h1>
+      <p class="lede">从解剖、检查技术到肾实质疾病、肾动脉多普勒、移植肾，再到囊性与实性肿块——一份能吃透的超声「干货」合集。</p>
+      <div class="row wrap mt-l">
+        <span class="pill pill-accent">解剖与检查技术</span>
+        <span class="pill pill-accent">常见病变</span>
+        <span class="pill pill-accent">肾实质疾病</span>
+        <span class="pill pill-accent">肾动脉 Doppler</span>
+        <span class="pill pill-accent">移植肾</span>
+        <span class="pill pill-accent">Bosniak 与实性肿块</span>
+      </div>
+    </div>
+    <div class="notes">开场白：今天用一个小时把肾脏超声从头到尾过一遍，素材来自 Sonographic Tendencies、Radiology Assistant 与一场肾实质疾病超声讲座，重点是可落地的判读要点。</div>
+  </section>
+
+  <!-- ============ 02 目录 ============ -->
+  <section class="slide" data-title="目录">
+    <p class="eyebrow">Contents · 目录</p>
+    <h2 class="h2">今天讲六大板块</h2>
+    <div class="grid g2 mt-l anim-stagger-list" data-anim-target>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">01</div><div><h4>基础与检查技术</h4><p class="dim">解剖、探头、切面、正常表现与常见陷阱。</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">02</div><div><h4>常见肾脏病变</h4><p class="dim">积水、结石、感染、囊肿、肿瘤与创伤。</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">03</div><div><h4>肾实质疾病</h4><p class="dim">灰阶三观察点、RI、糖尿病肾病与病例。</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">04</div><div><h4>肾动脉多普勒</h4><p class="dim">解剖变异、PSV/RI 参数与狭窄分级。</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">05</div><div><h4>移植肾超声</h4><p class="dim">五步检查流程与并发症监测。</p></div></div></div>
+      <div class="card"><div class="row"><div class="h3 dim2" style="width:56px">06</div><div><h4>囊性与实性肿块</h4><p class="dim">Bosniak 2019 分类、RCC 亚型与鉴别陷阱。</p></div></div></div>
+    </div>
+    <div class="notes">先给框架：六块内容层层递进，前两块打基础，中间两块练血流动力学思维，最后一块专攻肿瘤影像。</div>
+  </section>
+
+  <!-- ============ 03 章节一 ============ -->
+  <section class="slide tc center" data-title="Section 01">
+    <div style="max-width:780px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Section · 01</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:100px">基础与<span class="gradient-text">检查技术</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">先把解剖和扫查规范吃透——图像质量决定诊断质量。</p>
+    </div>
+    <div class="notes">第一部分：解剖位置、探头选择、标准切面、正常回声表现，以及最常踩的坑。</div>
+  </section>
+
+  <!-- ============ 04 解剖 ============ -->
+  <section class="slide" data-title="解剖要点">
+    <p class="kicker">Anatomy · 解剖</p>
+    <h2 class="h2">肾脏：位置、大小与分层</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div class="card card-accent">
+        <h4>基本结构</h4>
+        <ul class="tight">
+          <li><b>位置</b>：腹膜后间隙，T12–L3 水平，右肾略低于左肾</li>
+          <li><b>大小</b>：长 10–12 cm · 宽 5–6 cm · 厚 3–4 cm，约 150 g</li>
+          <li><b>肾皮质</b>：外层，含肾小球</li>
+          <li><b>肾髓质</b>：内层，含肾锥体（皮髓质分界的解剖基础）</li>
+          <li><b>肾盂 / 肾盏</b>：中央收集尿液；肾窦 = 脂肪 + 集合系统（高回声）</li>
+          <li><b>血供</b>：肾动脉起自腹主动脉（L1–L2），肾静脉汇入下腔静脉</li>
+        </ul>
+      </div>
+      <div class="card card-soft">
+        <h4>三维记忆要点</h4>
+        <ul class="tight">
+          <li>「<b>豆形</b>」器官，长轴矢状面扫查是测量与评估的基准</li>
+          <li>回声层次：<b>肝 &gt; 肾皮质 &gt; 肾髓质</b>，肾窦最高回声</li>
+          <li>解剖变异：约 <b>25–30%</b> 人群存在副肾动脉，勿漏诊</li>
+          <li>右肾以肝为声窗，左肾以脾为声窗</li>
+        </ul>
+        <div class="tip mt-m">测量肾脏大小时沿长轴取最大纵径，成人正常约 9–13 cm（超声实测），需结合身高、体重与 BMI。</div>
+      </div>
+    </div>
+    <div class="notes">解剖是地基：记住右肾低、左肾高，回声三层次，以及副肾动脉的常见变异。</div>
+  </section>
+
+  <!-- ============ 05 探头与准备 ============ -->
+  <section class="slide" data-title="探头选择">
+    <p class="kicker">Technique · 探头与准备</p>
+    <h2 class="h2">探头选择、患者准备与体位</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="figrow g2">
+          <div><div class="pic pic-h260"><img src="images/us_probe_convex.jpg" alt="凸阵探头"></div><p class="imgcap">凸阵探头（C1-6，1–6 MHz）——肾脏检查首选</p></div>
+          <div><div class="pic pic-h260"><img src="images/us_probe_linear.jpg" alt="线阵探头"></div><p class="imgcap">高频线阵探头（7L）——移植肾 / 浅表高分辨成像</p></div>
+        </div>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>首选探头</b>：2–5 MHz 凸阵；肥胖患者备选 3–6 MHz 凸阵（穿透力更强）</li>
+          <li><b>移植肾</b>：凸阵 6 MHz（必要时 4–5 MHz）+ 线阵 9 MHz（B-flow / 高分辨多普勒）</li>
+          <li><b>膀胱充盈</b>：检查前 1–2 小时饮水 500–1000 mL，充盈膀胱作为声窗</li>
+          <li><b>体位</b>：仰卧位、侧卧位、俯卧位（俯卧位从背侧扫查，可发现前位漏诊病变）</li>
+          <li><b>呼吸配合</b>：深吸气使肾脏下移，减少肋骨遮挡</li>
+        </ul>
+        <div class="tip mt-m">规范四要素：探头、体位、切面、呼吸。任何一环不到位，都可能漏掉病变。</div>
+      </div>
+    </div>
+    <div class="notes">探头选型一句话：凸阵打底、线阵补细节；检查前让患者喝水憋尿，能显著改善声窗。</div>
+  </section>
+
+  <!-- ============ 06 标准切面 ============ -->
+  <section class="slide" data-title="标准切面">
+    <p class="kicker">Technique · 标准切面</p>
+    <h2 class="h2">矢状面 + 横断面：一个都不能少</h2>
+    <div class="figrow g2 mt-l">
+      <div>
+        <div class="pic pic-h340"><img src="images/us_normal_kidney.jpg" alt="肾脏矢状面"></div>
+        <p class="imgcap">矢状面：右肾长轴扫查（内侧 / 正中 / 外侧三个层面）</p>
+      </div>
+      <div>
+        <div class="pic pic-h340"><img src="images/us_transverse_kidney.jpg" alt="横断面扫查"></div>
+        <p class="imgcap">横断面：上极 → 中段 → 下极逐层扫查，中段可见高回声肾窦与周围实质</p>
+      </div>
+    </div>
+    <div class="grid g2 mt-l">
+      <div class="card card-soft"><h4>右肾</h4><ul class="tight"><li>肝脏作声窗</li><li>矢状面显示长轴</li><li>横断面显示上 / 中 / 下极</li></ul></div>
+      <div class="card card-soft"><h4>左肾</h4><ul class="tight"><li>脾脏作声窗</li><li>矢状面显示长轴</li><li>横断面显示上 / 中 / 下极</li></ul></div>
+    </div>
+    <div class="notes">两个切面互为补充：矢状面管长度测量，横断面管逐极排查，俯卧位补扫背侧。</div>
+  </section>
+
+  <!-- ============ 07 正常表现 ============ -->
+  <section class="slide" data-title="正常超声表现">
+    <p class="kicker">Normal · 正常超声表现</p>
+    <h2 class="h2">回声层次与测量值</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h340"><img src="images/us_normal_mckd.png" alt="正常肾脏与MCKD"></div>
+        <p class="imgcap">正常右肾（右）；左肾为多囊性肾发育不良（MCKD）对照</p>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>形态</b>：豆形，轮廓光滑</li>
+          <li><b>回声</b>：皮质低回声，髓质（锥体）更低回声，肾窦高回声（脂肪 + 集合系统）</li>
+          <li><b>对比</b>：正常肝 &gt; 肾皮质 &gt; 肾髓质；右肾皮质回声低于肝</li>
+        </ul>
+        <table class="t mt-m">
+          <thead><tr><th>参数</th><th>正常值</th><th class="num">备注</th></tr></thead>
+          <tbody>
+            <tr><td>长径</td><td>10–12 cm</td><td class="num">超声实测 9–13 cm</td></tr>
+            <tr><td>宽径</td><td>5–6 cm</td><td class="num">—</td></tr>
+            <tr><td>厚径</td><td>3–4 cm</td><td class="num">—</td></tr>
+            <tr><td>实质厚度</td><td>约 1–1.5 cm</td><td class="num">变薄提示慢性病变</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="notes">正常标准要背熟：皮质低于肝、髓质更低、肾窦高回声；测量值结合体型看。</div>
+  </section>
+
+  <!-- ============ 08 技巧与陷阱 ============ -->
+  <section class="slide" data-title="技巧与陷阱">
+    <p class="kicker">Tips &amp; Pitfalls · 技巧与陷阱</p>
+    <h2 class="h2">提高检出率，避开三个坑</h2>
+    <div class="grid g3 mt-l anim-stagger-list" data-anim-target>
+      <div class="card card-accent"><h4>① 多体位</h4><p class="dim">仰卧、侧卧、俯卧三体位联合扫查。</p></div>
+      <div class="card card-accent"><h4>② 呼吸配合</h4><p class="dim">深呼吸让肾脏下移，绕开肋骨与肠气。</p></div>
+      <div class="card card-accent"><h4>③ 膀胱充盈</h4><p class="dim">充盈膀胱是盆腔与输尿管远段的天然声窗。</p></div>
+    </div>
+    <div class="grid g3 mt-l anim-stagger-list" data-anim-target>
+      <div class="card card-soft"><h4>⚠ 肠气干扰</h4><p class="dim">肠道气体遮挡肾脏——变换体位或加压探头。</p></div>
+      <div class="card card-soft"><h4>⚠ 肥胖患者</h4><p class="dim">穿透力不足，改用低频凸阵探头。</p></div>
+      <div class="card card-soft"><h4>⚠ 轻度积水</h4><p class="dim">容易漏诊——用彩色多普勒区分真性积液与突出的肾静脉。</p></div>
+    </div>
+    <div class="warnbox mt-l">别忘了：囊肿与肿瘤需鉴别（四项囊肿标准）、闪烁征有假阳性——每个阳性征象都要结合其他征象综合判读。</div>
+    <div class="notes">技巧服务于一个目标：把肾脏每一段都看清。陷阱部分考试常考「轻度积水漏诊」和「囊肿与肿瘤鉴别」。</div>
+  </section>
+
+  <!-- ============ 09 章节二 ============ -->
+  <section class="slide tc center" data-title="Section 02">
+    <div style="max-width:780px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Section · 02</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:100px">常见<span class="gradient-text">肾脏病变</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">积水、结石、感染、囊肿、肿瘤——按「先看图、再归类」的套路走。</p>
+    </div>
+    <div class="notes">第二部分：把最常遇到的肾脏病变超声特征一次讲全。</div>
+  </section>
+
+  <!-- ============ 10 肾积水 ============ -->
+  <section class="slide" data-title="肾积水">
+    <p class="kicker">Hydronephrosis · 肾积水</p>
+    <h2 class="h2">肾积水：找梗阻、看分级</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/us_hydronephrosis_grading.png" alt="肾积水分级"></div>
+        <p class="imgcap">肾积水轻 / 中 / 重度：肾盂肾盏无回声区逐级扩张</p>
+      </div>
+      <div>
+        <table class="t">
+          <thead><tr><th>分级</th><th>超声表现</th></tr></thead>
+          <tbody>
+            <tr><td><b>轻度</b></td><td>肾盂充盈，无肾盏扩张</td></tr>
+            <tr><td><b>中度</b></td><td>肾盂显著扩张并累及肾盏</td></tr>
+            <tr><td><b>重度</b></td><td>集合系统进一步扩张，伴皮质变薄</td></tr>
+          </tbody>
+        </table>
+        <div class="grid g2 mt-m">
+          <div class="card card-soft"><h4>梗阻性</h4><ul class="tight"><li>结石</li><li>肾盂输尿管连接部梗阻（UPJ，ureteropelvic junction）</li><li>输尿管膀胱连接部梗阻（UVJ，ureterovesical junction）</li><li>尿道瓣膜、肿块</li><li>前列腺病变</li></ul></div>
+          <div class="card card-soft"><h4>非梗阻性</h4><ul class="tight"><li>膀胱输尿管反流</li><li>巨尿管</li><li>肾盂肾炎</li></ul></div>
+        </div>
+        <div class="tip mt-m">肾积水本身不是病，是「结果」——务必向上追踪梗阻原因。</div>
+      </div>
+    </div>
+    <div class="notes">分级看肾盏扩张与皮质厚度；梗阻性与非梗阻性的区别决定下一步检查方向。</div>
+  </section>
+
+  <!-- ============ 11 反流与陷阱 ============ -->
+  <section class="slide" data-title="膀胱输尿管反流">
+    <p class="kicker">VUR · 非梗阻性积水</p>
+    <h2 class="h2">膀胱输尿管反流：从 1 级到 5 级</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/us_vur_grading.jpg" alt="膀胱输尿管反流分级"></div>
+        <p class="imgcap">VUR 分级示意：反流局限输尿管 → 进入肾盂 → 肾盏扩张逐级加重</p>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>1 级</b>：反流仅限输尿管，肾盂肾盏无扩张</li>
+          <li><b>2 级</b>：反流达肾盂，肾盂肾盏仍无扩张</li>
+          <li><b>3 级</b>：输尿管 + 肾盂肾盏轻度扩张，肾盏杯口开始变钝</li>
+          <li><b>4 级</b>：肾盏明显扩张、杯口消失（杵状）</li>
+          <li><b>5 级</b>：肾盏重度扩张伴实质变薄、肾内迂曲</li>
+        </ul>
+        <div class="tip mt-m">轻度肾积水（肾盂扩张但无肾盏扩张）要高度警惕是否为「假积水」——用彩色多普勒看扩张结构内有无血流，即可区分真积液与突起的肾静脉。</div>
+      </div>
+    </div>
+    <div class="notes">VUR 常见于儿童反复尿感；超声给分级，排尿性膀胱尿道造影（VCUG）确诊。别忘了彩色多普勒这招。</div>
+  </section>
+
+  <!-- ============ 12 肾结石 ============ -->
+  <section class="slide" data-title="肾结石">
+    <p class="kicker">Nephrolithiasis · 肾结石</p>
+    <h2 class="h2">肾结石：强回声 + 声影 + 闪烁征</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/us_kidney_stones.jpg" alt="肾结石科普图"></div>
+        <p class="imgcap">结石类型（草酸钙 75%）、症状与危险因素一图看懂</p>
+      </div>
+      <div>
+        <h4>流行病学与症状</h4>
+        <ul class="tight">
+          <li>美国常见病：每 <b>10 人中 1 人</b>受累；尿液中致石物质过饱和 + 饮水不足</li>
+          <li>胁腹痛向前下方放射、血尿（镜下 / 肉眼）、恶心呕吐；复发或慢性病例可合并感染</li>
+        </ul>
+        <h4 class="mt-m">超声表现</h4>
+        <ul class="tight">
+          <li><b>强回声</b>：圆形或不规则形高回声结构</li>
+          <li><b>声影</b>：后方声影（典型征象）</li>
+          <li><b>闪烁征</b>：结石后方彩色多普勒马赛克信号（部分研究质疑可靠性）</li>
+          <li><b>间接征象</b>：梗阻性积水、肾盂输尿管壁增厚、输尿管喷射流减弱/消失</li>
+        </ul>
+        <div class="figrow g2 mt-m">
+          <div><div class="pic pic-h180"><img src="images/ct_kidney_stone.jpg" alt="CT肾结石"></div><p class="imgcap">CT：结石检出金标准（肾内高密度灶）</p></div>
+          <div><div class="pic pic-h180"><img src="images/us_urothelial.png" alt="尿路上皮增厚"></div><p class="imgcap">间接征象：肾盂尿路上皮增厚（箭头）</p></div>
+        </div>
+        <div class="warnbox mt-m">陷阱：小结石易漏诊、肠气遮挡、闪烁征假阳性——需结合间接征象综合判断。</div>
+      </div>
+    </div>
+    <div class="notes">结石定位：肾盂最常见，可掉入输尿管甚至膀胱。超声三连：强回声、声影、闪烁征。</div>
+  </section>
+
+  <!-- ============ 13 感染 ============ -->
+  <section class="slide" data-title="感染性疾病">
+    <p class="kicker">Infection · 感染性疾病</p>
+    <h2 class="h2">从膀胱炎到肾盂肾炎：上行感染路线</h2>
+    <div class="flow anim-stagger-list" data-anim-target>
+      <div class="node"><div class="ic">🚻</div><h4>尿道</h4><p>感染入口</p></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ic">🫧</div><h4>膀胱</h4><p>膀胱炎：壁增厚、充血、碎屑</p></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ic">🕳</div><h4>输尿管</h4><p>反流 / 逆行</p></div>
+      <div class="arr">→</div>
+      <div class="node"><div class="ic">🧊</div><h4>肾盂</h4><p>肾盂炎</p></div>
+      <div class="arr">→</div>
+      <div class="node hl"><div class="ic">🫘</div><h4>肾实质</h4><p>急性肾盂肾炎</p></div>
+    </div>
+    <div class="grid g3 mt-l anim-stagger-list" data-anim-target>
+      <div class="card card-accent"><h4>急性肾盂肾炎</h4><ul class="tight"><li>肾脏增大、水肿</li><li>回声增强</li><li>局灶性三角形低灌注区（彩色多普勒）</li></ul></div>
+      <div class="card card-accent"><h4>慢性肾盂肾炎</h4><ul class="tight"><li>局灶性瘢痕</li><li>弥漫性萎缩</li><li>肾外形不规则</li></ul></div>
+      <div class="card card-accent"><h4>黄脂绒毛性肾盂肾炎</h4><ul class="tight"><li>罕见慢性形式</li><li>常伴鹿角状结石</li><li>易被误诊为肾细胞癌</li></ul></div>
+    </div>
+    <div class="figrow g3 mt-l">
+      <div><div class="pic pic-h200"><img src="images/us_pyelonephritis.png" alt="急性肾盂肾炎超声"></div><p class="imgcap">急性肾盂肾炎（粪肠球菌）：肾实质回声与灌注异常</p></div>
+      <div><div class="pic pic-h200"><img src="images/us_abscess.png" alt="肾脓肿超声"></div><p class="imgcap">肾上极脓肿：局限性液性 / 混杂回声灶</p></div>
+      <div><div class="pic pic-h200"><img src="images/us_scarring.png" alt="局灶瘢痕超声"></div><p class="imgcap">慢性肾盂肾炎：局灶性皮质瘢痕</p></div>
+    </div>
+    <div class="notes">上行感染路径是记忆主线：尿道→膀胱→输尿管→肾盂→肾实质。急性看灌注、慢性看瘢痕。</div>
+  </section>
+
+  <!-- ============ 14 囊性肾病 ============ -->
+  <section class="slide" data-title="囊性肾病">
+    <p class="kicker">Cystic Disease · 囊性肾病</p>
+    <h2 class="h2">单纯囊肿与多囊肾</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div class="card card-accent">
+        <h4>单纯囊肿（四项标准）</h4>
+        <ul class="tight">
+          <li>圆形 / 椭圆形</li>
+          <li>薄壁</li>
+          <li>无回声</li>
+          <li>后方声增强</li>
+        </ul>
+        <p class="dim mt-m">非常常见：50 岁以上人群中约 <b>50%</b> 可见。</p>
+        <div class="tip mt-m">四项标准缺一不可——不满足时警惕复杂性囊肿 / 囊性肿瘤。</div>
+        <p class="dim mt-m"><b>多囊性肾发育不良（MCKD）</b>：单侧肾被大小不等囊肿取代，患侧肾常无功能，多为偶然发现。</p>
+      </div>
+      <div class="card card-soft">
+        <h4>多囊肾病对比</h4>
+        <table class="t">
+          <thead><tr><th></th><th>ARPKD</th><th>ADPKD</th></tr></thead>
+          <tbody>
+            <tr><td>遗传</td><td>常染色体隐性</td><td>常染色体显性</td></tr>
+            <tr><td>发病</td><td>婴儿期</td><td>出生时肾正常，30 岁时约 68% 可见囊肿</td></tr>
+            <tr><td>肾脏</td><td>明显增大</td><td>囊肿渐增、肾功能渐衰</td></tr>
+            <tr><td>预后</td><td>早期严重</td><td>占终末期肾衰竭的 4–10%</td></tr>
+          </tbody>
+        </table>
+        <p class="dim mt-m">髓样海绵肾：良性先天异常，肾锥体集合管扩张，可致肾钙化与结石。</p>
+      </div>
+    </div>
+    <div class="figrow g3 mt-l">
+      <div><div class="pic pic-h220"><img src="images/us_adpkd.png" alt="ADPKD超声"></div><p class="imgcap">ADPKD：双肾多发大小不等囊肿，肾结构被破坏</p></div>
+      <div><div class="pic pic-h220"><img src="images/us_arpkd.png" alt="ARPKD超声"></div><p class="imgcap">ARPKD（5 岁）：双肾增大、弥漫性小囊</p></div>
+      <div><div class="pic pic-h220"><img src="images/us_mckd.png" alt="MCKD超声"></div><p class="imgcap">MCKD：患侧肾被多发囊肿替代</p></div>
+    </div>
+    <div class="notes">单纯囊肿看四项标准；多囊肾重点分隐性（婴儿）与显性（成人），预后完全不同。</div>
+  </section>
+
+  <!-- ============ 15 肾脏创伤 ============ -->
+  <section class="slide" data-title="肾脏创伤">
+    <p class="kicker">Trauma · 肾脏创伤</p>
+    <h2 class="h2">肾脏创伤：超声先筛、CT 定损</h2>
+    <div class="grid g3 mt-l anim-stagger-list" data-anim-target">
+      <div class="card"><p class="eyebrow">创伤占比</p><div style="font-size:48px;font-weight:800"><span class="counter" data-to="5">0</span>%</div><p class="dim">约占所有创伤入院 1–5%</p></div>
+      <div class="card"><p class="eyebrow">腹部创伤</p><div style="font-size:48px;font-weight:800"><span class="counter" data-to="10">0</span>%</div><p class="dim">肾脏占腹部创伤约 10%</p></div>
+      <div class="card"><p class="eyebrow">损伤谱</p><div style="font-size:40px;font-weight:800">挫伤→<br>危及生命</div><p class="dim">挫伤、裂伤、血肿、尿外渗、碎裂</p></div>
+    </div>
+    <div class="figrow g2 mt-l">
+      <div>
+        <div class="pic pic-h300"><img src="images/us_trauma_fast.png" alt="FAST创伤超声"></div>
+        <p class="imgcap">FAST 超声：肝肾隐窝（Morrison 窝）游离液体——创伤场景提示血腹</p>
+      </div>
+      <div>
+        <div class="pic pic-h300"><img src="images/ct_renal_hematoma.png" alt="肾血肿CT"></div>
+        <p class="imgcap">增强 CT：左肾创伤后大血肿（液性 / 实性混杂占位）</p>
+      </div>
+    </div>
+    <ul class="tight mt-l">
+      <li><b>超声定位</b>：FAST 快速评估腹腔游离液体 / 血腹；肾脏形态与包膜下血肿可初步评估</li>
+      <li><b>CT 定损</b>：增强 CT 是确定性评估（裂伤分级、血肿、尿外渗）</li>
+      <li>损伤谱：从肾挫伤到危及生命的碎裂伤，<b>结合血流动力学</b>决定处理</li>
+    </ul>
+    <div class="notes">创伤部分两张图：FAST 的肝肾隐窝积液（超声）+ 增强 CT 的左肾大血肿，先筛后定损。</div>
+  </section>
+
+  <!-- ============ 16 肾脏肿瘤概览 ============ -->
+  <section class="slide" data-title="肾脏肿瘤概览">
+    <p class="kicker">Tumors · 肾脏肿瘤</p>
+    <h2 class="h2">肾脏肿瘤：先建立「良性 vs 恶性」框架</h2>
+    <div class="grid g3 mt-l anim-stagger-list" data-anim-target>
+      <div class="card"><p class="eyebrow">Wilms 瘤</p><div style="font-size:48px;font-weight:800"><span class="counter" data-to="87">0</span>%</div><p class="dim">儿科肾恶性最常见（平均 3–4 岁）</p></div>
+      <div class="card"><p class="eyebrow">RCC</p><div style="font-size:48px;font-weight:800">No.1</div><p class="dim">成人最常见肾恶性肿瘤</p></div>
+      <div class="card"><p class="eyebrow">AML</p><div style="font-size:48px;font-weight:800">良性</div><p class="dim">最常见良性实性肿块（高回声）</p></div>
+    </div>
+    <div class="figrow g3 mt-l">
+      <div><div class="pic pic-h240"><img src="images/us_wilms_7_2cm.jpg" alt="Wilms瘤超声"></div><p class="imgcap">Wilms 瘤（7.2 cm）：儿童肾内不均质实性肿块</p></div>
+      <div><div class="pic pic-h240"><img src="images/us_horseshoe_wilms.png" alt="马蹄肾Wilms"></div><p class="imgcap">马蹄肾合并 Wilms 瘤：下极融合 + 不均质低回声团</p></div>
+      <div><div class="pic pic-h240"><img src="images/us_rcc_variants.png" alt="RCC超声多型"></div><p class="imgcap">RCC 超声多型：高回声 / 囊实性 / 低回声 / 伴钙化</p></div>
+    </div>
+    <div class="grid g2 mt-l">
+      <div class="card card-soft"><h4>良性</h4><ul class="tight"><li><b>血管平滑肌脂肪瘤（AML）</b>：高回声，结节性硬化症常见，易出血</li><li><b>嗜酸细胞瘤</b>：占手术切除肾肿瘤 5–15%，中央瘢痕</li><li><b>后肾腺瘤</b>：罕见良性，常偶然发现</li></ul></div>
+      <div class="card card-soft"><h4>恶性</h4><ul class="tight"><li><b>Wilms 瘤</b>：儿童最常见，双肾融合（马蹄肾）中更需警惕</li><li><b>肾细胞癌（RCC）</b>：成人最常见，可侵犯肾静脉 / 下腔静脉</li><li><b>淋巴瘤 / 白血病</b>：多灶或弥漫浸润，常为全身疾病</li></ul></div>
+    </div>
+    <div class="notes">肿瘤页建立框架：儿童先想 Wilms、成人先想 RCC、高回声先想 AML；后面章节逐一展开。</div>
+  </section>
+
+  <!-- ============ 16 章节三 ============ -->
+  <section class="slide tc center" data-title="Section 03">
+    <div style="max-width:800px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Section · 03</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:88px">肾实质疾病<br><span class="gradient-text">灰阶与 Doppler</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">一场泌尿超声讲座的完整笔记：三个观察点、一个公式、两类病理、三组病例。</p>
+    </div>
+    <div class="notes">第三部分来自讲座「肾实质疾病的超声评估」，是全套内容里最有深度的一段。</div>
+  </section>
+
+  <!-- ============ 17 评估路线 ============ -->
+  <section class="slide" data-title="评估路线">
+    <p class="kicker">Workflow · 评估路线</p>
+    <h2 class="h2">灰阶 → Doppler → 弹性成像</h2>
+    <div class="grid g2 mt-l" style="align-items:center">
+      <div>
+        <div class="flow" style="flex-direction:column;align-items:stretch;gap:10px">
+          <div class="node hl"><div class="ic">🩶</div><h4>灰阶超声</h4><p>大小 · 皮质回声 · 皮髓质分界</p></div>
+          <div class="arr" style="justify-content:center">↓</div>
+          <div class="node"><div class="ic">🔴🔵</div><h4>Doppler 超声</h4><p>彩色/能量：总体血流 · 频谱：血流动力学（RI）</p></div>
+          <div class="arr" style="justify-content:center">↓</div>
+          <div class="node"><div class="ic">📊</div><h4>其他技术</h4><p>剪切波弹性成像（潜在临床价值）</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="pic pic-h380"><img src="images/L01_route.jpg" alt="评估路线图"></div>
+        <p class="imgcap">讲座原图：Grey-scale US / Doppler US / Others（Elastography）</p>
+      </div>
+    </div>
+    <div class="notes">先给方法论：灰阶看形态，Doppler 看血流，弹性成像看硬度，三者互补。</div>
+  </section>
+
+  <!-- ============ 18 灰阶三核心 ============ -->
+  <section class="slide" data-title="灰阶三核心">
+    <p class="kicker">Grey-scale · 核心观察点</p>
+    <h2 class="h2">灰阶超声的三个核心观察点</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/L02_gray_core.jpg" alt="灰阶三核心"></div>
+        <p class="imgcap">Kidney size · Renal cortical echogenicity · Corticomedullary differentiation</p>
+      </div>
+      <div>
+        <div class="grid g3">
+          <div class="card card-accent"><div style="font-size:34px">📏</div><h4 class="mt-s">肾脏大小</h4><p class="dim">最大纵径：成人约 9–13 cm，结合身高体重 BMI。</p></div>
+          <div class="card card-accent"><div style="font-size:34px">🎚️</div><h4 class="mt-s">皮质回声</h4><p class="dim">与右肝 / 左脾比较，判断是否异常增高。</p></div>
+          <div class="card card-accent"><div style="font-size:34px">🪢</div><h4 class="mt-s">皮髓质分界</h4><p class="dim">保留 = 正常；模糊或消失提示实质病变。</p></div>
+        </div>
+        <div class="tip mt-l">一句话记忆：<b>大小看形态，回声看实质，分界看慢性化</b>——三个维度互相补充。</div>
+      </div>
+    </div>
+    <div class="notes">三个观察点对应三张经典图：长轴测量、皮质回声对比、皮髓质分界。每张肾脏图都先过这三关。</div>
+  </section>
+
+  <!-- ============ 19 回声比较 ============ -->
+  <section class="slide" data-title="皮质与肝回声比较">
+    <p class="kicker">Echogenicity · 与肝/脾比较</p>
+    <h2 class="h2">肾皮质 vs 肝脏：怎么算「异常」？</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h340"><img src="images/L03_echo_compare.jpg" alt="皮质与肝回声比较"></div>
+        <p class="imgcap">Kidney &lt; liver / Kidney = liver / Kidney &gt; liver 三档对比</p>
+      </div>
+      <div>
+        <table class="t">
+          <thead><tr><th>标准</th><th class="num">敏感度</th><th class="num">特异度</th><th class="num">PPV</th></tr></thead>
+          <tbody>
+            <tr><td>肾 &gt; 肝（高回声）</td><td class="num">20%</td><td class="num hl">96%</td><td class="num hl">67%</td></tr>
+            <tr><td>肾 ≤ 肝（含等回声）</td><td class="num">62%</td><td class="num">58%</td><td class="num">35%</td></tr>
+          </tbody>
+        </table>
+        <p class="dim" style="font-size:12px">数据来源：AJR 1988;151:317（讲座引用）</p>
+        <ul class="tight mt-m">
+          <li>把「<b>高于肝回声</b>」作为异常标准 → 特异度 96%、PPV 67%，阳性预测价值最高</li>
+          <li>把「等于肝」也算异常 → 敏感度升到 62%，但特异度仅 58%</li>
+          <li>约 72% 肾=肝回声者肾功能仍正常</li>
+          <li><b>脂肪肝</b>使肝回声异常增高，比较会失真</li>
+          <li>新生儿结构未成熟：正常皮质回声偏高、髓质更突出且低回声</li>
+        </ul>
+      </div>
+    </div>
+    <div class="notes">这是「干货」浓度最高的一页：异常标准选「高于肝」而不是「等于肝」，用数据说话。</div>
+  </section>
+
+  <!-- ============ 20 皮髓质分界 ============ -->
+  <section class="slide" data-title="皮髓质分界">
+    <p class="kicker">Corticomedullary Differentiation</p>
+    <h2 class="h2">皮髓质分界：急慢性的「晴雨表」</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/L04_normal_cmd.jpg" alt="正常皮髓质分界"></div>
+        <p class="imgcap">正常：皮质略低于肝回声，髓质更低，分界清晰</p>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>保留的分界</b>：提示肾脏结构相对完好（正常或急性期）</li>
+          <li><b>分界模糊 / 消失</b>：常见于慢性肾实质病变，也可见于部分急性病变</li>
+          <li>皮质回声 <b>高于</b> 肝才是更可靠的异常信号（特异性优先）</li>
+          <li>肾实质疾病通常<b>弥漫、双侧</b>分布——单侧局灶改变优先考虑其他病因</li>
+        </ul>
+        <div class="tip mt-m">新生儿例外：髓质锥体突出且低回声、皮质偏高是「正常模式」，别误判为异常。</div>
+        <div class="warnbox mt-m">脂肪肝会抬高肝回声基线——此时肾皮质与肝的比较可能「假性正常化」。</div>
+      </div>
+    </div>
+    <div class="notes">分界消失不等于具体诊断，但强烈提示实质病变；注意新生儿与脂肪肝两个干扰因素。</div>
+  </section>
+
+  <!-- ============ 21 病理分类 ============ -->
+  <section class="slide" data-title="肾实质疾病分类">
+    <p class="kicker">Classification · 病理分类</p>
+    <h2 class="h2">肾小球 vs 肾小管间质</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="figrow g2">
+          <div><div class="pic pic-h260"><img src="images/L05_diffuse.jpg" alt="弥漫双侧"></div><p class="imgcap">弥漫、双侧分布</p></div>
+          <div><div class="pic pic-h260"><img src="images/L06_glomerular_ti.jpg" alt="两类病理"></div><p class="imgcap">肾小球性 vs 肾小管间质性分类</p></div>
+        </div>
+        <div class="pic pic-h220 mt-m"><img src="images/L07_lupus_atin.jpg" alt="病例对比"></div>
+        <p class="imgcap">病例对比：狼疮性肾炎（左） vs 急性肾小管间质性肾炎（右）</p>
+      </div>
+      <div>
+        <ul class="tight">
+          <li>肾实质疾病 ≈ 「内科性肾病」（medical renal disease），常<b>弥漫、双侧</b></li>
+          <li>病理分两大类：<b>肾小球性</b>（glomerular）与<b>肾小管间质性</b>（tubulointerstitial）</li>
+          <li>皮质<b>高回声与肾小管间质改变的相关性更强</b>（Child Kidney Dis 2017;21:47-52）</li>
+          <li>但临床上<b>不能仅凭回声改变可靠区分</b>两类病理——需结合临床与实验室</li>
+        </ul>
+        <div class="card card-accent mt-l"><h4>为什么分不清？</h4><p class="dim">灰阶回声是「非特异性」信号：急性炎症、慢性纤维化、浸润性疾病都可以表现为皮质回声改变。所以要往下看 Doppler 与临床。</p></div>
+      </div>
+    </div>
+    <div class="notes">分类是思维框架：小管间质更易高回声、更易 RI 升高；肾小球病变灰阶常更「安静」。</div>
+  </section>
+
+  <!-- ============ 22 急性 vs 慢性 ============ -->
+  <section class="slide" data-title="急性 vs 慢性">
+    <p class="kicker">Acute vs Chronic</p>
+    <h2 class="h2">急性 vs 慢性：镜像式的两种面孔</h2>
+    <div class="vs">
+      <div class="card bad-side side anim-fade-left" data-anim="fade-left">
+        <h3>急性肾实质病变</h3>
+        <ul>
+          <li>肾脏<b>肿大</b></li>
+          <li>皮质回声可升高、降低或接近肝（多变）</li>
+          <li>皮髓质分界可能模糊</li>
+          <li>例：狼疮性肾炎、急性肾小管间质性肾炎、紫癜性肾炎</li>
+        </ul>
+      </div>
+      <div class="mid">vs</div>
+      <div class="card good-side side anim-fade-right" data-anim="fade-right">
+        <h3>慢性肾实质病变</h3>
+        <ul>
+          <li>肾脏<b>缩小</b>、外缘分叶 / 不规则</li>
+          <li>实质<b>变薄</b></li>
+          <li>皮质回声<b>增高</b>、皮髓质分界<b>消失</b></li>
+          <li>可伴获得性囊肿</li>
+        </ul>
+      </div>
+    </div>
+    <div class="figrow g3 mt-l">
+      <div><div class="pic pic-h210"><img src="images/L08_acute_echo.jpg" alt="急性回声多变"></div><p class="imgcap">急性：肾脏肿大、回声多变（讲座原图）</p></div>
+      <div><div class="pic pic-h210"><img src="images/L09_chronic.jpg" alt="慢性表现"></div><p class="imgcap">慢性：缩小、实质变薄、皮质高回声</p></div>
+      <div><div class="pic pic-h210"><img src="images/renal_size_chart.jpg" alt="肾脏大小对照图"></div><p class="imgcap">肾脏大小与疾病对照：小肾 vs 正常 / 大肾</p></div>
+    </div>
+    <div class="notes">急慢性判读口诀：急性「大而多变」，慢性「小而高回声」。肾周脂肪低回声可模拟肾周积液。</div>
+  </section>
+
+  <!-- ============ 23 Doppler 与 RI ============ -->
+  <section class="slide" data-title="Doppler 与 RI">
+    <p class="kicker">Doppler · 阻力指数</p>
+    <h2 class="h2">Resistive Index <span class="dim2">· 阻力指数（RI）</span></h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="formula">RI = (PSV − EDV) / PSV</div>
+        <p class="imgcap" style="text-align:center">PSV = 峰值收缩期速度 · EDV = 舒张末期速度（Pourcelot 指数）</p>
+        <div class="figrow g2 mt-m">
+          <div><div class="pic pic-h240"><img src="images/L10_doppler_overview.jpg" alt="肾Doppler检查"></div><p class="imgcap">彩色 / 能量 Doppler：总体血流</p></div>
+          <div><div class="pic pic-h240"><img src="images/L11_ri_formula.jpg" alt="RI公式"></div><p class="imgcap">频谱 Doppler：RI 测量</p></div>
+        </div>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>彩色 / 能量 Doppler</b>：快速评估肾血流总体分布</li>
+          <li><b>频谱 Doppler</b>：提供客观的血流动力学信息，最常用指标 = RI</li>
+          <li>肾内动脉频谱通常在<b>叶间动脉（interlobar）</b>水平获取</li>
+          <li>参考范围：RI 通常 <b>&lt; 0.65</b>，很少超过 <b>0.70</b>，叶间动脉 RI≈0.7 常作为上限</li>
+          <li>RI 随年龄变化：<b>年轻成人较低，儿童与老年人略高</b></li>
+        </ul>
+        <div class="tip mt-m">RI 反映肾实质对肾动脉血流的阻力——阻力高 = 舒张期血流减少 = RI 升高。</div>
+        <div class="warnbox mt-m">单个 RI 值不能独立诊断：必须结合临床病史、肾功能与灰阶表现。</div>
+      </div>
+    </div>
+    <div class="notes">公式背熟：收缩峰值减舒张末期再除以收缩峰值。范围 0.65/0.70 是讲座给的经验值。</div>
+  </section>
+
+  <!-- ============ 24 RI 与病理类型 ============ -->
+  <section class="slide" data-title="RI 与病理类型">
+    <p class="kicker">RI · 类型依赖性</p>
+    <h2 class="h2">RI 变化是「类型依赖」的</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/L13_ri_pathology.jpg" alt="RI与病理类型"></div>
+        <p class="imgcap">RI vs Parenchymal Disease：72 例活检病例（Platt JF, AJR 1988;151:317-319）</p>
+      </div>
+      <div>
+        <div class="grid g2">
+          <div class="card card-accent"><p class="eyebrow">肾小管间质为主</p><div style="font-size:72px;font-weight:800"><span class="hl">↑</span></div><p class="dim">RI 升高</p><p class="dim" style="font-size:13px">间质水肿/纤维化 → 血管阻力增高</p></div>
+          <div class="card card-soft"><p class="eyebrow">肾小球为主</p><div style="font-size:72px;font-weight:800"><span class="dim2">→</span></div><p class="dim">RI 可保持正常</p><p class="dim" style="font-size:13px">早期肾小球病变血流阻力改变不明显</p></div>
+        </div>
+        <table class="t mt-l">
+          <thead><tr><th>72 例活检病例</th><th class="num">平均 RI</th></tr></thead>
+          <tbody>
+            <tr><td>主要肾小球性疾病</td><td class="num"><b>0.61</b></td></tr>
+            <tr><td>主要肾小管间质性疾病</td><td class="num"><b>0.76</b></td></tr>
+          </tbody>
+        </table>
+        <div class="tip mt-m">判读逻辑：RI 显著升高 → 更支持肾小管间质受累；RI 正常 ≠ 无病变（肾小球病可正常）。</div>
+      </div>
+    </div>
+    <div class="notes">两组数字 0.61 vs 0.76 是考试高频点：小管间质 RI 更高、肾小球可正常。</div>
+  </section>
+
+  <!-- ============ 25 糖尿病肾病 ============ -->
+  <section class="slide" data-title="糖尿病肾病">
+    <p class="kicker">Diabetic Nephropathy · 糖尿病肾病</p>
+    <h2 class="h2">灰阶「正常」不代表 Doppler 正常</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="figrow g2">
+          <div><div class="pic pic-h260"><img src="images/L14_dm_pathology.jpg" alt="糖尿病肾病病理与灰阶"></div><p class="imgcap">病理：弥漫性肾小球硬化 + 动脉硬化；灰阶可接近正常</p></div>
+          <div><div class="pic pic-h260"><img src="images/L15_dm_ri.jpg" alt="RI与肾功能"></div><p class="imgcap">RI 与血肌酐（SCr）/ 肌酐清除率（CCr）相关性良好</p></div>
+        </div>
+      </div>
+      <div>
+        <ul class="tight">
+          <li>主要病理改变：<b>弥漫性肾小球硬化 + 小动脉硬化</b>，随病程增加肾血管阻力</li>
+          <li>早期或部分进展期肾脏可增大，<b>灰阶外观仍相当正常</b></li>
+          <li>因此<b>不能只凭</b>肾脏大小和皮质回声排除病变</li>
+          <li>两名 DM 患者对比：灰阶都接近正常，但频谱差异明显——一侧 RI≈0.6、舒张期血流保留；另一侧舒张期血流减少、RI 可高达 ≈1.0</li>
+          <li><b>肌酐清除率与 RI 呈负相关</b>：RI 越高，肾功能越差</li>
+          <li>随访病例：灰阶外观接近正常，1 年后 Doppler 出现低舒张期血流、RI≈1.0 → 病变进展</li>
+        </ul>
+        <div class="warnbox mt-m">临床要点：糖尿病肾病随访必须灰阶 + Doppler 结合，单看形态会漏掉血流动力学恶化。</div>
+      </div>
+    </div>
+    <div class="notes">本节最重要的临床信息：DM 肾病早期灰阶正常，Doppler 才是敏感指标。</div>
+  </section>
+
+  <!-- ============ 26 病例 ============ -->
+  <section class="slide" data-title="病例演示">
+    <p class="kicker">Cases · 病例演示</p>
+    <h2 class="h2">把灰阶和 Doppler 放在一起看</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h340"><img src="images/L17_atin_case.jpg" alt="ATIN病例"></div>
+        <p class="imgcap">63 岁男性 · 急性肾小管间质性肾炎：双肾肿大，RI 0.76 / 0.78</p>
+      </div>
+      <div>
+        <div class="pic pic-h340"><img src="images/L16_followup.jpg" alt="随访病例"></div>
+        <p class="imgcap">同一患者 1 年后：灰阶仍接近正常，但低舒张期血流 + RI≈1.0</p>
+      </div>
+    </div>
+    <div class="grid g3 mt-l">
+      <div class="card card-accent"><h4>① ATIN 病例</h4><p class="dim">63/M：双肾肿大但实质回声相对保留；Doppler 舒张期血流减少，RI 0.76 / 0.78。</p></div>
+      <div class="card card-accent"><h4>② 骨髓瘤肾损害 + 慢性肾衰</h4><p class="dim">67/F 多发性骨髓瘤 → 骨髓瘤管型肾病（典型<b>肾小管间质受累</b>）：小肾、明显皮质高回声，RI 0.87 / 0.85——正好印证「小管间质病变 RI 升高」。</p></div>
+      <div class="card card-accent"><h4>③ 同一患者随访</h4><p class="dim">1 年后灰阶接近正常，但舒张期血流明显减少、RI≈1.0——提示病变进展。</p></div>
+    </div>
+    <div class="notes">三个病例讲一件事：同一病理问题可以同时影响形态、回声与血流动力学，三者必须一起读。</div>
+  </section>
+
+  <!-- ============ 27 弹性成像 ============ -->
+  <section class="slide" data-title="弹性成像">
+    <p class="kicker">Elastography · 弹性成像</p>
+    <h2 class="h2">剪切波弹性成像：有潜力，但要克制</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/L18_elasto.jpg" alt="弹性成像"></div>
+        <p class="imgcap">Q-Box 测量组织硬度（kPa），彩色标尺由软（蓝）到硬（红）</p>
+      </div>
+      <div>
+        <ul class="tight">
+          <li>通过测量<b>组织硬度 / 剪切波速度</b>，量化肾实质纤维化或病变程度</li>
+          <li>研究展示：按年龄分组的正常志愿者 vs 糖尿病肾病分期、动物模型纤维化程度与硬度对比</li>
+          <li>结论：支持其「<b>有潜力</b>」用于肾实质疾病评估</li>
+          <li>但<b>尚不等于已确立的临床诊断阈值</b>——需更多验证</li>
+        </ul>
+        <div class="tip mt-m">定位：弹性成像是灰阶 + Doppler 之外的「第三只眼」，当前定位是辅助信息。</div>
+        <div class="pic pic-h200 mt-m"><img src="images/L19_summary.jpg" alt="总结"></div>
+        <p class="imgcap">讲座总结：灰阶 + Doppler 结合提供有价值信息；剪切波弹性成像有临床应用潜力</p>
+      </div>
+    </div>
+    <div class="notes">弹性成像部分提醒大家区分「有潜力」与「已确立」，避免过度解读 kPa 数值。</div>
+  </section>
+
+  <!-- ============ 29 章节四 ============ -->
+  <section class="slide tc center" data-title="Section 04">
+    <div style="max-width:780px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Section · 04</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:100px">肾动脉<span class="gradient-text">多普勒</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">从解剖变异到狭窄分级：把 PSV、RI 与加速时间一次讲透。</p>
+    </div>
+    <div class="notes">第四部分：肾动脉多普勒，重点在狭窄的定量评估。</div>
+  </section>
+
+  <!-- ============ 30 肾动脉解剖 ============ -->
+  <section class="slide" data-title="肾动脉解剖">
+    <p class="kicker">Anatomy · 肾动脉</p>
+    <h2 class="h2">肾动脉：起源、分支与变异</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="figrow g2">
+          <div><div class="pic pic-h300"><img src="images/ra_anatomy.jpg" alt="肾动脉解剖"></div><p class="imgcap">肾动脉分支：主干 → 前/后干 → 段动脉 → 叶间动脉 → 弓形动脉</p></div>
+          <div><div class="pic pic-h300"><img src="images/ra_anatomy_disease.jpg" alt="肾动脉病变"></div><p class="imgcap">病变对照：右肾动脉 FMD、左肾动脉斑块、副肾动脉（箭头）</p></div>
+        </div>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>起源</b>：起自腹主动脉，通常在 L1–L2 水平，通常为单支</li>
+          <li><b>分支</b>：段动脉 → 叶间动脉 → 弓形动脉 → 小叶间动脉（超声可评估到叶间 / 弓形水平）</li>
+          <li><b>副肾动脉</b>：约 25–30% 人群存在——漏诊会导致狭窄误判</li>
+          <li><b>起源异常</b>：可起自主动脉其他水平；<b>早期分支</b>：在主动脉外即分支</li>
+        </ul>
+        <div class="tip mt-m">检查前准备：<b>空腹 6–8 小时</b>减少肠气干扰；仰卧位扫查；角度校正 &lt; 60°。</div>
+        <div class="warnbox mt-m">陷阱三连：肠气遮挡、肥胖穿透不足、副肾动脉漏诊——狭窄评估前先确认「有几根肾动脉」。</div>
+      </div>
+    </div>
+    <div class="notes">解剖变异是肾动脉检查最大的坑：25-30% 的人有副肾动脉，先扫全再定量。</div>
+  </section>
+
+  <!-- ============ 31 方法与正常值 ============ -->
+  <section class="slide" data-title="检查方法与正常参数">
+    <p class="kicker">Technique &amp; Normal Values</p>
+    <h2 class="h2">直接法 vs 间接法 · 正常血流参数</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h340"><img src="images/ra_us_rra.jpg" alt="肾动脉超声"></div>
+        <p class="imgcap">右肾动脉（RRA）与下腔静脉（IVC）区域灰阶超声</p>
+        <div class="grid g2 mt-m">
+          <div class="card card-accent"><h4>直接法</h4><ul class="tight"><li>直接显示肾动脉</li><li>测量血流速度</li><li>评估狭窄程度</li></ul></div>
+          <div class="card card-accent"><h4>间接法</h4><ul class="tight"><li>测肾内动脉血流</li><li>计算 RI</li><li>评估肾灌注</li></ul></div>
+        </div>
+      </div>
+      <div>
+        <table class="t">
+          <thead><tr><th>肾动脉参数</th><th class="num">正常值</th></tr></thead>
+          <tbody>
+            <tr><td>PSV</td><td class="num">60–100 cm/s</td></tr>
+            <tr><td>EDV</td><td class="num">20–40 cm/s</td></tr>
+            <tr><td>RI</td><td class="num">0.50–0.70</td></tr>
+          </tbody>
+        </table>
+        <table class="t mt-m">
+          <thead><tr><th>肾内动脉参数</th><th class="num">正常值</th></tr></thead>
+          <tbody>
+            <tr><td>RI</td><td class="num">0.50–0.70</td></tr>
+            <tr><td>收缩期加速时间（AT）</td><td class="num">&lt; 0.07 s</td></tr>
+          </tbody>
+        </table>
+        <ul class="tight mt-m">
+          <li>扫查技巧：多切面（横 / 纵）、深呼吸配合、角度校正 &lt; 60°</li>
+          <li>肾内动脉频谱的加速时间（AT）是狭窄的敏感间接指标</li>
+        </ul>
+      </div>
+    </div>
+    <div class="notes">正常参数背熟：PSV 60-100、RI 0.5-0.7、AT &lt;0.07s。间接法用肾内动脉看下游。</div>
+  </section>
+
+  <!-- ============ 32 肾动脉狭窄 ============ -->
+  <section class="slide" data-title="肾动脉狭窄">
+    <p class="kicker">RAS · 肾动脉狭窄</p>
+    <h2 class="h2">狭窄分级：用 PSV 说话</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <table class="t">
+          <thead><tr><th>狭窄程度</th><th class="num">PSV</th></tr></thead>
+          <tbody>
+            <tr><td>正常</td><td class="num">60–100 cm/s</td></tr>
+            <tr><td>轻度</td><td class="num">100–150 cm/s</td></tr>
+            <tr><td>中度</td><td class="num">150–200 cm/s</td></tr>
+            <tr><td class="hl">重度</td><td class="num hl">&gt; 200 cm/s</td></tr>
+          </tbody>
+        </table>
+        <div class="card card-soft mt-m"><h4>病因</h4><ul class="tight"><li>动脉粥样硬化（最常见）</li><li>纤维肌性发育不良（FMD）</li><li>大动脉炎</li></ul></div>
+        <div class="pic pic-h240 mt-m"><img src="images/doppler_ras_spectral.jpg" alt="RAS频谱"></div>
+        <p class="imgcap">频谱对照：正常肾动脉频谱（上） vs 狭窄后「小慢波」tardus-parvus（下）</p>
+      </div>
+      <div>
+        <h4>超声表现</h4>
+        <ul class="tight">
+          <li><b>PSV 增高</b>：&gt; 100 cm/s 即提示</li>
+          <li><b>湍流</b>：频谱增宽（spectral broadening）</li>
+          <li><b>狭窄后扩张</b>：肾动脉远端扩张</li>
+          <li>间接征象：肾内动脉 <b>AT 延长</b>（&gt; 0.07 s）、RI 降低（狭窄侧下游阻力下降）</li>
+        </ul>
+        <h4 class="mt-m">栓塞与动脉瘤</h4>
+        <ul class="tight">
+          <li><b>肾动脉栓塞</b>：完全栓塞 → 无血流信号；部分栓塞 → 血流减少</li>
+          <li><b>肾动脉瘤</b>：囊性扩张 + 彩色多普勒涡流</li>
+        </ul>
+        <div class="warnbox mt-m">肾动脉多普勒是技术敏感型检查：角度校正不当、肠气干扰都会造成假阳性 / 假阴性。</div>
+      </div>
+    </div>
+    <div class="notes">PSV 分级表是必背内容；间接法（AT、RI）在直接测量困难时尤其重要。</div>
+  </section>
+
+  <!-- ============ 33 章节五 ============ -->
+  <section class="slide tc center" data-title="Section 05">
+    <div style="max-width:780px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Section · 05</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:100px">移植肾<span class="gradient-text">超声</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">术后超声监测：五步流程 + 并发症速查表。</p>
+    </div>
+    <div class="notes">第五部分：移植肾双功能超声，流程化扫描是核心。</div>
+  </section>
+
+  <!-- ============ 34 移植肾流程 ============ -->
+  <section class="slide" data-title="移植肾检查流程">
+    <p class="kicker">Transplant · 检查流程</p>
+    <h2 class="h2">五步标准流程</h2>
+    <div class="steps anim-stagger-list" data-anim-target>
+      <div class="step"><div class="num">1</div><h4>自体肾</h4><p>扫查双侧肾窝：常因慢性肾病瘢痕化、萎缩，甚至难以辨认。</p></div>
+      <div class="step"><div class="num">2</div><h4>膀胱</h4><p>矢状面 + 横断面成像，观察充盈与尿路。</p></div>
+      <div class="step"><div class="num">3</div><h4>腹主动脉</h4><p>灰阶 + 彩色 + 频谱多普勒，矢状面与横断面。</p></div>
+      <div class="step"><div class="num">4</div><h4>下腔静脉</h4><p>灰阶 + 彩色 + 频谱多普勒，评估回流。</p></div>
+      <div class="step"><div class="num">5</div><h4>移植肾</h4><p>最常见植入右髂窝：测大小、回声、积水、无血管区与积液。</p></div>
+    </div>
+    <div class="figrow g3 mt-l">
+      <div><div class="pic pic-h220"><img src="images/us_bladder.png" alt="膀胱"></div><p class="imgcap">膀胱矢状 / 横断面（充盈无回声）</p></div>
+      <div><div class="pic pic-h220"><img src="images/us_aorta_doppler.png" alt="腹主动脉"></div><p class="imgcap">腹主动脉近段：灰阶 + 彩色多普勒</p></div>
+      <div><div class="pic pic-h220"><img src="images/us_transplant_kidney.jpg" alt="移植肾"></div><p class="imgcap">移植肾灰阶（右髂窝）</p></div>
+    </div>
+    <div class="notes">流程永远从自体肾开始，再膀胱、主动脉、IVC，最后到移植肾——顺序别乱。</div>
+  </section>
+
+  <!-- ============ 35 移植多普勒与并发症 ============ -->
+  <section class="slide" data-title="移植肾多普勒与并发症">
+    <p class="kicker">Doppler &amp; Complications</p>
+    <h2 class="h2">多普勒评估与并发症监测</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <h4>多普勒要点</h4>
+        <ul class="tight">
+          <li><b>髂总动脉</b>：角度校正 45–60°，测 PSV 与 EDV</li>
+          <li><b>主肾动脉 / 静脉</b>：供体动脉常迂曲，角度校正困难——经验法则：<b>动脉与探头面垂直时不校正，平行时校正</b></li>
+          <li>正常 RI <b>0.50–0.70</b>，波形为<b>低阻力型</b>（整个心动周期前向血流）</li>
+          <li>吻合口 / 近端 / 中段 / 远段分别采样，留意<b>混叠</b>（提示吻合口狭窄）</li>
+          <li><b>肾内动脉</b>：弓形 / 段动脉，上、中、下极分别采样，不使用角度校正</li>
+        </ul>
+      </div>
+      <div>
+        <h4>并发症速查</h4>
+        <table class="t">
+          <thead><tr><th>并发症</th><th>超声表现</th></tr></thead>
+          <tbody>
+            <tr><td>吻合口狭窄</td><td>混叠，流速增高</td></tr>
+            <tr><td>肾动脉栓塞</td><td>无血流信号</td></tr>
+            <tr><td>排斥反应</td><td class="hl">RI 增高</td></tr>
+            <tr><td>尿漏</td><td>积液</td></tr>
+          </tbody>
+        </table>
+        <div class="pic pic-h200 mt-m"><img src="images/us_graft_noflow.jpg" alt="移植肾无血流"></div>
+        <p class="imgcap">移植肾吻合口：彩色 + 频谱多普勒示 NO FLOW——肾动脉血栓 / 栓塞</p>
+        <div class="warnbox mt-m">注意事项：角度校正（供体动脉迂曲）、RI 需多位置测量、技术因素可致假阳性。</div>
+        <div class="tip mt-m">评估内容：血管通畅性 · 肾实质灌注 · 集合系统积水 · 周围积液/血肿。可与术前基线对比。</div>
+      </div>
+    </div>
+    <div class="notes">并发症速查表务必记住：狭窄看混叠、栓塞看无血流、排斥看 RI、尿漏看积液。</div>
+  </section>
+
+  <!-- ============ 36 章节六 ============ -->
+  <section class="slide tc center" data-title="Section 06">
+    <div style="max-width:800px;margin:0 auto">
+      <p class="kicker anim-fade-down" data-anim="fade-down">Section · 06</p>
+      <h1 class="h1 anim-rise-in" data-anim="rise-in" style="font-size:88px">囊性与实性肿块<br><span class="gradient-text">Bosniak · RCC · 鉴别</span></h1>
+      <div class="divider-accent" style="margin:24px auto"></div>
+      <p class="lede" style="margin:0 auto">从 Radiology Assistant 两篇深度文章提炼：分类、数据与陷阱。</p>
+    </div>
+    <div class="notes">第六部分：肾脏肿块的系统鉴别——囊性看 Bosniak，实性看 RCC 亚型与良性肿瘤。</div>
+  </section>
+
+  <!-- ============ 37 鉴别诊断流程 ============ -->
+  <section class="slide" data-title="肾肿块鉴别流程">
+    <p class="kicker">DDx · 鉴别诊断</p>
+    <h2 class="h2">肾脏肿块的鉴别四步走</h2>
+    <div class="grid mt-l" style="grid-template-columns:2fr 3fr;align-items:center;gap:28px">
+      <div>
+        <div class="flow flow-compact" style="flex-direction:column;align-items:stretch">
+          <div class="node hl"><div class="ic">1️⃣</div><h4>是囊肿吗？</h4><p>简单囊肿 → 良性，无需处理</p></div>
+          <div class="arr" style="justify-content:center">↓</div>
+          <div class="node"><div class="ic">2️⃣</div><h4>有肉眼脂肪吗？</h4><p>脂肪（&lt; −20 HU）→ 血管平滑肌脂肪瘤（良性）</p></div>
+          <div class="arr" style="justify-content:center">↓</div>
+          <div class="node"><div class="ic">3️⃣</div><h4>排除肿瘤类似病变</h4><p>感染（肾盂肾炎 / 脓肿）、梗死——临床背景不同</p></div>
+          <div class="arr" style="justify-content:center">↓</div>
+          <div class="node"><div class="ic">4️⃣</div><h4>排除转移 / 淋巴瘤</h4><p>肾脏受累多为全身播散的一部分</p></div>
+          <div class="arr" style="justify-content:center">↓</div>
+          <div class="node"><div class="ic">5️⃣</div><h4>剩余 → RCC 居首位</h4><p>寻找支持良性 / 低度恶性的征象</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="pic pic-h440"><img src="images/sm_dd_flow.png" alt="鉴别诊断图"></div>
+        <p class="imgcap">肾脏肿块构成（囊性 / AML / RCC）与 RCC 鉴别诊断清单</p>
+      </div>
+    </div>
+    <div class="notes">四步流程能挡掉大部分误诊：先排除囊肿、脂肪、感染、梗死、转移，最后才考虑原发恶性。</div>
+  </section>
+
+  <!-- ============ 38 Bosniak 概述与定义 ============ -->
+  <section class="slide" data-title="Bosniak 2019 概述">
+    <p class="kicker">Bosniak 2019 · 概述</p>
+    <h2 class="h2">什么是「肾脏囊性肿块」？</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h300"><img src="images/bos_definition.jpg" alt="Bosniak分级示意"></div>
+        <p class="imgcap">I → II → IIF → III → IV：分隔、壁厚与结节逐级升级</p>
+        <div class="pic pic-h240 mt-m"><img src="images/us_complex_cyst.png" alt="复杂囊肿超声"></div>
+        <p class="imgcap">超声实例：多分隔囊性肿块（复杂性囊肿，对应 Bosniak II–IIF 超声表现）</p>
+      </div>
+      <div>
+        <ul class="tight">
+          <li><b>定义</b>：增强组织成分 <b>&lt; 25%</b> 的肿块 = 囊性肿块（避免把坏死性实性肿块归入 IV 类）</li>
+          <li><b>用语</b>：I、II 类可称为「囊肿」；IIF、III、IV 类称「肾脏囊性肿块」；避免使用「复杂性囊肿」</li>
+          <li><b>不适用</b>：感染性、炎症性、血管性病因所致的病变</li>
+          <li><b>实性 &gt; 25%</b>：为坏死性实性肿块，生物学行为更具侵袭性，不使用 Bosniak 标准</li>
+          <li>2019 版目标：减少观察者间差异、提高各类别精确率、降低对良性病变的不必要治疗</li>
+        </ul>
+        <div class="tip mt-m">Bosniak 只用于「预测癌症可能性」，不预测生物学行为，也未纳入大小与生长率。</div>
+      </div>
+    </div>
+    <div class="notes">先给定义：25% 分界线是 Bosniak 2019 的基石；用语规范也别忽略。</div>
+  </section>
+
+  <!-- ============ 39 Bosniak 分类总表 ============ -->
+  <section class="slide" data-title="Bosniak 分类表">
+    <p class="kicker">Bosniak 2019 · 分类速查</p>
+    <h2 class="h2">I → IV：特征与恶性率</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h340"><img src="images/bos_summary.png" alt="Bosniak总结表"></div>
+        <p class="imgcap">Bosniak 2019 CT 版分类总结表（Radiology Assistant 原图）</p>
+        <div class="tip mt-m">强化定义：增强 CT 增加 <b>≥ 20 HU</b>；增强 MR 信号强度增加 <b>≥ 15%</b>。</div>
+      </div>
+      <div>
+        <table class="t">
+          <thead><tr><th>类别</th><th>关键特征</th><th>恶性率</th></tr></thead>
+          <tbody>
+            <tr><td><b>I</b></td><td>薄壁（≤2mm）光滑、均匀单纯液体（−9~20 HU）、无分隔 / 钙化</td><td>良性</td></tr>
+            <tr><td><b>II</b></td><td>6 型：≤3 个薄分隔、≥70 HU 高密度、21–30 HU 均匀等</td><td>&lt; 1%</td></tr>
+            <tr><td><b>IIF</b></td><td>≥4 个薄强化分隔，或 1–3 个 3mm 轻度增厚分隔 / 壁</td><td>0–38%</td></tr>
+            <tr><td><b>III</b></td><td>强化壁 / 分隔 ≥ 4mm，或不规则强化壁 / 分隔</td><td>约 50%</td></tr>
+            <tr><td><b>IV</b></td><td>强化结节：与壁呈锐角任意大小，或钝角 ≥ 4mm</td><td>约 90%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="notes">这页是全文核心速查表：I/II 良性、IIF 随访、III 性质待定、IV 高度可疑。</div>
+  </section>
+
+  <!-- ============ 40 Bosniak 示意图 ============ -->
+  <section class="slide" data-title="Bosniak 示意图">
+    <p class="kicker">Visual · 一图看懂五类</p>
+    <h2 class="h2">Bosniak I – IV：特征对照</h2>
+    <div class="gg anim-stagger-list" data-anim-target>
+      <div class="cell"><img src="images/bos_i.png" alt="Bosniak I"><span>I · 薄壁光滑、单纯液体、无分隔钙化（良性）</span></div>
+      <div class="cell"><img src="images/bos_ii.png" alt="Bosniak II"><span>II · 少量（1–3）薄分隔，可强化 / 可钙化（&lt;1%）</span></div>
+      <div class="cell"><img src="images/bos_iif.png" alt="Bosniak IIF"><span>IIF · ≥4 个薄强化分隔，或 3mm 轻度增厚（需随访）</span></div>
+      <div class="cell"><img src="images/bos_iii.png" alt="Bosniak III"><span>III · 强化壁 / 分隔 ≥4mm 或不规则（约 50% 恶性）</span></div>
+      <div class="cell"><img src="images/bos_iv.png" alt="Bosniak IV"><span>IV · 强化结节（锐角任意大小 / 钝角≥4mm，约 90%）</span></div>
+    </div>
+    <div class="notes">五张示意图对应五类特征：分隔数量、壁厚、结节三个变量决定分类。</div>
+  </section>
+
+  <!-- ============ 41 恶性率与随访 ============ -->
+  <section class="slide" data-title="Bosniak 恶性率">
+    <p class="kicker">Risk · 恶性率与随访</p>
+    <h2 class="h2">数字说话：什么时候该动手？</h2>
+    <div class="grid mt-l anim-stagger-list" data-anim-target style="grid-template-columns:repeat(5,1fr);gap:18px">
+      <div class="card"><p class="eyebrow">I</p><div style="font-size:44px;font-weight:800" class="up">良性</div><p class="dim" style="font-size:12px">普遍认为良性</p></div>
+      <div class="card"><p class="eyebrow">II</p><div style="font-size:44px;font-weight:800">&lt;1%</div><p class="dim" style="font-size:12px">恶性率极低</p></div>
+      <div class="card"><p class="eyebrow">IIF</p><div style="font-size:44px;font-weight:800">0–38%</div><p class="dim" style="font-size:12px">随访观察；进展为 III/IV 者恶性率达 85%</p></div>
+      <div class="card"><p class="eyebrow">III</p><div style="font-size:44px;font-weight:800">~50%</div><p class="dim" style="font-size:12px">性质待定，一半为恶性</p></div>
+      <div class="card"><p class="eyebrow">IV</p><div style="font-size:44px;font-weight:800" class="dn">~90%</div><p class="dim" style="font-size:12px">建议治疗</p></div>
+    </div>
+    <div class="grid g2 mt-l">
+      <div class="card card-soft"><h4>随访逻辑</h4><ul class="tight"><li>新版分类未纳入大小与生长率——但病变越小，良性可能越大</li><li>随时间进展是恶性的强有力指征</li><li>从 IIF 进展到 III / IV：恶性率高达 85%</li></ul></div>
+      <div class="card card-soft"><h4>决策因素</h4><ul class="tight"><li>年龄、合并症、预期寿命</li><li>个人偏好与风险承受度</li><li>III 类手术 vs 随访在各机构间存在差异</li><li>VHL / 遗传性平滑肌瘤病等综合征患者不推荐使用 Bosniak</li></ul></div>
+    </div>
+    <div class="notes">恶性率是决策核心：II 放心、IIF 随访、III 纠结、IV 动手。别忘了综合征患者例外。</div>
+  </section>
+
+  <!-- ============ 42 球形 vs 豆形 ============ -->
+  <section class="slide" data-title="球形与豆形">
+    <p class="kicker">Ball vs Bean · 形态学</p>
+    <h2 class="h2">球形 vs 豆形：先看轮廓再猜诊断</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h340"><img src="images/sm_spherical_bean.jpg" alt="球形与豆形"></div>
+        <p class="imgcap">球形（左，轮廓变形） vs 豆形（右，轮廓保留）常见病变对照</p>
+      </div>
+      <div>
+        <div class="grid g2">
+          <div class="card card-accent"><h4>球形病变</h4><ul class="tight"><li>膨胀性生长，肾脏轮廓<b>变形</b></li><li>典型：RCC、嗜酸细胞瘤</li><li>较容易发现</li></ul></div>
+          <div class="card card-accent"><h4>豆形病变</h4><ul class="tight"><li>浸润性生长，轮廓<b>保留</b></li><li>平扫 CT 常不可见</li><li>TCC / 浸润性 RCC / 淋巴瘤 / 转移 / 感染 / 梗死</li></ul></div>
+        </div>
+        <div class="tip mt-m">豆形病变的临床线索：老年肾盂中央浸润 → TCC；镰状细胞特征年轻患者 → 肾髓质癌；多灶 + 淋巴结肿大 → 淋巴瘤；楔形 → 梗死。</div>
+      </div>
+    </div>
+    <div class="notes">形态学是省钱省时的第一层筛查：球形考虑膨胀性肿瘤，豆形考虑浸润性病变与系统性疾病。</div>
+  </section>
+
+  <!-- ============ 43 RCC 亚型 ============ -->
+  <section class="slide" data-title="肾细胞癌亚型">
+    <p class="kicker">RCC · 亚型</p>
+    <h2 class="h2">肾细胞癌：三种主要亚型</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="figrow g2">
+          <div><div class="pic pic-h260"><img src="images/sm_ccrcc.jpg" alt="透明细胞癌"></div><p class="imgcap">透明细胞癌（占 70%，富血供、不均匀强化）</p></div>
+          <div><div class="pic pic-h260"><img src="images/sm_chromophobe.jpg" alt="嫌色细胞癌"></div><p class="imgcap">嫌色细胞癌（5%，实性、边界清、可中央瘢痕）</p></div>
+        </div>
+        <div class="pic pic-h300 mt-m"><img src="images/us_rcc_variants.png" alt="RCC超声多型"></div>
+        <p class="imgcap">RCC 超声多型：A 弥漫型 / B 囊实性 / C 实性低回声 / D 伴钙化（Sonographic Tendencies）</p>
+      </div>
+      <div>
+        <table class="t">
+          <thead><tr><th>亚型</th><th>占比</th><th>影像特征</th><th>5 年生存</th></tr></thead>
+          <tbody>
+            <tr><td>透明细胞</td><td>70%</td><td>富血供、不均匀；<b>肾盂期最敏感</b>；80% 含细胞内脂肪（反相位信号减低）</td><td>50–60%</td></tr>
+            <tr><td>乳头状</td><td>10–15%</td><td>乏血供、均匀，可类似囊肿；强化仅 10–20 HU；T2 低信号；双侧多发较多</td><td>80–90%</td></tr>
+            <tr><td>嫌色</td><td>5%</td><td>实性、边界清；中央瘢痕 / 辐轮状强化；与嗜酸细胞瘤影像难鉴别</td><td>80–90%</td></tr>
+          </tbody>
+        </table>
+        <div class="card card-soft mt-m"><h4>分期与转移</h4><ul class="tight"><li>约 <b>25%</b> 患者就诊时已有转移（肺、肝、淋巴结、骨最常见）</li><li>可侵犯肾周脂肪、肾静脉、下腔静脉；注意 IVC 肿瘤血栓是否延伸至膈上（需胸外科协助）</li></ul></div>
+      </div>
+    </div>
+    <div class="notes">亚型决定预后与影像策略：透明细胞看肾盂期、乳头状像囊肿、嫌色像嗜酸细胞瘤。</div>
+  </section>
+
+  <!-- ============ 44 AML 与嗜酸细胞瘤 ============ -->
+  <section class="slide" data-title="AML 与嗜酸细胞瘤">
+    <p class="kicker">Benign · 最常见的良性肿块</p>
+    <h2 class="h2">血管平滑肌脂肪瘤 &amp; 嗜酸细胞瘤</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="figrow g3">
+          <div><div class="pic pic-h240"><img src="images/sm_aml.jpg" alt="AML CT"></div><p class="imgcap">AML（CT）：边界清楚、含脂肪密度区</p></div>
+          <div><div class="pic pic-h240"><img src="images/us_aml.png" alt="AML超声"></div><p class="imgcap">AML（超声）：典型高回声结节</p></div>
+          <div><div class="pic pic-h240"><img src="images/sm_oncocytoma.jpg" alt="嗜酸细胞瘤"></div><p class="imgcap">嗜酸细胞瘤：均匀强化 + 中央瘢痕</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-accent"><h4>血管平滑肌脂肪瘤（AML）</h4><ul class="tight">
+          <li>最常见的良性实性肾肿块，由血管、平滑肌、脂肪构成</li>
+          <li>CT 可见<b>肉眼脂肪（≤ −20 HU）</b>即可诊断</li>
+          <li>出血风险随体积增大：&gt; <b>4 cm</b> 即使无症状也建议预防性栓塞</li>
+          <li>10–20% 多发 / 双侧 → 主要见于结节性硬化症</li>
+          <li>约 <b>5% 为乏脂肪 AML</b>，CT 无可检测脂肪，无法与 RCC 鉴别</li>
+        </ul></div>
+        <div class="card card-soft mt-m"><h4>嗜酸细胞瘤</h4><ul class="tight">
+          <li>第二常见良性实性肿块，占实性肾肿瘤 3–7%</li>
+          <li>边缘锐利、强化均匀，常伴<b>中央瘢痕</b></li>
+          <li>中央瘢痕无法与 RCC 的瘢痕 / 坏死区分 → 最常被切除的良性肿块</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="notes">AML 看到脂肪就能放心；嗜酸细胞瘤难与嫌色 RCC 区分，常需病理。</div>
+  </section>
+
+  <!-- ============ 45 TCC 淋巴瘤转移 ============ -->
+  <section class="slide" data-title="TCC 淋巴瘤 转移">
+    <p class="kicker">UCC · Lymphoma · Mets</p>
+    <h2 class="h2">移行细胞癌、淋巴瘤与转移瘤</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="grid g2 anim-stagger-list" style="gap:14px" data-anim-target>
+          <div><div class="pic pic-h260"><img src="images/sm_tcc.jpg" alt="TCC"></div><p class="imgcap">TCC：肾盂内肿块，保持豆形外观</p></div>
+          <div><div class="pic pic-h260"><img src="images/sm_lymphoma.jpg" alt="淋巴瘤CT"></div><p class="imgcap">淋巴瘤（CT）：肾脏 + 骨骼受累</p></div>
+          <div><div class="pic pic-h260"><img src="images/us_lymphoma.jpeg" alt="淋巴瘤超声"></div><p class="imgcap">淋巴瘤（US）：肾增大伴边界不清低回声灶</p></div>
+          <div><div class="pic pic-h260"><img src="images/us_leukemia.jpg" alt="白血病超声"></div><p class="imgcap">白血病肾浸润（US）</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-accent"><h4>移行细胞癌（TCC / UCC）</h4><ul class="tight">
+          <li>最常发生于<b>肾盂</b>，低级别表浅肿瘤为主；约 15% 呈浸润性生长（豆形病变）</li>
+          <li>危险因素：吸烟、化学致癌物、环磷酰胺、止痛药滥用（非那西丁）</li>
+          <li>平扫 CT 难以检出；<b>肾盂期</b>显示最佳；常多灶、复发率高</li>
+          <li><b>怀疑 TCC 时不推荐经皮活检</b>（种植风险高于 RCC）</li>
+        </ul></div>
+        <div class="card card-soft mt-m"><h4>淋巴瘤与转移瘤</h4><ul class="tight">
+          <li>淋巴瘤：多发强化较弱肿块，或弥漫间质浸润致肾增大（伯基特型）；多为全身疾病</li>
+          <li>转移瘤：最常见原发 = 肺癌、乳腺癌、胃肠道肿瘤、黑色素瘤；多为双侧多发、强化较轻</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="notes">TCC 的「不活检」原则很重要；淋巴瘤和转移瘤记住「多灶 + 全身背景」。</div>
+  </section>
+
+  <!-- ============ 46 感染梗死与陷阱 ============ -->
+  <section class="slide" data-title="感染梗死与陷阱">
+    <p class="kicker">Mimics &amp; Pitfalls</p>
+    <h2 class="h2">肿瘤类似病变与经典陷阱</h2>
+    <div class="grid g2 mt-l">
+      <div>
+        <div class="grid g2 anim-stagger-list" style="gap:14px" data-anim-target>
+          <div><div class="pic pic-h260"><img src="images/sm_abscess_us.jpg" alt="肾脓肿超声"></div><p class="imgcap">肾脓肿（US）：低回声伴部分无回声区</p></div>
+          <div><div class="pic pic-h260"><img src="images/sm_infarct.jpg" alt="肾梗死"></div><p class="imgcap">肾梗死（CT）：楔形低密度区</p></div>
+          <div><div class="pic pic-h260"><img src="images/sm_pseudo_enhance.jpg" alt="假强化"></div><p class="imgcap">假强化：增强 CT 中囊肿密度假性升高</p></div>
+          <div><div class="pic pic-h260"><img src="images/sm_hump.jpg" alt="驼峰征"></div><p class="imgcap">驼峰征：局限性轮廓隆起酷似肿块</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-accent"><h4>感染与梗死</h4><ul class="tight"><li><b>肾盂肾炎</b>：多灶低密度，结合 UTI 病史；随访强化恢复</li><li><b>肾脓肿</b>：厚薄不均强化壁 + 肾周脂肪浸润，可酷似 RCC</li><li><b>梗死</b>：楔形低密度，全肾梗死时外层皮质强化形成「皮质边缘征」</li></ul></div>
+        <div class="card card-accent mt-m"><h4>两个经典陷阱</h4><ul class="tight"><li><b>假性强化</b>：射束硬化致囊肿内密度升高 &lt; 20 HU——MRI 更能鉴别真 / 假强化</li><li><b>驼峰征 / 假性肿瘤</b>：显著 Bertin 柱、局部轮廓隆起——皮髓质期可见正常皮质髓质结构即可鉴别</li></ul></div>
+      </div>
+    </div>
+    <div class="notes">鉴别肿瘤前先排除感染与梗死：病史 + 典型形态（楔形、厚壁）能避免不必要手术。</div>
+  </section>
+
+  <!-- ============ 47 CT 方案 ============ -->
+  <section class="slide" data-title="CT 方案">
+    <p class="kicker">Protocol · 肾脏肿块 CT</p>
+    <h2 class="h2">肾脏肿块 CT 扫描方案</h2>
+    <div class="grid g2 mt-l" style="align-items:start">
+      <div>
+        <div class="pic pic-h380"><img src="images/sm_ct_protocol.png" alt="CT方案"></div>
+        <p class="imgcap">CT 是肾脏肿块定性诊断与分期的首选方法</p>
+      </div>
+      <div>
+        <table class="t">
+          <thead><tr><th>期相</th><th>时间</th><th>用途</th></tr></thead>
+          <tbody>
+            <tr><td>平扫</td><td>—</td><td>基础密度（钙化 / 脂肪 / 高密度）</td></tr>
+            <tr><td>皮髓质期</td><td>注药后 25–40 s</td><td>鉴别肿瘤与假性肿瘤、评估强化</td></tr>
+            <tr><td class="hl">肾分泌期</td><td class="hl">注药后约 100 s</td><td class="hl">肿瘤检出最重要；提供血管受累与血栓信息</td></tr>
+            <tr><td>排泄期</td><td>注药后约 8 min</td><td>显示集合系统 / 输尿管 / 膀胱（怀疑尿路上皮癌时加扫）</td></tr>
+          </tbody>
+        </table>
+        <div class="tip mt-m">皮髓质期可漏诊位于肾髓质的肿瘤（与实质同密度）——所以<b>肾分泌期不可省略</b>。</div>
+        <div class="warnbox mt-m">平扫高密度（&gt;3 cm）或不均匀无强化病变，建议 MRI 进一步评估强化后再定 Bosniak 类别。</div>
+      </div>
+    </div>
+    <div class="notes">虽然这是超声 PPT，但肿瘤定性绕不开 CT/MRI——把方案讲清，超声才能定位好自己在流程中的位置。</div>
+  </section>
+
+  <!-- ============ 48 复习清单 ============ -->
+  <section class="slide" data-title="复习清单">
+    <p class="kicker">Checklist · 复习清单</p>
+    <h2 class="h2">讲完自测：这 8 条你会几条？</h2>
+    <div class="grid g2 mt-l">
+      <ul class="ck">
+        <li><span class="box"></span><span>说出灰阶肾脏超声的<b>三个核心观察点</b>（大小 / 皮质回声 / 皮髓质分界）</span></li>
+        <li><span class="box"></span><span>解释<b>脂肪肝</b>如何干扰肾皮质与肝回声的比较</span></li>
+        <li><span class="box"></span><span>区分<b>急性</b>（肿大、回声多变）与<b>慢性</b>（缩小、实质变薄、皮质高回声）肾实质病变</span></li>
+        <li><span class="box"></span><span>默写 <b>RI = (PSV−EDV)/PSV</b>，并解释 RI 升高（&gt;0.7）的意义</span></li>
+      </ul>
+      <ul class="ck">
+        <li><span class="box"></span><span>解释为什么<b>糖尿病肾病</b>必须灰阶 + Doppler 结合评估</span></li>
+        <li><span class="box"></span><span>背出 <b>Bosniak I–IV</b> 的特征与恶性率（&lt;1% / 0–38% / ~50% / ~90%）</span></li>
+        <li><span class="box"></span><span>区分<b>球形</b>与<b>豆形</b>病变，并说出 TCC 的「不活检」原则</span></li>
+        <li><span class="box"></span><span>说出移植肾<b>五步流程</b>与并发症速查（狭窄 / 栓塞 / 排斥 / 尿漏）</span></li>
+      </ul>
+    </div>
+    <div class="notes">结尾自测：8 条全过，说明今天的内容真正吃透了。</div>
+  </section>
+
+  <!-- ============ 49 结束 ============ -->
+  <section class="slide center tc" data-title="谢谢">
+    <div>
+      <h1 class="h1 anim-fade-up" data-anim="fade-up" style="font-size:150px;line-height:1"><span class="gradient-text">Thanks</span></h1>
+      <p class="lede" style="margin:18px auto 0">灰阶看形态，Doppler 看血流，影像看风险——三句话带走肾脏超声。</p>
+      <div class="row mt-l" style="justify-content:center;gap:28px">
+        <div class="dim"><b>素材</b> · Sonographic Tendencies · Radiology Assistant · 肾实质疾病超声讲座</div>
+      </div>
+      <div class="row mt-m" style="justify-content:center;gap:12px">
+        <span class="pill">← → 翻页</span><span class="pill">T 主题</span><span class="pill">O 概览</span><span class="pill">S 备注</span><span class="pill">F 全屏</span>
+      </div>
+    </div>
+    <div class="notes">收尾：感谢观看，欢迎交流讨论。</div>
+  </section>
+
+  <div class="deck-footer"><span class="dim2">肾脏超声知识精讲 · 医学超声干货系列</span><span class="slide-number"></span></div>
+</div>
+<script src="assets/runtime.js"></script>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <button class="lbclose" aria-label="关闭">×</button>
+  <img alt="">
+  <p class="lbcap"></p>
+  <p class="lbhint">点击任意位置或按 Esc 关闭</p>
+</div>
+<script>
+(function () {
+  var lb = document.getElementById('lightbox');
+  if (!lb) return;
+  var lbImg = lb.querySelector('img');
+  var lbCap = lb.querySelector('.lbcap');
+  function captionFor(img) {
+    var holder = img.closest('.pic');
+    if (holder && holder.parentElement) {
+      var cap = holder.parentElement.querySelector('.imgcap');
+      if (cap && cap.textContent.trim()) return cap.textContent.trim();
+    }
+    var cell = img.closest('.cell');
+    if (cell) {
+      var span = cell.querySelector('span');
+      if (span && span.textContent.trim()) return span.textContent.trim();
+    }
+    return img.getAttribute('alt') || '';
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    var img = t.closest ? t.closest('.pic img, .gg .cell img') : null;
+    if (!img) return;
+    lbImg.src = img.currentSrc || img.src;
+    lbImg.alt = img.alt || '';
+    lbCap.textContent = captionFor(img);
+    lb.classList.add('open');
+  });
+  function close() { lb.classList.remove('open'); lbImg.removeAttribute('src'); }
+  lb.addEventListener('click', close);
+  lb.querySelector('.lbclose').addEventListener('click', function (e) { e.stopPropagation(); close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+})();
+</script>
+</body>
+</html>

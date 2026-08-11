@@ -420,6 +420,39 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 `,
   },
   {
+    slug: "ultrasound-ppt-notes",
+    category: "imaging",
+    title: "超声PPT笔记",
+    excerpt:
+      "这是一个基于HTML的PPT学习专栏，计划每个月更新2-4篇，持续整理适合电脑、平板和手机阅读的超声知识。",
+    date: "2026-08-11",
+    readTime: "2 个 HTML PPT",
+    cover: null,
+    tags: ["超声PPT", "HTML", "甲状腺", "肾脏"],
+    body: `# 超声PPT笔记
+
+这是一个基于HTML的PPT学习专栏，计划每个月更新2-4篇。每个入口都保留演示文稿的文字、图片、章节顺序和版式，适合在电脑、平板和手机上翻阅。
+
+## 当前入口
+
+### 甲状腺超声检查与 TI-RADS 分类
+
+从解剖、生理与规范扫查，到 ACR TI-RADS 评分和病例实战。进入后可使用键盘或触屏翻页，点击任意图片可放大查看。
+
+<p><a class="knowledge-card-launch" href="/ultrasound-ppt-notes/thyroid-ti-rads/index.html">打开《甲状腺超声检查与 TI-RADS 分类》 <span>→</span></a></p>
+
+### 肾脏超声知识精讲
+
+从检查技术、肾实质疾病到 Doppler、囊性与实性肿块，按演示页顺序整理学习路径。
+
+<p><a class="knowledge-card-launch" href="/ultrasound-ppt-notes/kidney-ultrasound/index.html">打开《肾脏超声知识精讲》 <span>→</span></a></p>
+
+后续将按月补充 2-4 篇 HTML PPT，入口会持续收录在本专栏中。
+
+> 本专栏用于医学教育与个人学习，不构成诊断或操作建议。涉及临床判断时，请结合原始资料、现行指南与实际临床情况核对。
+`,
+  },
+  {
     slug: "huabin-ultrasound-notes",
     category: "imaging",
     title: "华斌笔记",

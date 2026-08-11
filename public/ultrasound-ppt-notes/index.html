@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="超声PPT笔记专栏，一个基于HTML的PPT学习入口，计划每个月更新2-4篇。"><title>超声PPT笔记 | 西瓜柚子</title><style>
+:root { --ink:#102d52; --muted:#5e7693; --line:#d8e5f1; --paper:#f7fbff; --blue:#2177cc; --blue-dark:#155ca7; --cyan:#218fa7; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--paper); font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
+a { color: inherit; }
+.ppt-page { min-height: 100dvh; background: radial-gradient(circle at 86% 12%, rgba(198, 227, 249, .6), transparent 35%), linear-gradient(180deg, #f9fcff 0%, #edf6fd 100%); }
+.ppt-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+.ppt-header { display:flex; align-items:center; justify-content:space-between; gap: 20px; min-height: 76px; border-bottom: 1px solid rgba(216,229,241,.9); }
+.brand { display:inline-flex; align-items:center; gap:10px; color:var(--ink); text-decoration:none; font-size:12px; font-weight:800; letter-spacing:.18em; }
+.brand-mark { width:30px; height:30px; display:grid; place-items:center; border-radius:50%; background:linear-gradient(135deg,#258ed7,#135aab); box-shadow:0 8px 18px rgba(33,119,204,.2); }
+.brand-mark::after { content:""; width:6px; height:6px; border-radius:50%; background:#fff; }
+.back-link { color:var(--blue-dark); text-decoration:none; font-size:13px; font-weight:700; }
+.back-link:hover { color:var(--blue); }
+.ppt-hero { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr); gap:56px; align-items:end; padding:82px 0 64px; }
+.eyebrow { margin:0 0 18px; color:var(--blue); font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
+h1 { max-width:720px; margin:0; font-size:clamp(44px,7vw,82px); line-height:.98; letter-spacing:-.06em; }
+.hero-lead { max-width:650px; margin:26px 0 0; color:var(--muted); font-size:clamp(18px,2.2vw,24px); line-height:1.65; }
+.hero-note { align-self:stretch; display:flex; flex-direction:column; justify-content:flex-end; padding:26px 0 0 28px; border-left:1px solid var(--line); }
+.hero-note strong { display:block; margin-bottom:10px; font-size:22px; line-height:1.35; }
+.hero-note p { margin:0; color:var(--muted); line-height:1.8; }
+.ppt-list { display:grid; grid-template-columns:1.08fr .92fr; gap:22px; padding:24px 0 78px; }
+.ppt-card { display:grid; grid-template-columns:minmax(210px,.9fr) minmax(0,1.1fr); min-height:350px; overflow:hidden; border:1px solid var(--line); border-radius:20px; background:rgba(255,255,255,.9); box-shadow:0 18px 50px rgba(36,93,140,.09); text-decoration:none; transition:transform .25s ease,box-shadow .25s ease; }
+.ppt-card:nth-child(2) { grid-template-columns:minmax(0,1fr); min-height:330px; }
+.ppt-card:hover { transform:translateY(-4px); box-shadow:0 24px 62px rgba(36,93,140,.15); }
+.ppt-visual { min-height:100%; display:flex; align-items:center; justify-content:center; padding:22px; background:linear-gradient(145deg,#e6f3fc,#d8ecfa); }
+.ppt-card:nth-child(2) .ppt-visual { min-height:172px; }
+.ppt-visual img { display:block; width:100%; max-width:360px; max-height:250px; object-fit:contain; box-shadow:0 14px 28px rgba(36,93,140,.14); }
+.ppt-card:nth-child(2) .ppt-visual img { max-width:510px; max-height:210px; }
+.ppt-copy { display:flex; flex-direction:column; padding:32px 30px 28px; }
+.ppt-index { margin-bottom:22px; color:#c66c58; font:700 12px/1 ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.15em; }
+.ppt-card:nth-child(2) .ppt-index { color:var(--cyan); }
+.ppt-copy h2 { margin:0; font-size:clamp(25px,3vw,38px); line-height:1.16; letter-spacing:-.04em; }
+.ppt-copy p { margin:16px 0 0; color:var(--muted); line-height:1.75; }
+.ppt-open { display:inline-flex; align-items:center; gap:8px; margin-top:auto; padding-top:24px; color:var(--blue-dark); font-size:14px; font-weight:800; }
+.ppt-open::after { content:"→"; font-size:20px; transition:transform .2s ease; }
+.ppt-card:hover .ppt-open::after { transform:translateX(4px); }
+.ppt-footer { display:flex; justify-content:space-between; gap:24px; padding:22px 0 34px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; line-height:1.7; }
+.ppt-footer p { margin:0; }
+@media (max-width:820px) { .ppt-hero { grid-template-columns:1fr; gap:28px; padding:58px 0 42px; } .hero-note { padding:18px 0 0; border-left:0; border-top:1px solid var(--line); } .ppt-list { grid-template-columns:1fr; } .ppt-card:nth-child(2) { grid-template-columns:minmax(210px,.8fr) minmax(0,1.2fr); min-height:280px; } .ppt-card:nth-child(2) .ppt-visual { min-height:100%; } }
+@media (max-width:600px) { .ppt-shell { width:min(100% - 28px, 520px); } .ppt-header { min-height:64px; } .brand { font-size:10px; letter-spacing:.12em; } .brand-mark { width:27px; height:27px; } .back-link { font-size:12px; } .ppt-hero { padding:46px 0 32px; } h1 { font-size:clamp(40px,14vw,64px); } .hero-lead { margin-top:20px; font-size:17px; } .ppt-list { gap:16px; padding-bottom:56px; } .ppt-card,.ppt-card:nth-child(2) { grid-template-columns:1fr; min-height:0; border-radius:16px; } .ppt-visual,.ppt-card:nth-child(2) .ppt-visual { min-height:180px; } .ppt-visual img,.ppt-card:nth-child(2) .ppt-visual img { max-height:155px; } .ppt-copy { padding:24px 22px 22px; } .ppt-index { margin-bottom:17px; } .ppt-copy h2 { font-size:27px; } .ppt-open { padding-top:22px; } .ppt-footer { flex-direction:column; gap:8px; padding-bottom:24px; } }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .ppt-card,.ppt-open::after { transition:none; } }
+</style></head>
+<body class="ppt-page"><div class="ppt-shell"><header class="ppt-header"><a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span><span>XIGUA · YUZI</span></a><a class="back-link" href="/blog/imaging">返回医学影像</a></header><main><section class="ppt-hero"><div><p class="eyebrow">Ultrasound PPT notes</p><h1>超声PPT<br>笔记</h1><p class="hero-lead">这是一个基于 HTML 的 PPT 学习专栏，计划每个月更新 2-4 篇，持续整理适合电脑、平板和手机阅读的超声知识。</p></div><aside class="hero-note"><strong>两个入口，持续更新</strong><p>保留每一页演示的文字、图片和版式。进入 PPT 后可用键盘或触屏翻页，点击图片可放大查看。</p></aside></section><section class="ppt-list" aria-label="超声PPT笔记书目"><a class="ppt-card" href="thyroid-ti-rads/index.html"><div class="ppt-visual"><img src="thyroid-ti-rads/cover.png" alt="甲状腺超声检查与 TI-RADS 分类封面" loading="eager"></div><div class="ppt-copy"><div class="ppt-index">01 / THYROID</div><h2>甲状腺超声检查与 TI-RADS 分类</h2><p>从解剖、生理与规范扫查，到 ACR TI-RADS 评分和病例实战。</p><span class="ppt-open">打开 HTML PPT</span></div></a><a class="ppt-card" href="kidney-ultrasound/index.html"><div class="ppt-visual"><img src="kidney-ultrasound/cover.png" alt="肾脏超声知识精讲封面" loading="lazy"></div><div class="ppt-copy"><div class="ppt-index">02 / KIDNEY</div><h2>肾脏超声知识精讲</h2><p>从检查技术、肾实质疾病到 Doppler、囊性与实性肿块。</p><span class="ppt-open">打开 HTML PPT</span></div></a></section></main><footer class="ppt-footer"><p>西瓜柚子 · 医学影像</p><p>内容用于医学教育与个人学习，请结合原始资料和临床规范核对。</p></footer></div></body></html>

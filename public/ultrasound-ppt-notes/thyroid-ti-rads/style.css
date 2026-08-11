@@ -1,0 +1,104 @@
+/* ============ 甲状腺超声 · TI-RADS v2 — 图片优先 · 比例统一 · 层级平衡 ============ */
+.thy .slide{padding:54px 72px}
+.thy .kicker{margin:0 0 6px;font-weight:700;font-size:13px;letter-spacing:.06em}
+.thy .h2{font-size:38px;line-height:1.16}
+.thy .lede{font-size:18px}
+.thy h3{font-size:24px}
+.thy h4{font-size:17px}
+
+/* ---- 图片框架：统一比例 + 浅色底，图片不裁切、不变形 ---- */
+.fig{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.fig .ph{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;background:#eef1f5;padding:10px;aspect-ratio:var(--ar,16/9)}
+.fig .ph img{max-width:100%;max-height:100%;object-fit:contain}
+.fig .cap{padding:7px 10px;font-size:13px;color:var(--text-2);text-align:center;border-top:1px solid var(--border);background:var(--surface-2);line-height:1.5}
+.fig .cap b{color:var(--text-1)}
+
+.fig2,.fig3,.fig4,.figx{display:grid;gap:20px}
+.fig2{grid-template-columns:1fr 1fr}
+.fig3{grid-template-columns:repeat(3,1fr)}
+.fig4{grid-template-columns:repeat(4,1fr)}
+.fig2x2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.fig2x2 .fig .ph{aspect-ratio:2.2}
+.figx{grid-template-columns:1fr 1.3fr;align-items:start}
+.figx-flip{grid-template-columns:1.3fr 1fr;align-items:start}
+
+/* 竖图海报（fig-01 类） */
+.poster{display:flex;align-items:center;justify-content:center;background:#eef1f5;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.poster img{max-width:100%;max-height:100%;object-fit:contain;padding:10px}
+.poster.p-ar84{height:calc(100vh - 250px);aspect-ratio:.84}
+
+/* 宽横幅评分图（fig-03 / 08 / 12 / 17 类） */
+.banner{background:#eef1f5;border:1px solid var(--border);box-shadow:var(--shadow);padding:12px;display:flex;align-items:center;justify-content:center}
+.banner img{max-width:100%;max-height:100%;object-fit:contain}
+.banner.b-ar27{height:290px}
+.banner .bcap{position:absolute;right:16px;bottom:10px;font-size:12px;color:var(--text-3)}
+
+/* ---- 表格 ---- */
+.t{width:100%;border-collapse:collapse;font-size:14.5px}
+.t th,.t td{padding:9px 11px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.t th{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);font-weight:700;background:var(--surface-2)}
+.t tr:hover td{background:var(--surface-2)}
+.t td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.t .up{color:var(--good);font-weight:700}
+.t .dn{color:var(--bad);font-weight:700}
+
+/* ---- 评分徽章 / 标签 ---- */
+.pill-score{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--border);white-space:nowrap}
+.s-0{background:var(--surface-2);color:var(--text-2)}
+.s-1{background:color-mix(in srgb,var(--good) 12%,transparent);color:var(--good)}
+.s-2{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+.s-3{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.tag-b{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--good) 12%,transparent);color:var(--good)}
+.tag-m{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.tag-a{display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+
+/* ---- 提示框 ---- */
+.callout{border-left:3px solid var(--accent);background:var(--surface-2);padding:11px 15px;font-size:14.5px;line-height:1.6}
+.callout-warn{border-left-color:var(--bad)}
+.callout-good{border-left-color:var(--good)}
+
+/* ---- 流程 ---- */
+.flow5{display:flex;align-items:center;gap:10px}
+.fnode{flex:1;border:1px solid var(--border);border-radius:var(--radius);padding:15px 11px;text-align:center;background:var(--surface);box-shadow:var(--shadow)}
+.fnode .fno{font-size:24px}
+.fnode h5{margin:5px 0 2px;font-size:15px;font-weight:700}
+.fnode p{margin:0;font-size:12px;color:var(--text-3);line-height:1.45}
+.farr{font-size:21px;color:var(--text-3);flex-shrink:0}
+.fnode.hl{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.fbk{display:flex;align-items:center;gap:12px;margin-top:14px;color:var(--bad);font-size:13px}
+.fbk .line{flex:1;height:2px;background:var(--bad);position:relative}
+.fbk .line::after{content:"";position:absolute;right:0;top:-4px;border-left:8px solid var(--bad);border-top:5px solid transparent;border-bottom:5px solid transparent}
+
+/* ---- 章节分隔 ---- */
+.sdiv .no{font-size:128px;line-height:.95;font-weight:900;letter-spacing:-.03em;color:var(--text-1)}
+.sdiv .no em{font-style:normal;color:var(--accent)}
+
+/* ---- 解剖 SVG ---- */
+.thy-svg text{font:600 13px var(--font-sans);fill:var(--text-1)}
+.thy-svg .lbl{font-size:12px;fill:var(--text-2);font-weight:500}
+.thy-svg .lobe{fill:#e9c9a0;stroke:#8a5a2b;stroke-width:2}
+.thy-svg .isth{fill:#e0b98a;stroke:#8a5a2b;stroke-width:2}
+.thy-svg .cart{fill:#f3ede2;stroke:#777;stroke-width:1.5}
+.thy-svg .vessel{fill:#c9d6e8;stroke:#456;stroke-width:1.5}
+.thy-svg .dash{stroke-dasharray:5 4;fill:none;stroke:#8a5a2b;stroke-width:1.5}
+
+/* ---- 病例 ---- */
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.case-anno{position:absolute;top:10px;left:10px;z-index:2;background:rgba(0,0,0,.72);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:4px}
+.pos-rel{position:relative}
+.analysis{background:var(--surface-2);border:1px solid var(--border);padding:11px 15px;font-size:14px;line-height:1.65}
+
+/* ---- 目录编号 ---- */
+.toc-no{font-size:34px;font-weight:800;color:var(--text-3);line-height:1}
+
+/* ---- 步骤卡 ---- */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.step{position:relative;padding:18px 18px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);box-shadow:var(--shadow)}
+.step .num{position:absolute;top:-18px;left:16px;width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;box-shadow:var(--shadow)}
+.step h4{margin:15px 0 5px;font-size:15px}
+.step p{font-size:12.5px;color:var(--text-2);line-height:1.55;margin:0}
+
+/* ---- 卡片正文平衡字号 ---- */
+.card{font-size:15px}
+.card li{line-height:1.6}
+.card p{line-height:1.6}

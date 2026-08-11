@@ -1,0 +1,23 @@
+{
+  "title": "超声PPT笔记",
+  "books": [
+    {
+      "slug": "thyroid-ti-rads",
+      "sourceDir": "F:/Out/PPT/甲状腺超声检查与TI-RADS分类_v5",
+      "title": "甲状腺超声检查与 TI-RADS 分类",
+      "subtitle": "从解剖、生理与规范扫查，到 ACR TI-RADS 评分和病例实战。",
+      "cover": "cover.png",
+      "sourceCover": "preview/slide_01.png",
+      "indexLabel": "01 / THYROID"
+    },
+    {
+      "slug": "kidney-ultrasound",
+      "sourceDir": "F:/Out/PPT/肾脏超声知识精讲",
+      "title": "肾脏超声知识精讲",
+      "subtitle": "从检查技术、肾实质疾病到 Doppler、囊性与实性肿块。",
+      "cover": "cover.png",
+      "sourceCover": "预览截图/slide_01.png",
+      "indexLabel": "02 / KIDNEY"
+    }
+  ]
+}
