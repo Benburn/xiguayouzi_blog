@@ -56,6 +56,38 @@ const lightboxStyle = `
   }
   .xigua-ppt-back:hover { background: #fff; }
   .xigua-ppt-zoomable { cursor: zoom-in; pointer-events: auto !important; }
+  .deck { touch-action: pan-y; }
+  .xigua-ppt-touch-nav {
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    z-index: 1001;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    transform: translateX(-50%);
+    padding: 6px;
+    border: 1px solid rgba(33, 97, 160, .18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .9);
+    box-shadow: 0 8px 24px rgba(23, 74, 130, .14);
+    backdrop-filter: blur(12px);
+    white-space: nowrap;
+  }
+  .xigua-ppt-touch-nav button {
+    min-width: 64px;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 999px;
+    color: #174a82;
+    background: #eaf3fb;
+    font: 700 12px/1 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .xigua-ppt-touch-nav button:active { background: #d6e9f8; }
+  .xigua-ppt-touch-nav span { color: #5e7693; font: 600 11px/1 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif; }
   .xigua-ppt-lightbox {
     position: fixed;
     inset: 0;
@@ -96,7 +128,11 @@ const lightboxStyle = `
     .xigua-ppt-back { top: 46px; left: 12px; min-height: 34px; padding: 0 11px; font-size: 11px; }
     .xigua-ppt-lightbox { padding: 44px 10px 24px; }
     .xigua-ppt-lightbox img { max-width: 96vw; max-height: 84vh; border-radius: 5px; }
+    .xigua-ppt-touch-nav { bottom: max(12px, env(safe-area-inset-bottom)); gap: 5px; }
+    .xigua-ppt-touch-nav button { min-width: 58px; min-height: 36px; padding: 0 10px; }
+    .xigua-ppt-touch-nav span { font-size: 10px; }
   }
+  @media (max-width: 900px), (hover: none) and (pointer: coarse) { .xigua-ppt-touch-nav { display: flex; } }
   @media (prefers-reduced-motion: reduce) {
     .xigua-ppt-back { transition: none; }
   }
@@ -135,6 +171,43 @@ const lightboxScript = `
 })();
 </script>`;
 
+const touchNavMarkup = `<nav class="xigua-ppt-touch-nav" aria-label="PPT 翻页"><button type="button" data-ppt-prev>上一页</button><span>左右滑动翻页</span><button type="button" data-ppt-next>下一页</button></nav>`;
+
+const touchNavScript = `
+<script id="xigua-ppt-touch-script">
+(() => {
+  const sendKey = (key) => document.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
+  document.querySelector("[data-ppt-prev]")?.addEventListener("click", () => sendKey("ArrowLeft"));
+  document.querySelector("[data-ppt-next]")?.addEventListener("click", () => sendKey("ArrowRight"));
+  let start = null;
+  document.addEventListener("touchstart", (event) => {
+    if (event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    start = { x: touch.clientX, y: touch.clientY, target: event.target };
+  }, { passive: true });
+  document.addEventListener("touchmove", (event) => {
+    if (!start || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) > 14 && Math.abs(dx) > Math.abs(dy) * 1.15) event.preventDefault();
+  }, { passive: false });
+  document.addEventListener("touchend", (event) => {
+    if (!start) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    const target = start.target instanceof Element ? start.target : null;
+    const inControl = target?.closest("button, a, input, select, textarea, [role=dialog]");
+    const modalOpen = document.querySelector(".xigua-ppt-lightbox.is-open, .lightbox.open");
+    if (!inControl && !modalOpen && Math.abs(dx) >= 44 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      sendKey(dx < 0 ? "ArrowRight" : "ArrowLeft");
+    }
+    start = null;
+  }, { passive: true });
+})();
+</script>`;
+
 function normalizeBookHtml(source, book, hasNativeLightbox) {
   const backLink = '<a class="xigua-ppt-back" href="../index.html" aria-label="返回超声PPT笔记目录">返回专栏目录</a>';
   const meta = `<meta name="description" content="${escapeHtml(book.title)}，超声PPT笔记 HTML 学习演示。">`;
@@ -149,7 +222,7 @@ function normalizeBookHtml(source, book, hasNativeLightbox) {
     .replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(book.title)} | 超声PPT笔记 | 西瓜柚子</title>`)
     .replace(/<\/head>/i, `${meta}${lightboxStyle}${nativeLightboxStyle}</head>`)
     .replace(/<body([^>]*)>/i, `<body$1>${backLink}`)
-    .replace(/<\/body>/i, `${overlay}</body>`);
+    .replace(/<\/body>/i, `${overlay}${touchNavMarkup}${touchNavScript}</body>`);
 }
 
 const landingCss = `
