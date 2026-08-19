@@ -420,6 +420,29 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 `,
   },
   {
+    slug: "fetal-ultrasound-scanning-guide",
+    category: "imaging",
+    title: "胎儿超声扫查技巧图解",
+    excerpt:
+      "覆盖超声基础、胎儿测量、羊水、胎盘、脐带与系统筛查的图文学习版，保留 15 章内容与 596 张配图的对应顺序。",
+    date: "2026-08-19",
+    readTime: "15 章 · 596 张图",
+    cover: null,
+    tags: ["胎儿超声", "产前筛查", "超声扫查", "医学影像"],
+    body: `# 胎儿超声扫查技巧图解
+
+从超声基础、胎儿生长测量开始，逐章进入羊水、胎盘、脐带，以及脑部、颜面部、胸部、心脏、腹部、脊柱四肢等系统筛查内容。在线版保留原书 15 章、463 个内容页和 596 张正文配图，并按原有章节与页面顺序对应，便于连续学习或按目录定位。
+
+## 在线阅读
+
+<p><a class="knowledge-card-launch" href="/fetal-ultrasound-scanning-guide/index.html">打开《胎儿超声扫查技巧图解》 <span>→</span></a></p>
+
+支持电脑、平板和手机阅读：桌面端可使用左侧完整目录，平板和手机端点击顶部“目录”展开导航；图片可点击放大，目录支持关键词搜索。
+
+> 本资料用于医学教育与个人学习，不构成诊断或操作建议。涉及临床判断时，请结合原书、现行指南与实际临床情况核对。
+`,
+  },
+  {
     slug: "ultrasound-ppt-notes",
     category: "imaging",
     title: "超声PPT笔记",
