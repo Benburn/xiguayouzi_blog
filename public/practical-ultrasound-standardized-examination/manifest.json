@@ -1,0 +1,18 @@
+{
+  "title": "实用超声规范化检查与操作",
+  "category": "医学影像",
+  "audit": {
+    "chapters": [
+      "第一章 消化系统",
+      "第二章 泌尿系统",
+      "第三章 心血管系统",
+      "第四章 浅表器官",
+      "第五章 妇产与盆底",
+      "第六章 肌肉骨骼系统"
+    ],
+    "contentPages": 264,
+    "firstSourcePage": 10,
+    "lastSourcePage": 273,
+    "images": 750
+  }
+}

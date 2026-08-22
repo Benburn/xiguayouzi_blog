@@ -443,6 +443,52 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 `,
   },
   {
+    slug: "practical-ultrasound-standardized-examination",
+    category: "imaging",
+    title: "实用超声规范化检查与操作",
+    excerpt:
+      "围绕消化、泌尿、心血管、浅表、妇产盆底与肌肉骨骼六大系统，按检查路径、标准切面与操作要点组织的在线学习版。",
+    date: "2026-08-22",
+    readTime: "6 章 · 750 张图",
+    cover: null,
+    tags: ["超声检查", "标准切面", "规范化操作", "医学影像"],
+    body: `# 实用超声规范化检查与操作
+
+本书覆盖消化、泌尿、心血管、浅表器官、妇产与盆底、肌肉骨骼六大系统，围绕检查路径、标准切面、测量方法和操作要点展开。在线版保留 264 个内容页与 750 张正文配图，并按原书顺序整理，方便连续学习或按目录定位。
+
+## 在线阅读
+
+<p><a class="knowledge-card-launch" href="/practical-ultrasound-standardized-examination/index.html">打开《实用超声规范化检查与操作》 <span>→</span></a></p>
+
+支持电脑、平板和手机阅读：桌面端使用固定目录；平板和手机端点击顶部“目录”展开导航；正文支持检索，图片可点击放大。
+
+> 本资料用于医学教育与个人学习，不构成诊断或操作建议。涉及临床判断时，请结合原书、现行指南与实际临床情况核对。
+`,
+  },
+  {
+    slug: "echocardiography-notes-vol-1",
+    category: "imaging",
+    title: "心超笔记·第1辑",
+    excerpt:
+      "从基础认识到心功能、切面、血流动力学、冠脉循环、先心病与治疗的超声心动图学习笔记。",
+    date: "2026-08-22",
+    readTime: "8 个专题 · 560 张图",
+    cover: null,
+    tags: ["超声心动图", "心功能", "血流动力学", "医学影像"],
+    body: `# 心超笔记·第1辑
+
+这套学习笔记从基础篇开始，依次覆盖心功能、切面、血流动力学思路、冠脉循环、临床思路、先天性心脏病和治疗等八个专题。在线版保留 205 个内容页与 560 张正文配图，并按原书章节和页面顺序对应。
+
+## 在线阅读
+
+<p><a class="knowledge-card-launch" href="/echocardiography-notes-vol-1/index.html">打开《心超笔记·第1辑》 <span>→</span></a></p>
+
+支持电脑、平板和手机阅读：桌面端使用固定目录；平板和手机端点击顶部“目录”展开导航；正文支持检索，图片可点击放大。
+
+> 本资料用于医学教育与个人学习，不构成诊断或操作建议。涉及临床判断时，请结合原书、现行指南与实际临床情况核对。
+`,
+  },
+  {
     slug: "ultrasound-ppt-notes",
     category: "imaging",
     title: "超声PPT笔记",
