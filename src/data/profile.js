@@ -353,6 +353,30 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 `,
   },
 
+  {
+    slug: "calcium-phosphate-detailed-history",
+    category: "device",
+    title: "磷酸钙的详细发展历史",
+    excerpt:
+      "基于 2017 年 Materials 综述整理的中英对照全文阅读器：从磷酸钙的发现与命名，到骨的结构、各物相性质、涂层技术与临床应用的完整脉络。",
+    date: "2026-09-06",
+    readTime: "17 章 · 中英对照",
+    cover: null,
+    tags: ["磷酸钙", "羟基磷灰石", "骨修复材料", "综述", "医疗器械"],
+    body: `# 磷酸钙的详细发展历史
+
+## 为什么值得系统阅读
+
+磷酸钙（CaP）是骨与牙釉质最主要的无机成分，也是骨修复材料领域最核心的一族材料。这篇综述按"历史 → 结构 → 物相 → 制备与涂层 → 临床应用"的完整脉络展开，适合医疗器械研发、注册与临床/工程学习者建立从材料化学到产业化应用的体系化认识。
+
+在线版为**逐段中英对照全文阅读器**，共收录全部 **17 个章节**、全部正文段落（含 **16 幅图与 12 张数据表**）以及文中全部 **15 个编号公式**（KaTeX 渲染）。正文双栏保留原文与中文对照，侧边目录与文末术语表便于快速定位。
+
+<aside class="medical-disclaimer"><strong>重要声明：</strong>本在线中文内容仅供医学教育、专业交流和资料索引使用，由原文辅助翻译整理，不能替代原版文献、产品说明书、监管批准信息、规范化培训或执业医师的独立判断。内容不构成诊断、治疗、处方或个体化医疗建议；涉及适应证、禁忌证和临床应用时，请以当地现行法规、经批准的产品标签及权威临床指南为准。</aside>
+
+<p><a class="knowledge-card-launch" href="/calcium-phosphate-detailed-history/index.html">打开《磷酸钙的详细发展历史》全文阅读器 <span>→</span></a></p>
+`,
+  },
+
   // —— 医学影像 ——
   {
     slug: "ultrasound-standard-planes",

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>磷酸钙的详细发展历史 · 中英对照阅读器</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+      ],
+      throwOnError: false
+    });
+  }
+});
+</script>
+<style>
+:root{--ink:#1a202c;--mut:#64748b;--line:#e2e8f0;--brand:#2f6f4f;--brandbg:#f2f7f3;--chip:#eef2ff;--note:#fffbeb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI","Microsoft YaHei","PingFang SC",sans-serif;color:var(--ink);line-height:1.65;background:#fff}
+#sidebar{position:fixed;top:0;left:0;bottom:0;width:250px;background:#f7f8fa;border-right:1px solid var(--line);overflow-y:auto;padding:18px 14px}
+#sidebar .tt{font-weight:700;font-size:14px;margin-bottom:10px;color:var(--brand)}
+#sidebar .tt a{color:inherit;text-decoration:none}
+.navlink{display:block;padding:5px 8px;margin:1px 0;border-radius:6px;color:#334155;text-decoration:none;font-size:13px}
+.navlink:hover{background:#eceff3;color:#111}
+main{margin-left:250px;padding:28px 44px 80px;max-width:1020px}
+.topbar{display:none;position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--line);padding:8px 12px}
+.topbar select{width:100%;padding:8px;font-size:14px;border:1px solid var(--line);border-radius:6px}
+.doc-head h1{font-size:26px;margin:6px 0 18px;padding-bottom:12px;border-bottom:3px solid var(--brand)}
+blockquote{border-left:4px solid #93c5fd;background:#eff6ff;margin:14px 0;padding:10px 16px;border-radius:0 8px 8px 0}
+blockquote p{margin:4px 0}
+h2{font-size:21px;margin:46px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+h3{font-size:17px;margin:6px 0 10px;color:var(--brand)}
+article{margin:18px 0}
+.srcrow{margin-bottom:6px}
+.chip{display:inline-block;font-family:Consolas,monospace;font-size:12px;background:var(--chip);color:#3730a3;border:1px solid #c7d2fe;border-radius:999px;padding:2px 10px;text-decoration:none}
+.chip:hover{background:#e0e7ff}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pair .orig{background:#fbfbfc;border-right:1px solid var(--line)}
+.pair .zh{background:var(--brandbg)}
+.pair.one{grid-template-columns:1fr}
+.pair.one .orig{border-right:none}
+.pair .orig,.pair .zh{padding:10px 16px}
+.lbl{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:4px;font-family:Consolas,monospace}
+.pair p{margin:0;font-size:15px}
+.orig p{font-family:Georgia,"Times New Roman",serif}
+.card,.eq{border:1px solid var(--line);border-radius:10px;padding:14px 18px;background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.card .meta{font-size:12.5px;color:var(--mut);margin:2px 0 8px}
+.card img{display:block;max-width:100%;height:auto;margin:10px auto;border:1px solid #f1f5f9;border-radius:6px}
+.cap-en{font-size:13.5px;color:#475569;margin-top:8px;font-style:italic}
+.cap-zh{font-size:13.5px;color:#334155;margin-top:4px}
+.note{background:var(--note);border-left:4px solid #f59e0b;padding:8px 12px;margin-top:10px;font-size:13.5px;border-radius:0 6px 6px 0}
+.eq{background:#fcfcfd;text-align:center}
+.eq .srcrow{text-align:left}
+.eq .math{font-size:17px;margin:8px 0;overflow-x:auto}
+.eqnote{text-align:left;font-size:14px;color:#334155;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px}
+.eqextra{text-align:left;font-size:14px;color:#334155}
+.md-table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14px}
+.md-table th,.md-table td{border:1px solid #cbd5e1;padding:5px 9px;text-align:left;vertical-align:top}
+.md-table th{background:#f1f5f9}
+.tblwrap{overflow-x:auto}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:.9em}
+hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+footer{margin-top:50px;color:var(--mut);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:920px){
+ #sidebar{display:none}
+ .topbar{display:block}
+ main{margin-left:0;padding:16px 14px 60px}
+ .pair{grid-template-columns:1fr}
+ .pair .orig{border-right:none;border-bottom:1px dashed var(--line)}
+}
+@media print{
+ #sidebar,.topbar{display:none}
+ main{margin:0;padding:0}
+ .pair{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="topbar"><select onchange="if(this.value)location.hash=this.value">
+<option value="">— 跳转到章节 —</option>
+<option value="#toc">目录 / Contents</option>
+<option value="#eq-index">公式索引</option>
+<option value="#abstract">摘要 / Abstract</option>
+<option value="#sec1">1. Historical Perspective 历史视角</option>
+<option value="#sec2">2. The Structure, Chemistry and Mechanical Properties of Bone 骨的结构、化学与力学性质</option>
+<option value="#sec3">3. Transient Precursor Phases 瞬态前驱相</option>
+<option value="#sec4">4. Dissolution and Reprecipitation as Bone 溶解与再沉淀成骨</option>
+<option value="#sec5">5. Requirements from Calcium Phosphates for Medical Applications 医用磷酸钙的要求</option>
+<option value="#sec6">6. Individual Calcium Phosphate Phases and Their Properties 各磷酸钙相及其性质</option>
+<option value="#sec7">7. Nano-CaP 纳米磷酸钙</option>
+<option value="#sec8">8. Biphasic and Triphasic CaP Formulations 双相与三相 CaP 配方</option>
+<option value="#sec9">9. Composite Calcium Phosphates 复合磷酸钙</option>
+<option value="#sec10">10. Functionally Graded Calcium Phosphates 功能梯度磷酸钙</option>
+<option value="#sec11">11. Antibacterial Calcium Phosphates 抗菌磷酸钙</option>
+<option value="#sec12">12. The Effect of Sterilization 灭菌的影响</option>
+<option value="#sec13">13. In Vitro and In Vivo Tests 体外与体内试验</option>
+<option value="#sec14">14. CaP Coating Technologies CaP 涂层技术</option>
+<option value="#sec15">15. Clinical and Industrial Applications 临床与工业应用</option>
+<option value="#sec16">16. The Future of Calcium Phosphates 磷酸钙的未来</option>
+<option value="#sec17">17. Conclusions 结论</option>
+<option value="#glossary">术语表 / Terminology Ledger(常用术语对照)</option>
+<option value="#notes">阅读提示 / Critical Reading Notes</option>
+</select></div>
+<aside id="sidebar">
+<div class="tt"><a href="#top">《磷酸钙的详细发展历史》<br>中英对照阅读器</a></div>
+<a class="navlink" href="#toc">目录 / Contents</a>
+<a class="navlink" href="#eq-index">公式索引</a>
+<a class="navlink" href="#abstract">摘要 / Abstract</a>
+<a class="navlink" href="#sec1">1. Historical Perspective 历史视角</a>
+<a class="navlink" href="#sec2">2. The Structure, Chemistry and Mechanical Properties of Bone 骨的结构、化学与力学性质</a>
+<a class="navlink" href="#sec3">3. Transient Precursor Phases 瞬态前驱相</a>
+<a class="navlink" href="#sec4">4. Dissolution and Reprecipitation as Bone 溶解与再沉淀成骨</a>
+<a class="navlink" href="#sec5">5. Requirements from Calcium Phosphates for Medical Applications 医用磷酸钙的要求</a>
+<a class="navlink" href="#sec6">6. Individual Calcium Phosphate Phases and Their Properties 各磷酸钙相及其性质</a>
+<a class="navlink" href="#sec7">7. Nano-CaP 纳米磷酸钙</a>
+<a class="navlink" href="#sec8">8. Biphasic and Triphasic CaP Formulations 双相与三相 CaP 配方</a>
+<a class="navlink" href="#sec9">9. Composite Calcium Phosphates 复合磷酸钙</a>
+<a class="navlink" href="#sec10">10. Functionally Graded Calcium Phosphates 功能梯度磷酸钙</a>
+<a class="navlink" href="#sec11">11. Antibacterial Calcium Phosphates 抗菌磷酸钙</a>
+<a class="navlink" href="#sec12">12. The Effect of Sterilization 灭菌的影响</a>
+<a class="navlink" href="#sec13">13. In Vitro and In Vivo Tests 体外与体内试验</a>
+<a class="navlink" href="#sec14">14. CaP Coating Technologies CaP 涂层技术</a>
+<a class="navlink" href="#sec15">15. Clinical and Industrial Applications 临床与工业应用</a>
+<a class="navlink" href="#sec16">16. The Future of Calcium Phosphates 磷酸钙的未来</a>
+<a class="navlink" href="#sec17">17. Conclusions 结论</a>
+<a class="navlink" href="#glossary">术语表 / Terminology Ledger(常用术语对照)</a>
+<a class="navlink" href="#notes">阅读提示 / Critical Reading Notes</a>
+</aside>
+<main id="top">
+<header class="doc-head"><h1>磷酸钙的详细发展历史 · 中英对照阅读器</h1></header>
+<blockquote><p><strong>Calcium Phosphate Bioceramics: A Review of Their History, Structure, Properties, Coating Technologies and Biomedical Applications</strong></p><p>磷酸钙生物陶瓷:历史、结构、性质、涂层技术与生物医学应用综述</p></blockquote>
+<article class="block" id="S001"><div class="srcrow"><a class="chip" href="#S001" title="源锚点(可点击跳转/复制链接)">p.1 标题</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Noam Eliaz, Noah Metoki. Biomaterials and Corrosion Lab, Department of Materials Science and Engineering, Tel-Aviv University, Ramat Aviv 6997801, Israel.</p></div><div class="zh"><span class="lbl">中文</span><p>作者 Noam Eliaz、Noah Metoki,特拉维夫大学材料科学与工程系生物材料与腐蚀实验室(以色列拉马特阿维夫)。</p></div></div></article>
+<hr>
+<h2 id="toc">目录 / Contents</h2>
+<ol><li><a href="#sec1">Historical Perspective 历史视角</a></li><li><a href="#sec2">The Structure, Chemistry and Mechanical Properties of Bone 骨的结构、化学与力学性质</a></li><li><a href="#sec3">Transient Precursor Phases 瞬态前驱相</a></li><li><a href="#sec4">Dissolution and Reprecipitation as Bone 溶解与再沉淀成骨</a></li><li><a href="#sec5">Requirements from Calcium Phosphates for Medical Applications 医用磷酸钙的要求</a></li><li><a href="#sec6">Individual Calcium Phosphate Phases and Their Properties 各磷酸钙相及其性质</a></li><li><a href="#sec7">Nano-CaP 纳米磷酸钙</a></li><li><a href="#sec8">Biphasic and Triphasic CaP Formulations 双相与三相 CaP 配方</a></li><li><a href="#sec9">Composite Calcium Phosphates 复合磷酸钙</a></li><li><a href="#sec10">Functionally Graded Calcium Phosphates 功能梯度磷酸钙</a></li><li><a href="#sec11">Antibacterial Calcium Phosphates 抗菌磷酸钙</a></li><li><a href="#sec12">The Effect of Sterilization 灭菌的影响</a></li><li><a href="#sec13">In Vitro and In Vivo Tests 体外与体内试验</a></li><li><a href="#sec14">CaP Coating Technologies CaP 涂层技术</a></li><li><a href="#sec15">Clinical and Industrial Applications 临床与工业应用</a></li><li><a href="#sec16">The Future of Calcium Phosphates 磷酸钙的未来</a></li><li><a href="#sec17">Conclusions 结论</a></li></ol>
+<hr>
+<h2 id="eq-index">公式索引</h2>
+<div class="tblwrap"><table class="md-table"><thead><tr><th>锚点</th><th>原式编号</th><th>页码</th><th>说明</th></tr></thead><tbody><tr><td><a href="#E001">E001</a></td><td>Eq. (1)</td><td>p.10</td><td>扩展德拜–休克尔(Debye–Hückel)平均活度系数</td></tr><tr><td><a href="#E002">E002</a></td><td>Eq. (2)</td><td>p.10</td><td>离子强度 I 的定义</td></tr><tr><td><a href="#E003">E003</a></td><td>Eq. (3)</td><td>p.10</td><td>饱和指数 SI 的定义</td></tr><tr><td><a href="#E004">E004</a></td><td>Eq. (4)</td><td>p.19</td><td>OCP 水解为 HAp 的反应</td></tr><tr><td><a href="#E005">E005</a></td><td>Eq. (5)</td><td>p.49</td><td>磷酸第一步解离(pK₁)</td></tr><tr><td><a href="#E006">E006</a></td><td>Eq. (6)</td><td>p.49</td><td>磷酸第二步解离(pK₂)</td></tr><tr><td><a href="#E007">E007</a></td><td>Eq. (7)</td><td>p.49</td><td>磷酸第三步解离(pK₃)</td></tr><tr><td><a href="#E008">E008</a></td><td>Eq. (8)</td><td>p.49</td><td>HAp 生成(碱性,PO₄³⁻)</td></tr><tr><td><a href="#E009">E009</a></td><td>Eq. (9)</td><td>p.49</td><td>HAp 由 CaHPO₄ 生成</td></tr><tr><td><a href="#E010">E010</a></td><td>Eq. (10)</td><td>p.49</td><td>HAp 生成(HPO₄²⁻)</td></tr><tr><td><a href="#E011">E011</a></td><td>Eq. (11)</td><td>p.49</td><td>OCP 生成(PO₄³⁻)</td></tr><tr><td><a href="#E012">E012</a></td><td>Eq. (12)</td><td>p.49</td><td>OCP 生成(HPO₄²⁻)</td></tr><tr><td><a href="#E013">E013</a></td><td>Eq. (13)</td><td>p.49</td><td>H₂PO₄⁻ 吸附羟化</td></tr><tr><td><a href="#E014">E014</a></td><td>Eq. (14)</td><td>p.49</td><td>H₂PO₄⁻ 电化学还原(2e⁻)</td></tr><tr><td><a href="#E015">E015</a></td><td>Eq. (15)</td><td>p.49</td><td>H₂PO₄⁻ 电化学还原生成 PO₄³⁻</td></tr></tbody></table></div>
+<hr>
+<h2 id="abstract">摘要 / Abstract</h2>
+<article class="block" id="S002"><div class="srcrow"><a class="chip" href="#S002" title="源锚点(可点击跳转/复制链接)">p.1 摘要</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Calcium phosphate (CaP) bioceramics are widely used in the field of bone regeneration, both in orthopedics and in dentistry, due to their good biocompatibility, osseointegration and osteoconduction. The aim of this article is to review the history, structure, properties and clinical applications of these materials, whether they are in the form of bone cements, paste, scaffolds, or coatings. Major analytical techniques for characterization of CaPs, in vitro and in vivo tests, and the requirements of the US Food and Drug Administration (FDA) and international standards from CaP coatings on orthopedic and dental endosseous implants, are also summarized, along with the possible effect of sterilization on these materials. CaP coating technologies are summarized, with a focus on electrochemical processes. Theories on the formation of transient precursor phases in biomineralization, the dissolution and reprecipitation as bone of CaPs are discussed. A wide variety of CaPs are presented, from the individual phases to nano-CaP, biphasic and triphasic CaP formulations, composite CaP coatings and cements, functionally graded materials (FGMs), and antibacterial CaPs. We conclude by foreseeing the future of CaPs.</p></div><div class="zh"><span class="lbl">中文</span><p>磷酸钙(CaP)生物陶瓷因其良好的生物相容性、骨整合(osseointegration)与骨传导(osteoconduction)能力,在骨科与牙科的骨再生领域被广泛使用。本文旨在综述这些材料的历史、结构、性质与临床应用,无论其形态为骨水泥、膏体、支架还是涂层。文中还总结了 CaP 表征的主要分析技术、体外与体内试验,以及美国食品药品监督管理局(FDA)与国际标准对骨科和牙科植入体 CaP 涂层的要求,并讨论了灭菌对这些材料可能产生的影响。CaP 涂层技术被系统归纳,重点放在电化学工艺上。文中讨论了生物矿化中瞬态前驱相形成的理论,以及 CaP 的溶解与再沉淀成骨机制;介绍了从单一物相到纳米 CaP、双相与三相 CaP 配方、复合 CaP 涂层与骨水泥、功能梯度材料(FGM)及抗菌 CaP 的多种体系。最后,我们对 CaP 的未来作出了展望。</p></div></div></article>
+<hr>
+<h2 id="sec1">1. Historical Perspective 历史视角</h2>
+<p><strong>范围 / Pages:</strong> p.1–3</p>
+<article class="block" id="S003"><div class="srcrow"><a class="chip" href="#S003" title="源锚点(可点击跳转/复制链接)">p.1 S003</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Calcium phosphate (CaP) is the common name of a family of minerals containing calcium cations (Ca²⁺) together with orthophosphate (PO₄³⁻), metaphosphate (PO₃⁻), or pyrophosphate (P₂O₇⁴⁻) anions, and sometimes hydrogen (H⁺) or hydroxide (OH⁻) ions. CaP is the principal form of calcium found in bovine milk and blood. It is the major inorganic constituent of bone (~60 wt % of bone), and the main constituent of tooth enamel (ca. 90%). Calcium phosphates with a Ca/P atomic ratio between 1.5 and 1.67 are called apatites (e.g., hydroxyapatite or fluorapatite). The term apatite was coined in 1786 by German geologist Abraham Gottlob Werner based on the ancient Greek word "apatao", which means "to mislead".</p></div><div class="zh"><span class="lbl">中文</span><p>磷酸钙(CaP)是一族矿物的通称,由钙阳离子(Ca²⁺)与正磷酸根(PO₄³⁻)、偏磷酸根(PO₃⁻)或焦磷酸根(P₂O₇⁴⁻)阴离子组成,有时还含有氢离子(H⁺)或氢氧根离子(OH⁻)。CaP 是牛乳和血液中钙的主要存在形式;它是骨的主要无机成分(约占骨质量的 60%),也是牙釉质的主要成分(约 90%)。Ca/P 原子比在 1.5 至 1.67 之间的磷酸钙称为磷灰石(如羟基磷灰石或氟磷灰石)。"磷灰石"(apatite)一词由德国地质学家 Abraham Gottlob Werner 于 1786 年根据古希腊词 "apatao"("欺骗、误导")创造。</p></div></div></article>
+<article class="block" id="S004"><div class="srcrow"><a class="chip" href="#S004" title="源锚点(可点击跳转/复制链接)">p.1 S004</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The history of CaPs has been reviewed in various articles. The first articles to describe the structure and composition of bones, teeth and other types of calcified tissues appeared in the last quarter of the 17th century. In 1769, the Swedish chemist and metallurgist Johan Gottlieb Gahn discovered the existence of CaP in bones. However, only since this fact was reported by the German-Swedish pharmaceutical chemist Carl Wilhelm Scheele in 1771, has phosphorus been produced from bone ash. In the last decade of the 18th century, the French chemists Antoine François Comte de Fourcroy and Nicolas Louis Vauquelin discovered the existence of acidic CaP, nowadays known as monocalcium phosphate monohydrate (MCPM), monocalcium phosphate anhydrous (MCPA), dicalcium phosphate anhydrous (DCPA, monetite), and dicalcium phosphate dihydrate (DCPD, brushite). The organic-inorganic composite nature of bone has been known since at least 1788.</p></div><div class="zh"><span class="lbl">中文</span><p>CaP 的历史已在多篇文章中综述。最早描述骨、牙及其他钙化组织结构与成分的文章出现于 17 世纪最后 25 年。1769 年,瑞典化学家兼冶金学家 Johan Gottlieb Gahn 发现了骨中存在 CaP;但直到 1771 年德裔瑞典制药化学家 Carl Wilhelm Scheele 报道此事后,人们才开始从骨灰中制备磷。18 世纪最后 10 年,法国化学家 Antoine François Comte de Fourcroy 与 Nicolas Louis Vauquelin 发现了酸性磷酸钙的存在,即今天所称的一水磷酸二氢钙(MCPM)、无水磷酸二氢钙(MCPA)、无水磷酸氢钙(DCPA,monetite 三斜磷钙石)与二水磷酸氢钙(DCPD,brushite 透磷钙石)。骨具有有机–无机复合本质这一认识至少可追溯至 1788 年。</p></div></div></article>
+<article class="block" id="S005"><div class="srcrow"><a class="chip" href="#S005" title="源锚点(可点击跳转/复制链接)">p.2 S005</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Various processes for preparation of calcium-deficient hydroxyapatite (CDHA) were developed by 1807. In 1808, Nicholson already reported the considerable compositional differences between enamel, dentin, and bones. In 1969, hot-pressed HAp powder into dense and useful shapes was reported. This may be the earliest article on the fabrication of CaP implants. In 1971, the first study on preparation of biodegradable porous β-TCP scaffolds was published. In 1973, the first study on preparation and implantation of resorbable and porous CaP (specifically, β-TCP) was published. In 1975, the modern dental application of CaP began: β-TCP was applied both in surgically created periodontal defects and as an adjunct to apical closure in pulpless permanent teeth. In 1979, dense HAp cylinders were used for immediate tooth root replacement.</p></div><div class="zh"><span class="lbl">中文</span><p>到 1807 年,已发展出多种制备缺钙羟基磷灰石(CDHA)的工艺。1808 年,Nicholson 便已报道牙釉质、牙本质与骨之间成分上的显著差异。1969 年有报道将热压 HAp 粉末制成致密且有用的形状——这可能是关于 CaP 植入体制备的最早文章。1971 年发表了首项关于制备可生物降解多孔 β-TCP 支架的研究;1973 年发表了首项关于可吸收多孔 CaP(具体为 β-TCP)制备与植入的研究。1975 年,CaP 的现代牙科应用开始:β-TCP 被用于外科创建的牙周缺损,并作为无髓恒牙根尖封闭的辅助材料。1979 年,致密 HAp 圆柱体被用于即刻牙根替代。</p></div></div></article>
+<hr>
+<h2 id="sec2">2. The Structure, Chemistry and Mechanical Properties of Bone 骨的结构、化学与力学性质</h2>
+<p><strong>范围 / Pages:</strong> p.3–8</p>
+<article class="block" id="S006"><div class="srcrow"><a class="chip" href="#S006" title="源锚点(可点击跳转/复制链接)">p.3 S006</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Bone is the basic unit of the human skeletal system. Bone provides the framework for and bears the weight of the body, protects the vital organs, supports mechanical movement, hosts hematopoietic cells, and maintains iron homeostasis. Bone has a complex, varying arrangement of structures on broad length scales (Figure 1a), which together enables diverse mechanical, biological and chemical functions. It is a hierarchical, complex, functionally graded material (FGM), with inner cancellous and outer cortical bone.</p></div><div class="zh"><span class="lbl">中文</span><p>骨是人体骨骼系统的基本单元。骨构成身体的框架并承受体重,保护重要器官,支撑机械运动,容纳造血细胞并维持铁稳态。骨在很宽的长度尺度上具有复杂多变的层级结构(图 1a),由此实现多样化的力学、生物学与化学功能。它是一种层级化、复杂的功能梯度材料(FGM),由内部松质骨与外部皮质骨构成。</p></div></div></article>
+<article class="card" id="F001">
+<h3>图 1. 骨的层级结构与皮质骨/松质骨</h3>
+<div class="meta">Placed near: p.3 S006</div>
+<div class="meta">Source: p.4 C001</div>
+<img src="assets/f01.png" alt="Fig. 1" loading="lazy">
+<div class="cap-en">Figure 1. (a) Hierarchical structure of bone [88]. Reproduced with permission from Nature Publishing Group (originally published in <em>Principles of Anatomy and Physiology</em>, 11th edition, © John Wiley &amp; Sons, Inc.); (b) cortical (compact) and cancellous (spongy/trabecular) bone.</div>
+<div class="cap-zh">图 1.(a)骨的层级结构<a href="经 Nature Publishing Group 许可转载,原载于《解剖学与生理学原理》第 11 版,© John Wiley &amp; Sons, Inc.">88</a>;(b)皮质(致密)骨与松质(海绵状/小梁)骨。</div>
+<div class="note"><strong>阅读提示:</strong>注意 (a) 从左下到右上跨越从胶原分子(纳米尺度)到骨单位/整体骨(宏观尺度)的多个层级——这是后续理解 CaP 与骨组织在纳米尺度相互作用的背景。</div>
+</article>
+<article class="block" id="S007"><div class="srcrow"><a class="chip" href="#S007" title="源锚点(可点击跳转/复制链接)">p.4 S007</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>On the macroscopic level, bones can have diverse shapes depending on their respective function. Yet, bones are usually categorized into two types: cortical (or compact) bone, and cancellous (or trabecular) bone, see Figure 1b. Cortical bone forms the outer shell of most bones. These can reach a thickness of between several tenths of a millimetre (in vertebra) to several millimetres or even centimetres (in the mid-shaft of long bones). It is a fairly dense bone, with porosity in the order of 6%. Cancellous bone usually forms inside of bones that are under compressive stress. The interconnecting framework of trabeculae is in a number of combinations, all following basic cellular structures: rod-rod, rod-plate, or plate-plate. Trabecular bone has pores in the order of 80%. The typical thickness of trabeculae is about 50–300 µm, with an orientation that depends on the load distribution in the bone.</p></div><div class="zh"><span class="lbl">中文</span><p>在宏观层面,骨依其功能可有多种形状。但骨通常分为两类:皮质(致密)骨与松质(小梁)骨,见图 1b。皮质骨构成多数骨的外壳,厚度可从零点几毫米(椎骨)到数毫米甚至数厘米(长骨骨干中部);它是相当致密的骨,孔隙率约 6%。松质骨通常形成于承受压应力的骨内部,其相互连接的小梁框架存在多种组合方式,均遵循基本的细胞结构形态:杆–杆、杆–板或板–板型。小梁骨孔隙率约 80%,小梁典型厚度约 50–300 µm,取向取决于骨内的载荷分布。</p></div></div></article>
+<article class="card" id="T001">
+<h3>表 1. 骨的化学组成(wt %)</h3>
+<div class="meta">Placed near: p.6 S008</div>
+<div class="meta">Source: p.6 C002</div>
+<img src="assets/tables/table1.png" alt="Table 1" loading="lazy">
+<div class="cap-en">Table 1. Chemical composition of bone (wt %) [67,121].</div>
+<div class="cap-zh">表 1.骨的化学组成(质量分数,%)[67,121]。</div>
+<p><strong>结构化数据 / Structured data:</strong></p>
+<div class="tblwrap"><table class="md-table"><thead><tr><th>无机相 Inorganic Phase</th><th>含量 (wt %)</th><th>有机相 Organic Phase</th><th>含量 (wt %)</th></tr></thead><tbody><tr><td>HAp(羟基磷灰石)</td><td>≈60</td><td>Collagen(胶原)</td><td>≈20</td></tr><tr><td>H₂O(水)</td><td>≈9</td><td>非胶原蛋白(骨钙素、骨连素、骨桥蛋白、血小板反应蛋白、骨形态发生蛋白等)</td><td>痕量</td></tr><tr><td>Carbonate(碳酸盐)</td><td>≈4</td><td>多糖、脂质、细胞因子</td><td>痕量</td></tr><tr><td>Citrate(柠檬酸盐)</td><td>≈0.9</td><td>骨原细胞:成骨细胞、骨细胞、破骨细胞</td><td>—</td></tr><tr><td>Na⁺</td><td>≈0.7</td><td></td><td></td></tr><tr><td>Mg²⁺</td><td>≈0.5</td><td></td><td></td></tr><tr><td>Cl⁻</td><td>≈0.13</td><td></td><td></td></tr><tr><td>其他:K⁺、F⁻、Zn²⁺、Fe²⁺、Cu²⁺、Sr²⁺、Pb²⁺</td><td>—</td><td></td><td></td></tr></tbody></table></div>
+<div class="note"><strong>阅读提示:</strong>骨矿物质主体是(碳酸化、非化学计量、纳米晶的)HAp,约 60 wt%;约 20 wt% 为 I 型胶原等有机相;另有约 9 wt% 水。表下的正文还讨论骨磷灰石偏离化学计量的细节——如含 CO₃²⁻、Cl⁻、F⁻ 等替代离子。</div>
+</article>
+<article class="block" id="S008"><div class="srcrow"><a class="chip" href="#S008" title="源锚点(可点击跳转/复制链接)">p.6 S008</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Due to the nanocrystalline nature of apatite in the bone, various diffraction techniques have not yet given conclusive results regarding its exact structure. ... The chemical composition of bone is given in Table 1. Biological apatites deviate from the stoichiometric HAp, Ca₁₀(PO₄)₆(OH)₂.</p></div><div class="zh"><span class="lbl">中文</span><p>由于骨中磷灰石呈纳米晶形态,各种衍射技术至今未对其精确结构给出定论。……骨的化学组成见表 1。生物磷灰石偏离化学计量的 HAp(Ca₁₀(PO₄)₆(OH)₂)。</p></div></div></article>
+<article class="block" id="S009"><div class="srcrow"><a class="chip" href="#S009" title="源锚点(可点击跳转/复制链接)">p.8 S009</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>It is possible to distinguish among three types of bone-implant interfaces: (i) morphological fixation (mechanical interlocking with no direct bond), (ii) biological fixation (direct structural and functional connection between ordered living bone and the surface of a load-carrying implant — osseointegration), and (iii) bioactive fixation (chemical bonding between the implant surface and bone).</p></div><div class="zh"><span class="lbl">中文</span><p>可区分三种骨–植入体界面:(i)形态固定(morphological fixation,机械互锁而无直接结合);(ii)生物固定(biological fixation,有序活骨与承重植入体表面之间直接的、结构与功能上的连接——即骨整合 osseointegration);(iii)生物活性固定(bioactive fixation,植入体表面与骨之间的化学键合)。</p></div></div></article>
+<article class="card" id="F002">
+<h3>图 2. 天然骨与人造材料的 Ashby 图(强度–杨氏模量)</h3>
+<div class="meta">Placed near: p.7 S010</div>
+<div class="meta">Source: p.8 C003</div>
+<img src="assets/f02.png" alt="Fig. 2" loading="lazy">
+<div class="cap-en">Figure 2. (a) Ashby chart of strength versus Young's modules of elasticity (specific values) for natural materials and for biomedical materials (bulk, coatings, and scaffolds). (b) Ashby chart of fracture toughness versus strength for engineering ceramics, and bone.</div>
+<div class="cap-zh">图 2.(a)天然材料与生物医用材料(块体、涂层与支架)的强度–杨氏弹性模量(比性能)Ashby 图;(b)工程陶瓷与骨的断裂韧性–强度 Ashby 图。</div>
+<div class="note"><strong>阅读提示:</strong>Ashby 图把"比强度"(强度/密度)与"比模量"放在同一张图中,便于比较骨、HAp 陶瓷、聚合物与金属。注意致密 HAp 陶瓷强度远高于骨但断裂韧性低得多——这是 CaP 陶瓷需以涂层/多孔支架形式使用的原因之一。</div>
+</article>
+<hr>
+<h2 id="sec3">3. Transient Precursor Phases 瞬态前驱相</h2>
+<p><strong>范围 / Pages:</strong> p.8–11</p>
+<article class="block" id="S011"><div class="srcrow"><a class="chip" href="#S011" title="源锚点(可点击跳转/复制链接)">p.8 S011</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Transient amorphous mineral phases have been detected in biomineral systems in different phyla of the animal kingdom. A poorly ordered hydrated iron oxide phase, called ferrihydrite, was identified as a transient precursor mineral phase in the biomineralization forming the tooth of the chiton. After a few days, the ferrihydrite transforms into crystalline magnetite. The formation of the skeleton of sea urchin made of calcite has been reported to begin with the initial deposition of amorphous calcium carbonate. The presence of an abundant ACP phase has also been demonstrated in the newly formed zebrafish fin bony rays. While the structure of bone is reasonably well defined, the process of the bone mineral formation remains controversial. In solutions, ACP is readily converted to stable crystalline phases such as OCP or apatitic products. One biomineralization strategy that has received significant attention is mineralization via transient precursor phases.</p></div><div class="zh"><span class="lbl">中文</span><p>在动物界不同门类的生物矿化体系中,均已检测到瞬态无定形矿物相。一种有序度差的水合氧化铁相——水铁矿(ferrihydrite)——被鉴定为石鳖牙齿生物矿化中的瞬态前驱矿物相,数天后水铁矿转变为结晶磁铁矿。据报道,海胆方解石骨骼的形成始于无定形碳酸钙的初始沉积;斑马鱼新生鳍条骨中也已证实存在大量的 ACP 相。尽管骨的结构已相当清楚,骨矿物的形成过程仍存争议。在溶液中,ACP 很容易转变为 OCP 或磷灰石类产物等稳定晶相。一种备受关注的生物矿化策略便是"经由瞬态前驱相矿化"。</p></div></div></article>
+<article class="block" id="S012"><div class="srcrow"><a class="chip" href="#S012" title="源锚点(可点击跳转/复制链接)">p.8 S012</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Discussion about the possible precursor of apatite in bones arose in the 1970s, after the discovery of a precursor phase in vitro. In the 1960s and the 1970s it was already proposed that ACP serves as a precursor to HAp in vivo. It was argued that the initial ACP precursor undergoes a solid-state transformation to poorly crystalline apatite. Alternatively, it was suggested that the amorphous material observed in early mineralization is a paracrystalline mineral, i.e., it shows loss of long-range order as a result of lattice imperfections. In 1972 it was shown that the first-formed phase in vitro is ACP. This subsequently transforms into OCP, and finally into carbonate apatite.</p></div><div class="zh"><span class="lbl">中文</span><p>关于骨中磷灰石可能前驱相的讨论始于 20 世纪 70 年代,此前已在体外发现了前驱相。60–70 年代即有学者提出 ACP 在体内作为 HAp 的前驱体:初始 ACP 前驱体经固态转变成为弱结晶磷灰石;另一种观点认为,早期矿化中观察到的无定形物质是一种"次晶"(paracrystalline)矿物,即因晶格缺陷而丧失长程有序。1972 年证实体外最先形成的相是 ACP,它随后转变为 OCP,最终变为碳酸磷灰石。</p></div></div></article>
+<hr>
+<h2 id="sec4">4. Dissolution and Reprecipitation as Bone 溶解与再沉淀成骨</h2>
+<p><strong>范围 / Pages:</strong> p.11–13</p>
+<article class="block" id="S013"><div class="srcrow"><a class="chip" href="#S013" title="源锚点(可点击跳转/复制链接)">p.10 S013</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The supersaturation of different CaP phases in solution is dependent on many parameters, such as the calcium and phosphate ion concentrations in solution, pH and temperature. In order to determine which phases are most likely to precipitate in a specific system, one should first examine which phases are thermodynamically possible. To this aim, dedicated software such as ChemEQL, AQUASIM, and PHREEQC is available and has been applied in studies of both CaP precipitation from solution and electrochemical deposition of CaP coatings. PHREEQC not only can supply the answer to which phase is more supersaturated in solution, but also provides information on the ionic strength I and free ion activities product (IAP) with respect to different CaP phases.</p></div><div class="zh"><span class="lbl">中文</span><p>溶液中不同 CaP 相的过饱和度取决于许多参数,如溶液中钙、磷酸根离子浓度、pH 与温度。要判断特定体系中最可能沉淀的相,应首先考察哪些相在热力学上可能存在。为此,可使用 ChemEQL、AQUASIM、PHREEQC 等专用软件,它们已被用于 CaP 从溶液沉淀与 CaP 涂层电化学沉积两类研究。PHREEQC 不仅能回答溶液中哪个相更过饱和,还能给出不同 CaP 相相关的离子强度 I 与自由离子活度积(IAP)。</p></div></div></article>
+<article class="block" id="S014"><div class="srcrow"><a class="chip" href="#S014" title="源锚点(可点击跳转/复制链接)">p.10 S014</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The saturation index (SI) indicates whether the mineral should dissolve, precipitate, or maintain equilibrium in the specific system. When SI = 0, the solution is in equilibrium. On the other hand, SI &lt; 0 and SI &gt; 0 indicate undersaturation (mineral should dissolve) and supersaturation (mineral should precipitate spontaneously), respectively. At low positive values of SI, a metastable zone may also exist. The key equations in these thermodynamic calculations:</p></div><div class="zh"><span class="lbl">中文</span><p>饱和指数(SI)指示矿物在特定体系中应当溶解、沉淀还是保持平衡:SI = 0 时溶液处于平衡;SI &lt; 0 表示欠饱和(矿物应溶解),SI &gt; 0 表示过饱和(矿物应自发沉淀);SI 为较小的正值时还可能存在亚稳区。这些热力学计算的关键方程如下:</p></div></div></article>
+<article class="eq" id="E001"><div class="srcrow"><a class="chip" href="#E001" title="公式锚点">p.10 E001 · Eq. (1)</a></div><div class="math">$$
+\log_{10}\gamma_{\pm}=-Az_i^2\sqrt{I}
+$$</div></article>
+<article class="eq" id="E002"><div class="srcrow"><a class="chip" href="#E002" title="公式锚点">p.10 E002 · Eq. (2)</a></div><div class="math">$$
+I=\frac{1}{2}\sum_{i=1}^{n}c_i z_i^2
+$$</div></article>
+<article class="eq" id="E003"><div class="srcrow"><a class="chip" href="#E003" title="公式锚点">p.10 E003 · Eq. (3)</a></div><div class="math">$$
+\mathrm{SI}=\log_{10}\left(\frac{\mathrm{IAP}}{K_{sp}}\right)
+$$</div><p class="eqextra"><strong>阅读提示:</strong> 三个公式构成"预测哪种 CaP 相会从电解液/体液中沉淀"的热力学工具链:由(2)算离子强度 →(1)算活度系数 →(3)算各相的 SI。SI 最大且为正的相最先(或最优先)沉淀。</p></article>
+<article class="card" id="F003">
+<h3>图 3. PHREEQC 热力学计算示例(电沉积体系)</h3>
+<div class="meta">Placed near: p.11 S015</div>
+<div class="meta">Source: p.11 C004</div>
+<img src="assets/f03.png" alt="Fig. 3" loading="lazy">
+<div class="cap-en">Figure 3. Thermodynamic calculations, using the PHREEQC software, that predict which of five different CaP phases will precipitate from an electrolyte solution of Ca(NO₃)₂ and (NH₄)H₂PO₄ at 37 °C, as a function of pH.</div>
+<div class="cap-zh">图 3.使用 PHREEQC 软件的热力学计算,预测 37 °C 下由 Ca(NO₃)₂ 与 (NH₄)H₂PO₄ 组成的电解液中,五种不同 CaP 相随 pH 变化何者将沉淀。</div>
+<div class="note"><strong>阅读提示:</strong>注意不同 pH 区间"最稳定/最过饱和"相的变化——酸性区为 DCPD,随 pH 上升依次过渡到 OCP、CDHA、HAp 等。这解释了电沉积(阴极区局部 pH 升高)为何能沉积出 HAp。</div>
+</article>
+<article class="block" id="S015"><div class="srcrow"><a class="chip" href="#S015" title="源锚点(可点击跳转/复制链接)">p.11 S015</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The core mechanism of CaP bioactivity is the partial dissolution and release of ionic products in vivo. When the local concentration of calcium and phosphate ions exceeds the saturation limit, precipitation of a new CaP phase (bone-like apatite) takes place, together with incorporation of biological moieties (collagen, etc.) — this is the "dissolution and reprecipitation as bone" process.</p></div><div class="zh"><span class="lbl">中文</span><p>CaP 生物活性的核心机制是其在体内的部分溶解与离子产物释放。当局部钙、磷酸根离子浓度超过饱和极限时,会沉淀出新的 CaP 相(类骨磷灰石),同时并入胶原等生物组分——这就是"溶解与再沉淀成骨"过程。</p></div></div></article>
+<hr>
+<h2 id="sec5">5. Requirements from Calcium Phosphates for Medical Applications 医用磷酸钙的要求</h2>
+<p><strong>范围 / Pages:</strong> p.13–16</p>
+<article class="block" id="S016"><div class="srcrow"><a class="chip" href="#S016" title="源锚点(可点击跳转/复制链接)">p.13 S016</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Calcium phosphates are commonly used in medical applications in the form of cements, coatings, scaffolds, and paste. To function properly, a variety of properties may be required, some of which are listed in Table 2. The core mechanism of bioactivity is the partial dissolution and release of ionic products in vivo, elevating the local concentrations of calcium and phosphate ions and precipitating a biological apatite on the surface of the ceramics. All implantable materials must be biocompatible, meaning that they do not elicit local or systemic response of the living system or tissue. All CaP ceramics have been found to be biocompatible.</p></div><div class="zh"><span class="lbl">中文</span><p>CaP 在医疗应用中的常见形态为骨水泥、涂层、支架与膏体。要正常发挥作用,需要多种性能,其中部分列于表 2。生物活性的核心机制是体内部分溶解并释放离子产物,从而提高局部钙、磷酸根离子浓度,并在陶瓷表面沉淀出生物磷灰石。所有植入材料都必须具备生物相容性,即不引起活体或组织的局部/全身反应——已证实所有 CaP 陶瓷均有生物相容性。</p></div></div></article>
+<article class="card" id="T002">
+<h3>表 2. 医用磷酸钙所需的性质</h3>
+<div class="meta">Placed near: p.13 S016</div>
+<div class="meta">Source: p.14 C005</div>
+<img src="assets/tables/table2.png" alt="Table 2" loading="lazy">
+<div class="cap-en">Table 2. Properties required from calcium phosphates for medical applications.</div>
+<div class="cap-zh">表 2.医用磷酸钙所需的性质。</div>
+<div class="note"><strong>阅读提示:</strong>表中逐条给出术语(如 bioactivity 生物活性、biocompatibility 生物相容性、bioactive fixation 生物活性固定、biostability 生物稳定性、crystallinity 结晶度、osseointegration 骨整合、osteoconduction 骨传导、osteoinduction 骨诱导、resorption 吸收、wettability 润湿性、therapeutic capabilities 治疗能力)及其定义/功能,是把握全文术语的术语表基础。</div>
+</article>
+<article class="block" id="S017"><div class="srcrow"><a class="chip" href="#S017" title="源锚点(可点击跳转/复制链接)">p.13 S017</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>A critical problem that limits wider clinical application of CaPs is their mechanical properties. The hip joints are subjected to an average load of up to three times body weight (3000 N); peak loads experienced during jumping can be as high as 10 times body weight. These stresses are repetitive and fluctuating depending on the nature of the activities. Therefore, all types of potential biomaterials and bioceramics must be durable within a wide variety of conditions. Unfortunately, CaPs are brittle and have low impact resistance and relatively low tensile stress (6 to 10 MPa). The main reason for this is their porosity, which serves as preferred initiation sites for crack propagation. Yet, their compressive strength is fairly good, being higher than that of normal bone.</p></div><div class="zh"><span class="lbl">中文</span><p>限制 CaP 更广泛临床应用的关键问题是其力学性能。髋关节承受的平均载荷可达体重的 3 倍(3000 N);跳跃时的峰值载荷可达体重的 10 倍。这些应力随活动类型(站立、坐、慢跑、拉伸、爬坡等)而重复波动。因此,所有潜在生物材料与生物陶瓷必须在多种条件下保持耐久。遗憾的是,CaP 呈脆性,抗冲击性差,抗拉应力较低(6–10 MPa),主因是其孔隙成为裂纹扩展的优先起始点。不过其抗压强度相当好,高于正常骨。</p></div></div></article>
+<hr>
+<h2 id="sec6">6. Individual Calcium Phosphate Phases and Their Properties 各磷酸钙相及其性质</h2>
+<p><strong>范围 / Pages:</strong> p.16–25</p>
+<article class="block" id="S018"><div class="srcrow"><a class="chip" href="#S018" title="源锚点(可点击跳转/复制链接)">p.16 S018</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>In this Section, the properties of CaP phases relevant to clinical use and biomedical applications are summarized. Here, the focus is on each, individual phase. The properties of composites and FGMs are summarized in Sections 9 and 10, respectively. The solid-state phase diagram of the CaP system is relatively unexplored. One of the reasons could be the important role that metastable phases, water, and kinetics have in this system. Water, for example, is essential in defining the thermodynamically stable salts. Nevertheless, few versions of this phase diagram are available. Figure 4 shows one version. The shaded region shows the area of BCP formation. BCP can be prepared by mechanical mixing of HAp and β-TCP, or by a precipitation method. Solid-state reaction, microwave processing, and heating bovine cancellous bone with the addition of (NH₄)₂HPO₄ were also reported to prepare BCP.</p></div><div class="zh"><span class="lbl">中文</span><p>本节总结与临床及生物医学应用相关的各 CaP 相的性质,聚焦于每一单独相(复合物与 FGM 的性质分别见第 9、10 节)。CaP 体系的固态相图研究相对不足,原因之一是亚稳相、水与动力学在该体系中起重要作用——例如水对界定热力学稳定盐必不可少。不过已有数个版本的相图(图 4 为其中之一),阴影区为双相磷酸钙(BCP)形成区。BCP 可通过 HAp 与 β-TCP 机械混合或沉淀法制备;也有报道采用固相反应、微波处理,以及添加 (NH₄)₂HPO₄ 加热牛松质骨等途径制备 BCP。</p></div></div></article>
+<article class="card" id="F004">
+<h3>图 4. 不同磷酸钙的平衡相图</h3>
+<div class="meta">Placed near: p.16 S018</div>
+<div class="meta">Source: p.16 C006</div>
+<img src="assets/f04.png" alt="Fig. 4" loading="lazy">
+<div class="cap-en">Figure 4. Equilibrium phase diagram of different calcium phosphates. The shaded region shows the phases of interest for biphasic calcium phosphate (BCP) formation (T₁ = 1360 °C, T₂ = 1475 °C). In this figure, TTCP—tetracalcium phosphate, CaO—calcium oxide. Reproduced with permission of Elsevier Ltd.</div>
+<div class="cap-zh">图 4.不同磷酸钙的平衡相图。阴影区为双相磷酸钙(BCP)形成的相关相区(临界温度参数 T₁ 与 T₂ 分别为 1360 °C、1475 °C)。TTCP 为四钙磷酸盐,CaO 为氧化钙。经 Elsevier Ltd. 许可转载。</div>
+<div class="note"><strong>阅读提示:</strong>相图显示 CaO–P₂O₅–H₂O 体系中随温度与 Ca/P 比变化的稳定相;高温下 β-TCP ↔ α-TCP 转变、HAp 分解为 TTCP + α-TCP 等关系决定了烧结工艺窗口。</div>
+<p><strong>主要 CaP 相族(第 6 节覆盖的单一相):</strong> MCPM(6.1)、DCPA(6.2)、DCPD(6.3)、OCP(6.4)、α-TCP(6.5)、β-TCP(6.6)、ACP(6.7)、CDHA(6.8)、HAp(6.9)、TTCP(6.10)及氟磷灰石等。</p>
+<p>Table 3 汇总了生物医学应用中主要 CaP 相:</p>
+</article>
+<article class="card" id="T003">
+<h3>表 3. 生物医学应用相关的 CaP 相</h3>
+<div class="meta">Placed near: p.17 S019</div>
+<div class="meta">Source: p.17 C007</div>
+<img src="assets/tables/table3.png" alt="Table 3" loading="lazy">
+<div class="cap-en">Table 3. Selected CaP phases of interest for biomedical applications.</div>
+<div class="cap-zh">表 3.生物医学应用相关的部分 CaP 相。</div>
+<p><strong>结构化数据(主要行,全文请对照 assets/tables/table3.png):</strong></p>
+<div class="tblwrap"><table class="md-table"><thead><tr><th>Ca/P 摩尔比</th><th>名称</th><th>化学式</th><th>pH 稳定范围</th><th>密度 (g/cm³)</th></tr></thead><tbody><tr><td>0.5</td><td>MCPM(一水磷酸二氢钙)</td><td>Ca(H₂PO₄)₂·H₂O</td><td>0.0–2.0</td><td>2.22</td></tr><tr><td>1.0</td><td>DCPA(无水磷酸氢钙,三斜磷钙石 Monetite)</td><td>CaHPO₄</td><td>2.0–5.5(&gt;80 °C)</td><td>2.929</td></tr><tr><td>1.0</td><td>DCPD(二水磷酸氢钙,透磷钙石 Brushite)</td><td>CaHPO₄·2H₂O</td><td>2.0–6.0</td><td>2.319</td></tr><tr><td>1.33</td><td>OCP(磷酸八钙)</td><td>Ca₈(HPO₄)₂(PO₄)₄·5H₂O</td><td>5.5–7.0</td><td>2.673</td></tr><tr><td>1.5</td><td>α-TCP(α-磷酸三钙)</td><td>α-Ca₃(PO₄)₂</td><td>仅 &gt;1125 °C 从水溶液沉淀</td><td>2.814</td></tr><tr><td>1.5</td><td>β-TCP(β-磷酸三钙)</td><td>β-Ca₃(PO₄)₂</td><td>仅 &gt;800 °C 从水溶液沉淀</td><td>3.067</td></tr><tr><td>1.2–2.2</td><td>ACP(无定形磷酸钙)</td><td>CaₓHᵧ(PO₄)z·nH₂O, n = 3–4.5, 15%–20% H₂O</td><td>~5–12</td><td>1</td></tr><tr><td>1.50–1.67</td><td>CDHA(缺钙羟基磷灰石)</td><td>Ca₁₀₋ₓ(HPO₄)ₓ(PO₄)₆₋ₓ(OH)₂₋ₓ (0 &lt; x &lt; 2)</td><td>6.5–9.5</td><td>—</td></tr><tr><td>1.67</td><td>HAp/OHAp(羟基磷灰石)</td><td>Ca₁₀(PO₄)₆(OH)₂</td><td>9.5–12.0</td><td>3.155</td></tr><tr><td>2.0</td><td>TTCP/TetCP(四钙磷酸盐,Hilgenstockite)</td><td>Ca₄(PO₄)₂O</td><td>仅 &gt;1300 °C 从水溶液沉淀</td><td>3.056</td></tr></tbody></table></div>
+<div class="note"><strong>阅读提示:</strong>表注强调:ACP 恒为亚稳;沉淀物组成取决于电解液组成与 pH。表中"pH 稳定范围"指在水溶液中的热力学稳定窗口,决定哪种相能在生理/电沉积条件下生成。</div>
+<p>Table 4(溶解度)与 Table 5(晶体学数据)亦在第 6 节:</p>
+</article>
+<article class="card" id="T004">
+<h3>表 4. 部分 CaP 相的溶解度</h3>
+<div class="meta">Placed near: p.17 S019</div>
+<div class="meta">Source: p.17 C008</div>
+<img src="assets/tables/table4.png" alt="Table 4" loading="lazy">
+<div class="cap-en">Table 4. Solubility of selected CaP phases of interest for biomedical applications.</div>
+<div class="cap-zh">表 4.生物医学应用相关的部分 CaP 相的溶解度。</div>
+<div class="note"><strong>阅读提示:</strong>表给出各相在 37 °C 与 25 °C 的 −log(Kₛ)(Kₛ 为溶度积常数)及 25 °C 的溶解度 g/L。注意 MCPM 极易溶(~18 g/L),而 HAp 极难溶——溶解度排序 MCPM &gt; DCPD &gt; DCPA &gt; α-TCP &gt; β-TCP &gt; OCP &gt; HAp 决定其在体内的吸收速率顺序(表注:HAp 的溶度积无法精确测定,测得 25.7 ± 0.1(pH 7.40)等)。</div>
+</article>
+<article class="card" id="T005">
+<h3>表 5. 部分 CaP 相的晶体学数据</h3>
+<div class="meta">Placed near: p.18 S020</div>
+<div class="meta">Source: p.18 C009</div>
+<img src="assets/tables/table5.png" alt="Table 5" loading="lazy">
+<div class="cap-en">Table 5. Crystallographic data on selected CaP phases.</div>
+<div class="cap-zh">表 5.部分 CaP 相的晶体学数据。</div>
+<div class="note"><strong>阅读提示:</strong>列出各相空间群、晶胞参数与 JCPDS/ICDD PDF 卡片号(加粗者为作者推荐文件)。HAp 六方 P6₃/m(a ≈ 9.42 Å, c ≈ 6.88 Å)是最重要的结构参照;OCP 三斜 P1 与 HAp 结构高度相似(层状),是外延共生常见的原因。</div>
+<p><strong>6.4 OCP(磷酸八钙)的水解(见 Eq. 4):</strong></p>
+</article>
+<article class="block" id="S020"><div class="srcrow"><a class="chip" href="#S020" title="源锚点(可点击跳转/复制链接)">p.19 S020</a></div><div class="pair one"><div class="orig"><span class="lbl">Original</span><p>OCP is unstable relative to HAp and tends to hydrolyse according to the reaction:</p></div></div></article>
+<article class="eq" id="E004"><div class="srcrow"><a class="chip" href="#E004" title="公式锚点">p.19 E004 · Eq. (4)</a></div><div class="math">$$
+\mathrm{Ca_8H_2(PO_4)_6\cdot5H_2O + 2Ca^{2+} \longrightarrow Ca_{10}(PO_4)_6(OH)_2 + 4H^{+}}
+$$</div><p class="eqextra"><strong>6.9 HAp(羟基磷灰石):</strong></p></article>
+<article class="block" id="S021"><div class="srcrow"><a class="chip" href="#S021" title="源锚点(可点击跳转/复制链接)">p.23 S021</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>HAp is considered to be osteoconductive, but not osteoinductive; yet, these properties can be turned via doping, stoichiometry and texturing. HAp is the common mineral found in vertebrate bones. It is also found in mammalian teeth, fish scales, and some other tissues. HAp has a hexagonal crystal structure (space group P6₃/m), with a = b ≈ 9.42 Å and c ≈ 6.88 Å; the unit cell contains two formula units, and the OH⁻ columns run along the c-axis through "channels" of calcium triangles.</p></div><div class="zh"><span class="lbl">中文</span><p>HAp 被认为是骨传导性而非骨诱导性的材料,但可通过掺杂、化学计量与织构化来调节这些性质。HAp 是脊椎动物骨中常见的矿物,也见于哺乳动物牙齿、鱼鳞等组织。HAp 为六方晶系(空间群 P6₃/m),a = b ≈ 9.42 Å,c ≈ 6.88 Å;晶胞含两个化学式单元,OH⁻ 沿 c 轴穿过由钙三角形围成的"通道"排成柱列。</p></div></div></article>
+<article class="card" id="F005">
+<h3>图 5. 六方 HAp 晶胞</h3>
+<div class="meta">Placed near: p.23 S021</div>
+<div class="meta">Source: p.23 C010</div>
+<img src="assets/f05.png" alt="Fig. 5" loading="lazy">
+<div class="cap-en">Figure 5. Unit cell of hexagonal HAp (space group P6₃/m). Reproduced with permission from ChemTube3D.</div>
+<div class="cap-zh">图 5.六方 HAp(空间群 P6₃/m)的晶胞。经 ChemTube3D 许可转载。</div>
+<div class="note"><strong>阅读提示:</strong>观察 Ca²⁺ 的两种配位位置(Ca(1) 柱与 Ca(2) 三角形)与沿 c 轴的 OH⁻ 通道——离子掺杂(F⁻、Sr²⁺、CO₃²⁻ 等)主要发生在这些位置。</div>
+</article>
+<article class="card" id="T006">
+<h3>表 6. HAp 的物理化学、力学与生物学性质(跨 p.23–24)</h3>
+<div class="meta">Placed near: p.23 S022</div>
+<div class="meta">Source: p.23–24 C011–C012</div>
+<img src="assets/tables/table6a.png" alt="Table 6 (part 1)" loading="lazy">
+<img src="assets/tables/table6b.png" alt="Table 6 (part 2)" loading="lazy">
+<div class="cap-en">Table 6. Physicochemical, mechanical and biological properties of HAp.</div>
+<div class="cap-zh">表 6.HAp 的物理化学、力学与生物学性质。</div>
+<div class="note"><strong>阅读提示:</strong>关键数值:结合能 −280.6 eV;介电常数 7.40–10.47;热导率 0.013 W/(cm·K);相对密度 95%–99.5%;分解温度 &gt;1000 °C;熔点 1614 °C;抗拉强度(致密)38–300 MPa、(多孔)~3 MPa;抗压强度 120–900 MPa(致密)/2–100 MPa(多孔);抗弯强度 38–250 MPa(致密)/2–11 MPa(多孔);杨氏模量 35–120 GPa;断裂韧性 0.7–1.2 MPa·m^1/2(随孔隙率近似线性下降);维氏硬度 3–7 GPa;泊松比 0.27。生物学:生物相容性/生物活性/细胞相容性/骨传导性"高",生物降解"低",骨诱导"无"。</div>
+</article>
+<hr>
+<h2 id="sec7">7. Nano-CaP 纳米磷酸钙</h2>
+<p><strong>范围 / Pages:</strong> p.25–27</p>
+<article class="block" id="S022"><div class="srcrow"><a class="chip" href="#S022" title="源锚点(可点击跳转/复制链接)">p.25 S022</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Usually, when we refer to the nanoscale, we have in mind dimensional range from 0.1 nm to 100 nm. In comparison, a particle 100 nm to 1 µm in size will be referred to as submicron particle. As described in Section 2, the HAp in bone is nanocrystalline. Moreover, nanoparticles (NPs) smaller than 100 nm have the highest reported efficacy with respect to cellular integration; it has been suggested that these NPs induce responses different from submicron structures, which could imply that nano-HAp, and possibly other nano-CaPs, could form biocompatible surfaces that integrate well with bone tissue.</p></div><div class="zh"><span class="lbl">中文</span><p>通常"纳米尺度"指 0.1 nm 至 100 nm;尺寸为 100 nm 至 1 µm 的颗粒则称为亚微米颗粒。如第 2 节所述,骨中的 HAp 是纳米晶。此外,小于 100 nm 的纳米颗粒(NP)据报道在细胞整合方面效率最高;有学者认为这些 NP 诱发的反应不同于亚微米结构,这意味着纳米 HAp(乃至其他纳米 CaP)可能形成与骨组织良好整合的生物相容表面。</p></div></div></article>
+<article class="block" id="S023"><div class="srcrow"><a class="chip" href="#S023" title="源锚点(可点击跳转/复制链接)">p.25 S023</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Nanoscale HAp has superior functional properties over its microscale counterpart, particularly surface reactivity and ultrafine structure, which are the most imperative properties for tissue-graft interaction upon implantation. Its high surface area-to-volume ratio, superior chemical homogeneity, and microstructural uniformity result in enhanced bone integration and mechanical properties. It has been shown that nano-HAp promotes enhanced osteoblast adhesion, differentiation and proliferation, osteointegration, and deposition of Ca-containing minerals on its surface, compared to conventional micro-HAp, which leads to enhanced formation of new bone tissue within a short period.</p></div><div class="zh"><span class="lbl">中文</span><p>纳米 HAp 相比微米 HAp 具有更优越的功能性质,尤其是表面反应性与超细结构——这是植入后组织–移植物相互作用最关键的性质。其高比表面积、优异的化学均匀性与微观结构一致性带来更强的骨整合与力学性能。研究表明,与传统微米 HAp 相比,纳米 HAp 能促进成骨细胞黏附、分化与增殖、骨整合及其表面含钙矿物的沉积,从而在短期内促进新骨组织形成。</p></div></div></article>
+<article class="card" id="F006">
+<h3>图 6. 电化学沉积纯 HAp 纳米颗粒的新型方法示意</h3>
+<div class="meta">Placed near: p.26 S024</div>
+<div class="meta">Source: p.26 C013</div>
+<img src="assets/f06.png" alt="Fig. 6" loading="lazy">
+<div class="cap-en">Figure 6. Schematic illustration of the novel approach for electrochemical deposition of pure HAp NPs for coating dental implants suggested by Mandler, Eliaz et al.</div>
+<div class="cap-zh">图 6.Mandler、Eliaz 等提出的、用于牙种植体涂层的纯 HAp 纳米颗粒电化学沉积新方法示意。</div>
+<div class="note"><strong>阅读提示:</strong>该方法用柠檬酸三钠(Cit)/聚丙烯酸钠(PAA)等水溶性稳定剂分散 HAp NP,施加正电位氧化水使植入体表面附近 pH 下降,分散剂羧基被质子化、NP 间排斥减弱,从而发生不可逆聚集沉积;恒电位与恒电流条件下均可得到高纯单相 HAp 涂层。</div>
+</article>
+<hr>
+<h2 id="sec8">8. Biphasic and Triphasic CaP Formulations 双相与三相 CaP 配方</h2>
+<p><strong>范围 / Pages:</strong> p.27–28</p>
+<article class="block" id="S025"><div class="srcrow"><a class="chip" href="#S025" title="源锚点(可点击跳转/复制链接)">p.27 S025</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>CaPs can form biphasic, triphasic, and polyphasic compositions, in which the individual components cannot be separated from each other. The individual phases in such formulations are homogeneously and intimately "mixed" at the submicron level and, therefore, are strongly integrated with each other. Nevertheless, the presence of all individual phases is easily evident in the XRD pattern. As a rule of a thumb, the properties of biphasic, triphasic and polyphasic materials are between those of the constituent phases, and depend on the relative amounts of the ingredients. The Ca/P atomic ratios of BCPs typically fall between those for pure TCP and HAp. Thus, by changing the ratio between the more stable and the more soluble CaPs, it is possible to prepare formulations with adjustable properties.</p></div><div class="zh"><span class="lbl">中文</span><p>CaP 可形成双相、三相及多相组成,其中各组分彼此无法分离;各相在亚微米尺度上均匀、紧密地"混合",因而强整合在一起,但所有物相的存在都能在 XRD 图谱中清楚显现。经验上,双相/三相/多相材料的性质介于其组成相之间,并取决于各成分的相对含量。BCP 的 Ca/P 原子比通常介于纯 TCP 与 HAp 之间。因此,通过改变更稳定相与更易溶相之间的比例,可以制备性质可调的配方。</p></div></div></article>
+<article class="block" id="S026"><div class="srcrow"><a class="chip" href="#S026" title="源锚点(可点击跳转/复制链接)">p.27 S026</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Historically, the term biphasic calcium phosphate (BCP) was coined in 1986 to describe a bioceramic that consisted of a mixture of HAp and β-TCP. Since then, BCP consisting of HAp and β-TCP has been the most studied among all known BCP formulations.</p></div><div class="zh"><span class="lbl">中文</span><p>从历史上看,"双相磷酸钙"(BCP)一词于 1986 年提出,用于描述由 HAp 与 β-TCP 混合物组成的生物陶瓷。此后,HAp/β-TCP 型 BCP 一直是所有已知 BCP 配方中研究最多的。</p></div></div></article>
+<hr>
+<h2 id="sec9">9. Composite Calcium Phosphates 复合磷酸钙</h2>
+<p><strong>范围 / Pages:</strong> p.28–33</p>
+<article class="block" id="S027"><div class="srcrow"><a class="chip" href="#S027" title="源锚点(可点击跳转/复制链接)">p.28 S027</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>In Section 8, mixtures of different CaPs, not necessarily with clear microscopic interfaces, were reviewed. In Section 9, composite materials consisting of one or more CaP phase with other materials, either organic or inorganic, are described. The additional materials could be of biologic origin or synthetic, and they may be incorporated to enhance the mechanical properties or in vivo performance of the CaP-based material. CaP coatings, cements and scaffold have long been integrated with both organic and inorganic materials for various reasons, such as control of the biodegradability and bioactivity, improvement of the mechanical properties or corrosion resistance, encapsulation of drugs or GFs, etc.</p></div><div class="zh"><span class="lbl">中文</span><p>第 8 节综述的是不同 CaP 的混合物(不一定有清晰的显微界面);第 9 节则描述由一个或多个 CaP 相与其他有机或无机材料组成的复合材料。附加材料可来自生物来源或人工合成,加入目的常是增强 CaP 基材料的力学性能或体内表现。长期以来,CaP 涂层、骨水泥与支架都因各种原因与有机/无机材料整合,如调控生物降解性与生物活性、改善力学性能或耐蚀性、包封药物或生长因子(GF)等。</p></div></div></article>
+<hr>
+<h2 id="sec10">10. Functionally Graded Calcium Phosphates 功能梯度磷酸钙</h2>
+<p><strong>范围 / Pages:</strong> p.33–35</p>
+<article class="block" id="S028"><div class="srcrow"><a class="chip" href="#S028" title="源锚点(可点击跳转/复制链接)">p.33 S028</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Functionally graded materials (FGMs) are materials that exhibit either chemical composition gradient or structural gradient within them. This allows obtaining properties that cannot be achieved otherwise, for example exhibiting good biocompatibility—a surface governed property, with good mechanical strength—a bulk governed property. In the case of CaP coatings on metal implants, it can also reduce the failure rate due to delamination of the coating over time as a result of mismatch between the thermal expansion coefficients of the substrate and of the coating.</p></div><div class="zh"><span class="lbl">中文</span><p>功能梯度材料(FGM)是指内部具有化学成分梯度或结构梯度的材料,由此可获得其他方式无法同时实现的性能组合——例如良好的生物相容性(表面控制的性能)与良好的机械强度(体相控制的性能)并存。对金属植入体上的 CaP 涂层而言,FGM 还可降低因基体与涂层热膨胀系数失配而随时间发生的涂层剥落失效。</p></div></div></article>
+<article class="card" id="F007">
+<h3>图 7. 成骨细胞在梯度表面上的 SEM 图像</h3>
+<div class="meta">Placed near: p.42 S029</div>
+<div class="meta">Source: p.42 C014</div>
+<img src="assets/f07.png" alt="Fig. 7" loading="lazy">
+<div class="cap-en">Figure 7. SEM images of MBA-15 osteogenic cells on surfaces of: (a) Gr-Ti; (b,f) HAp4.2; and (c–e,g) HAp4.2. Fibrin.</div>
+<div class="cap-zh">图 7.MBA-15 成骨细胞在不同表面的 SEM 图像:(a) Gr-Ti;(b,f) HAp4.2;(c–e,g) HAp4.2·纤维蛋白。</div>
+<div class="note"><strong>阅读提示:</strong>该图对比成骨细胞在不同梯度/涂层表面的铺展形态,用于说明表面组成对细胞反应的影响。</div>
+</article>
+<article class="card" id="F008">
+<h3>图 8. 兔股骨骨髓腔内扩孔前后的 X 线片</h3>
+<div class="meta">Placed near: p.44 S030</div>
+<div class="meta">Source: p.44 C015</div>
+<img src="assets/f08.png" alt="Fig. 8" loading="lazy">
+<div class="cap-en">Figure 8. A widened hole in the medullary canal of the distal femur of a rabbit before (a) and after (b) implantation of a polymer/CaP-based FGM implant.</div>
+<div class="cap-zh">图 8.兔股骨远端髓腔扩孔在植入聚合物/CaP 基 FGM 植入体前(a)、后(b)的影像。</div>
+<div class="note"><strong>阅读提示:</strong>展示 FGM 植入体在体内的放置与早期整合场景。</div>
+</article>
+<article class="card" id="F009">
+<h3>图 9. 平均骨沉积率(BAR)与 FGM 植入体</h3>
+<div class="meta">Placed near: p.45 S031</div>
+<div class="meta">Source: p.45 C016</div>
+<img src="assets/f09.png" alt="Fig. 9" loading="lazy">
+<div class="cap-en">Figure 9. (a) Average bone apposition ratio (BAR) after 7 and 14 days of implantation. The error bars are standard errors. (b) SEM image of the interface between the implant and bone 14 days after implantation.</div>
+<div class="cap-zh">图 9.(a)植入 7 天与 14 天后的平均骨沉积率(BAR),误差棒为标准误;(b)植入 14 天后植入体–骨界面的 SEM 图像。</div>
+<div class="note"><strong>阅读提示:</strong>BAR 定量比较不同涂层/植入体的成骨速度;结合界面 SEM 评估骨整合质量。</div>
+</article>
+<hr>
+<h2 id="sec11">11. Antibacterial Calcium Phosphates 抗菌磷酸钙</h2>
+<p><strong>范围 / Pages:</strong> p.35–38</p>
+<article class="block" id="S032"><div class="srcrow"><a class="chip" href="#S032" title="源锚点(可点击跳转/复制链接)">p.35 S032</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>One of the major concerns of all implants is the risk of infection, which is estimated in the range of 0.5%–5.0% for total hip arthroplasty. Similarly, in the field of dentistry, a condition well known as "peri-implantitis" is found to be common. It is mainly caused by infection around the implant, which leads to loss of supporting circumferential bone, causing its failure. Although infections associated with prosthetic joints occur less frequently than aseptic loosening failures, they represent the most devastating complication. Implant-associated infections occur either by direct inoculation into the surgical wound during surgery or immediately thereafter (perioperative infection), by microbial spread through blood from a distant focus of infection (haematogenous infection), by direct or lymphogenic spreading from an adjacent infectious focus, or as a result of penetrating trauma (contiguous infection).</p></div><div class="zh"><span class="lbl">中文</span><p>所有植入体最主要的顾虑之一是感染风险——全髋关节成形术的感染率估计为 0.5%–5.0%。牙科中常见的"种植体周围炎"(peri-implantitis)也主要由植入体周围感染引起,导致周围支持骨丧失而失败。尽管假体关节相关感染的发生率低于无菌性松动,但却是最具破坏性的并发症。植入体相关感染可发生于:术中或术后早期细菌直接接种入伤口(围手术期感染);细菌经血行从远处感染灶播散(血源性感染);从邻近感染灶直接或经淋巴扩散;以及穿通伤所致(邻近感染)。</p></div></div></article>
+<hr>
+<h2 id="sec12">12. The Effect of Sterilization 灭菌的影响</h2>
+<p><strong>范围 / Pages:</strong> p.38–39</p>
+<article class="block" id="S033"><div class="srcrow"><a class="chip" href="#S033" title="源锚点(可点击跳转/复制链接)">p.38 S033</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>All implants must be sterilized before implantation in the human body to avoid subsequent infections. The sterilization technique assigned must have minimum adverse effect on the material. Among the methods used to sterilize implants, steam sterilization (autoclaving), dry oven, ethylene oxide (EtO), and isopropanol diluted in water (60–90 vol %), with or without ethanol, are the simplest, cheapest and most commonly available. Yet, these have shown to degrade various CaP phases. Other sterilization methods include gamma irradiation, laser irradiation, ultraviolet (UV) irradiation, and plasma cleaning.</p></div><div class="zh"><span class="lbl">中文</span><p>所有植入体在植入人体前必须灭菌以避免感染,所选灭菌技术必须对材料产生尽可能小的不良影响。植入体灭菌方法中,蒸汽灭菌(高压灭菌)、干热、环氧乙烷(EtO)与水稀释异丙醇(60–90 vol%,可含乙醇)最简单、最廉价、最常用;但已证明它们会使多种 CaP 相降解。其他灭菌方法包括 γ 辐照、激光辐照、紫外(UV)辐照与等离子体清洗。</p></div></div></article>
+<hr>
+<h2 id="sec13">13. In Vitro and In Vivo Tests 体外与体内试验</h2>
+<p><strong>范围 / Pages:</strong> p.39–45</p>
+<article class="block" id="S034"><div class="srcrow"><a class="chip" href="#S034" title="源锚点(可点击跳转/复制链接)">p.39 S034</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Numerous in vitro and in vivo studies have been carried out with CaPs. In vitro tests are commonly used to characterize the bioactivity, biomineralization, cell proliferation and differentiation, protein adsorption, cell toxicity, drug delivery, corrosion behaviour, etc. The re-precipitation of bone and the corrosion of metal and CaP-coated implants are often tested in vitro in SBF. Compositions of selected SBFs are listed in Table 7. As can be noted in this table, the composition of SBF was varied over the years to better match that of human blood plasma. The original SBF, used by Kokubo et al. and Hench et al., lacks the SO₄²⁻ anion.</p></div><div class="zh"><span class="lbl">中文</span><p>已有大量 CaP 的体外与体内研究。体外试验常用于表征生物活性、生物矿化、细胞增殖与分化、蛋白吸附、细胞毒性、药物递送、腐蚀行为等。骨再沉淀以及金属/CaP 涂层植入体的腐蚀常以模拟体液(SBF)在体外测试——表 7 列出了多种 SBF 的组成。从表中可见,SBF 的组成多年来不断调整,以更好地匹配人血浆;Kokubo 与 Hench 等使用的原始 SBF 缺少 SO₄²⁻ 阴离子。</p></div></div></article>
+<article class="card" id="T007">
+<h3>表 7. 模拟体液(SBF)与人血浆、滑液中的离子浓度(mM)</h3>
+<div class="meta">Placed near: p.39 S034</div>
+<div class="meta">Source: p.47 C017</div>
+<img src="assets/tables/table7.png" alt="Table 7" loading="lazy">
+<div class="cap-en">Table 7. Ion concentrations (mM) in simulated body fluids (SBFs), human blood plasma and synovial fluid.</div>
+<div class="cap-zh">表 7.模拟体液(SBF)、人血浆与滑液中的离子浓度(mM)。</div>
+<div class="note"><strong>阅读提示:</strong>表中列为:人血浆、滑液、原始 SBF(Kokubo/Hench)、修正 SBF(c-SBF)、修订 SBF(r-SBF)、新改进 SBF(n-SBF)、磷酸盐缓冲液(PBS)、林格液(Ringer's)、汉克斯平衡盐溶液(HBSS)的 Na⁺、K⁺、Ca²⁺、Mg²⁺、Cl⁻、HCO₃⁻、HPO₄²⁻、SO₄²⁻ 浓度及有机酸/蛋白质含量。SBF 发展史本身就是"体外模拟生理环境"方法演进的缩影。</div>
+</article>
+<hr>
+<h2 id="sec14">14. CaP Coating Technologies CaP 涂层技术</h2>
+<p><strong>范围 / Pages:</strong> p.45–58</p>
+<article class="block" id="S035"><div class="srcrow"><a class="chip" href="#S035" title="源锚点(可点击跳转/复制链接)">p.45 S035</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>In the previous Sections, many references for CaP coatings were given. These could be monolithic, composite, or FGM. A key factor for successful fixation of cementless implants used for joint reconstruction is the establishment of a stable interface between the implant and bone. Coating of the implant with osteoconductive HAp is a well-known method for achieving such fixation. The coating can improve the biocompatibility of orthopedic and dental implants by blocking the diffusion of poisonous elements from the metal into the body, as well as reducing the friction coefficient between the implant and its biological surroundings. HAp is capable of enhancing bone growth across a gap around an implant in both stable and unstable mechanical conditions, and even converting a motion-induced fibrous membrane into a bony anchorage.</p></div><div class="zh"><span class="lbl">中文</span><p>前文已给出大量 CaP 涂层文献;这些涂层可为单相、复合或 FGM 型。关节重建用非骨水泥植入体成功固定的关键,在于植入体与骨之间建立稳定界面。用骨传导性 HAp 涂覆植入体是实现该固定的公认方法:涂层可阻挡金属中有毒元素向体内扩散、降低植入体与生物环境的摩擦系数,从而改善骨科与牙科植入体的生物相容性;HAp 还能在稳定与不稳定力学条件下促进骨跨越植入体周围间隙生长,甚至把运动诱导的纤维膜转变为骨性锚固。</p></div></div></article>
+<article class="block" id="S036"><div class="srcrow"><a class="chip" href="#S036" title="源锚点(可点击跳转/复制链接)">p.45 S036</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Synthetic CaP coatings can be prepared by a variety of processes, such as plasma spraying (PS), high-velocity oxygen-fuel (HVOF) thermal spraying, sputter coating, radio-frequency magnetron sputtering, pulsed laser deposition (PLD), ion-beam deposition, frit enamelling, hot isostatic pressing (HIP), metallo-organic chemical vapour deposition (CVD), derivation from sol-gels, electrophoretic deposition (EPD), chemical deposition, and electrodeposition (ED).</p></div><div class="zh"><span class="lbl">中文</span><p>合成 CaP 涂层可通过多种工艺制备,包括:等离子喷涂(PS)、高速氧燃料(HVOF)热喷涂、溅射涂层、射频磁控溅射、脉冲激光沉积(PLD)、离子束沉积、釉料涂搪(frit enamelling)、热等静压(HIP)、金属有机化学气相沉积(CVD)、溶胶-凝胶(sol-gel)衍生、电泳沉积(EPD)、化学沉积与电沉积(ED)。</p></div></div></article>
+<article class="block" id="S037"><div class="srcrow"><a class="chip" href="#S037" title="源锚点(可点击跳转/复制链接)">p.49 S037</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The deprotonation of dihydrogen phosphate H₂PO₄⁻ to HPO₄²⁻ serves as an important biological buffer system, which operates in the internal fluid of all cells, stabilizing the pH at around 7.21 (in mammals, pH = 6.9–7.4). Thus, the speciation curves of phosphoric acid may aid, at least to some extent, in understanding the effect of pH on the electrochemical deposition of CaPs. At 37 °C, the dissociation constants of phosphoric acid are:</p></div><div class="zh"><span class="lbl">中文</span><p>磷酸二氢根 H₂PO₄⁻ 去质子化为 HPO₄²⁻ 构成重要的生物缓冲体系,在所有细胞内液中运行,使 pH 稳定在约 7.21(哺乳动物为 pH 6.9–7.4)。因此,磷酸的形态分布曲线至少在一定程度上有助于理解 pH 对 CaP 电化学沉积的影响。37 °C 下磷酸的解离常数为:</p></div></div></article>
+<article class="eq" id="E005"><div class="srcrow"><a class="chip" href="#E005" title="公式锚点">p.49 E005 · Eq. (5)</a></div><div class="math">$$
+\mathrm{H_3PO_4 \longrightarrow H_2PO_4^{-} + H^{+}} \qquad \mathrm{p}K_1 = 2.207
+$$</div></article>
+<article class="eq" id="E006"><div class="srcrow"><a class="chip" href="#E006" title="公式锚点">p.49 E006 · Eq. (6)</a></div><div class="math">$$
+\mathrm{H_2PO_4^{-} \longrightarrow HPO_4^{2-} + H^{+}} \qquad \mathrm{p}K_2 = 7.182
+$$</div></article>
+<article class="eq" id="E007"><div class="srcrow"><a class="chip" href="#E007" title="公式锚点">p.49 E007 · Eq. (7)</a></div><div class="math">$$
+\mathrm{HPO_4^{2-} \longrightarrow PO_4^{3-} + H^{+}} \qquad \mathrm{p}K_3 = 12.023
+$$</div></article>
+<article class="block" id="S038"><div class="srcrow"><a class="chip" href="#S038" title="源锚点(可点击跳转/复制链接)">p.49 S038</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Based on calculations of the limiting current densities of different possible cathodic reactions and calculation of a remarkably high number of electrons transferred in the reaction it was concluded that electrolysis of water plays a key role in the consumption of electrons and rapid increase of the local pH. Some of the possible chemical and electrochemical reactions leading to formation of CaPs in solution are listed below:</p></div><div class="zh"><span class="lbl">中文</span><p>基于不同可能阴极反应极限电流密度的计算,以及对反应中转移电子数异常之高的估算,作者得出结论:水的电解在消耗电子与快速升高局部 pH 中起关键作用。溶液中生成 CaP 的部分可能化学反应与电化学反应如下:</p></div></div></article>
+<article class="eq" id="E008"><div class="srcrow"><a class="chip" href="#E008" title="公式锚点">p.49 E008 · Eq. (8)</a></div><div class="math">$$
+\mathrm{5Ca^{2+} + 3PO_4^{3-} + OH^{-} \longrightarrow [HAp]}
+$$</div></article>
+<article class="eq" id="E009"><div class="srcrow"><a class="chip" href="#E009" title="公式锚点">p.49 E009 · Eq. (9)</a></div><div class="math">$$
+\mathrm{5CaHPO_4 + H_2O \longrightarrow [HAp] + 2H_3PO_4}
+$$</div></article>
+<article class="eq" id="E010"><div class="srcrow"><a class="chip" href="#E010" title="公式锚点">p.49 E010 · Eq. (10)</a></div><div class="math">$$
+\mathrm{5Ca^{2+} + 3HPO_4^{2-} + H_2O \longrightarrow [HAp] + 4H^{+}}
+$$</div></article>
+<article class="eq" id="E011"><div class="srcrow"><a class="chip" href="#E011" title="公式锚点">p.49 E011 · Eq. (11)</a></div><div class="math">$$
+\mathrm{8Ca^{2+} + 6PO_4^{3-} + 2H^{+} + 5H_2O \longrightarrow 2[OCP]}
+$$</div></article>
+<article class="eq" id="E012"><div class="srcrow"><a class="chip" href="#E012" title="公式锚点">p.49 E012 · Eq. (12)</a></div><div class="math">$$
+\mathrm{8Ca^{2+} + 6HPO_4^{2-} + 5H_2O \longrightarrow 2[OCP] + 4H^{+}}
+$$</div></article>
+<article class="eq" id="E013"><div class="srcrow"><a class="chip" href="#E013" title="公式锚点">p.49 E013 · Eq. (13)</a></div><div class="math">$$
+\mathrm{H_2PO_4^{-} + (OH^{-})_{ads} \longrightarrow PO_4^{3-} + H_2O}
+$$</div></article>
+<article class="eq" id="E014"><div class="srcrow"><a class="chip" href="#E014" title="公式锚点">p.49 E014 · Eq. (14)</a></div><div class="math">$$
+\mathrm{2H_2PO_4^{-} + 2e^{-} \longrightarrow 2HPO_4^{2-} + H_2}
+$$</div></article>
+<article class="eq" id="E015"><div class="srcrow"><a class="chip" href="#E015" title="公式锚点">p.49 E015 · Eq. (15)</a></div><div class="math">$$
+\mathrm{H_2PO_4^{-} + 2e^{-} \longrightarrow PO_4^{3-} + H_2}
+$$</div></article>
+<article class="card" id="F010">
+<h3>图 10. 磷酸物种随 pH 的分布曲线(37 °C,总分析浓度 0.36 mM)</h3>
+<div class="meta">Placed near: p.49 S038</div>
+<div class="meta">Source: p.50 C018</div>
+<img src="assets/f10.png" alt="Fig. 10" loading="lazy">
+<div class="cap-en">Figure 10. The distribution of phosphate species as a function of pH at 37 °C, 0.36 mM total analytical concentration. The vertical dashed lines mark the pK values. Under each species, the CaP phases that can precipitate from it are marked (MCPM under H₃PO₄; DCPD, DCPA under H₂PO₄⁻; OCP, TCP, ACP, CDHA, TTCP, HAp under HPO₄²⁻/PO₄³⁻ with special marks for those that cannot precipitate from aqueous solutions).</div>
+<div class="cap-zh">图 10.37 °C、总分析浓度 0.36 mM 时磷酸物种随 pH 的分布;竖直虚线标出 pK 值。各物种下方标注了可由其沉淀的 CaP 相(红色等特殊标记表示无法从水溶液沉淀的相,如 TTCP)。</div>
+<div class="note"><strong>阅读提示:</strong>pH ≈ 6 时 H₂PO₄⁻(多数)与 HPO₄²⁻ 共存;pH 升至 7.4 时 HPO₄²⁻ 成为主要物种;要发生消耗 PO₄³⁻ 的反应,局部 pH 必须先显著升高——这解释了阴极极化对 CaP 沉积的必要性。</div>
+<p><strong>14.x 涂层的黏附与表面预处理:</strong></p>
+</article>
+<article class="block" id="S039"><div class="srcrow"><a class="chip" href="#S039" title="源锚点(可点击跳转/复制链接)">p.51 S039</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The adhesion of the coating to the metal substrate is a very important parameter, which affects performance and longevity of the implant. Adhesion failures result in delamination of the coating and loosening of the implant, thus leading to mechanical failure and bone resorption. The US FDA as well as ASTM and ISO standards require an adhesion strength of at least 15 MPa. In order to achieve this value, pre-treatment of the metal surface is sometimes required. Eliaz et al. studied the effect of various combinations of mechanical and chemical surface treatments on the adhesion strength of electrochemically deposited HAp coating on CP-Ti. These surface pre-treatments included: (1) mechanical grinding down to P1000; (2) grinding to P1000 followed by chemical etching in HNO₃/HF solution; (3) grinding to P1000 followed by etching in HNO₃/HF solution and then grit blast; (4) grinding to P1000 followed by etching in HNO₃/HF solution, grit blast and soaking in a stirred solution of 5 M NaOH at 60 °C for approximately 24 h, followed by heat treatment for 1 h at 600 °C and overnight cooling in the furnace; etc.</p></div><div class="zh"><span class="lbl">中文</span><p>涂层与金属基体的黏附是非常关键的参数,直接影响植入体的性能与寿命。黏附失效会导致涂层剥落与植入体松动,进而引起力学失效与骨吸收。美国 FDA 及 ASTM、ISO 标准要求黏附强度至少 15 MPa;为达到该值,有时需要对金属表面进行预处理。Eliaz 等研究了不同机械/化学表面处理组合对 CP-Ti 上电沉积 HAp 涂层黏附强度的影响,预处理包括:(1) 机械磨削至 P1000;(2) P1000 磨削后在 HNO₃/HF 溶液中化学蚀刻;(3) P1000 磨削 + HNO₃/HF 蚀刻 + 喷砂;(4) P1000 磨削 + HNO₃/HF 蚀刻 + 喷砂 + 60 °C 5 M NaOH 搅拌溶液浸泡约 24 h,随后 600 °C 热处理 1 h 并随炉冷却过夜;等等。</p></div></div></article>
+<article class="card" id="F011">
+<h3>图 11. 柔性碳基膜上合成 CaP 涂层的示意与结果</h3>
+<div class="meta">Placed near: p.51 S040</div>
+<div class="meta">Source: p.51 C019</div>
+<img src="assets/f11.png" alt="Fig. 11" loading="lazy">
+<div class="cap-en">Figure 11. (a) Schematic diagram for the synthesis of CaP coating on flexible carbon-based membranes; (b) corresponding SEM images.</div>
+<div class="cap-zh">图 11.(a)在柔性碳基膜上合成 CaP 涂层的示意图;(b)相应 SEM 图像。</div>
+</article>
+<article class="card" id="F012">
+<h3>图 12. 不同预处理的电沉积 HAp 涂层拉伸失效应力</h3>
+<div class="meta">Placed near: p.51 S039</div>
+<div class="meta">Source: p.52 C020</div>
+<img src="assets/f12.png" alt="Fig. 12" loading="lazy">
+<div class="cap-en">Figure 12. The tensile stress to failure of ED HAp-coated samples with different pre-treatments during adhesion test. The data is presented in terms of mean + standard error of the mean (n = 3). The red dash line defines the minimum adhesion strength required by the US FDA for coating adhesion strength in orthopedic and dental endosseous implants (15 MPa).</div>
+<div class="cap-zh">图 12.不同预处理的电沉积(ED)HAp 涂层样品在黏附试验中的拉伸失效应力;数据以均值 + 标准误表示(样本数 n 为 3);红色虚线为美国 FDA 对骨科与牙科骨内植入体涂层黏附强度要求的最低值(15 MPa)。</div>
+<div class="note"><strong>阅读提示:</strong>图中预处理系列 #4(磨削+酸蚀+喷砂+NaOH 浸泡+热处理)黏附强度最高——说明化学(形成富 OH 表面/厚氧化层)与机械(喷砂粗糙化)预处理的协同作用。H₂O₂ 浸泡形成较厚多孔氧化层并生成 Ti–OH 基团,也有利于 HAp 形核。</div>
+</article>
+<article class="card" id="F013">
+<h3>图 13. 电沉积 CaP 涂层的表面形貌 SEM</h3>
+<div class="meta">Placed near: p.53 S041</div>
+<div class="meta">Source: p.53 C021</div>
+<img src="assets/f13.png" alt="Fig. 13" loading="lazy">
+<div class="cap-en">Figure 13. (a–c) SEM images revealing the typical surface morphologies of electrochemically deposited CaP coatings under different conditions.</div>
+<div class="cap-zh">图 13.(a–c)不同条件下电沉积 CaP 涂层的典型表面形貌 SEM 图像。</div>
+<div class="note"><strong>阅读提示:</strong>电沉积参数(电流密度、电解液组成、pH、温度、添加剂)决定涂层形貌——从片状 DCPD 晶体到针状/板状 HAp,形貌又影响细胞响应与涂层溶解行为。</div>
+<p><strong>涂层标准要求(表 8):</strong></p>
+</article>
+<article class="card" id="T008">
+<h3>表 8. 骨科与牙科植入体 CaP 涂层的要求(跨 p.56–57,横向)</h3>
+<div class="meta">Placed near: p.56 S042</div>
+<div class="meta">Source: p.56–57 C022–C023</div>
+<img src="assets/tables/table8a.png" alt="Table 8 (part 1)" loading="lazy">
+<img src="assets/tables/table8b.png" alt="Table 8 (part 2)" loading="lazy">
+<div class="cap-en">Table 8. Requirements from CaP coatings for orthopedic and dental implants.</div>
+<div class="cap-zh">表 8.骨科与牙科植入体对 CaP 涂层的要求。</div>
+<div class="note"><strong>阅读提示:</strong>该表按 ASTM/ISO 标准组织:化学组成(Ca/P = 1.67–1.76;As ≤ 3 ppm、Cd ≤ 5 ppm、Hg ≤ 5 ppm、Pb ≤ 30 ppm、总重金属 ≤ 50 ppm;ICP/MS 或 AAS 测试)、相含量(仅 HAp 与 OCP;XRD + FTIR;结晶度 ≥ 45% 结晶 HAp、其他晶相 ≤ 5%、余为非晶)、黏附强度(≥ 15 MPa,拉伸;ASTM F1147 / ISO 13779-4;剪切 ASTM F1044)、孔隙率、表面覆盖率、厚度(ASTM F1854)、耐磨损性、疲劳强度、溶解速率等。每项都给出测试方法、标准与评注——是 CaP 涂层研发与质控的清单。</div>
+</article>
+<hr>
+<h2 id="sec15">15. Clinical and Industrial Applications 临床与工业应用</h2>
+<p><strong>范围 / Pages:</strong> p.58–61</p>
+<article class="block" id="S043"><div class="srcrow"><a class="chip" href="#S043" title="源锚点(可点击跳转/复制链接)">p.58 S043</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>One of the main applications of CaPs is for cementless hip implants. Coating the stem's surface with CaP can allow for bone-bone bonding and osteoconduction of the implant. This technique is sometimes called interface bioactive bone cement (IBBC). This approach is also applied on dental implants. Another wide use of CaP is as bone fillers of defects, used in reconstruction surgery. In this case, HAp is proved to be most efficient as it is not resorbable, binds to the bone physicochemically, and is mechanically strong enough. CPCs have shown promise in bone replacement in oral surgery and craniofacial applications. Another use of CPC is in osteonecrotic sites in the body that encourage bone growth. CaP scaffolds, either porous or dense, are used for various applications, such as alveolar ridge augmentation, immediate tooth replacement, maxillofacial reconstruction, burr-hole buttons, etc. Other examples include orbital implants, increment of the hearing ossicles, spine fusion and repair of bone defects.</p></div><div class="zh"><span class="lbl">中文</span><p>CaP 的主要应用之一是<strong>非骨水泥髋关节假体</strong>:在柄表面涂覆 CaP 可实现骨–骨结合与植入体骨传导,该技术有时称为"界面生物活性骨水泥"(IBBC),也用于牙种植体。CaP 的另一广泛用途是重建外科中作为骨缺损填充物——此时 HAp 被证明最有效,因其不可吸收、与骨发生物理化学结合且强度足够。磷酸钙骨水泥(CPC)在口腔外科与颅颌面骨替代方面展现出前景,也用于体内促进骨生长的骨坏死部位。CaP 支架(多孔或致密)用于牙槽嵴增高、即刻牙替换、颌面重建、颅骨钻孔钮等;其他例子包括眶内植入体、听小骨增高、脊柱融合与骨缺损修复。</p></div></div></article>
+<article class="card" id="T009">
+<h3>表 9. 商业化 CaP 产品商标(跨 p.59–60)</h3>
+<div class="meta">Placed near: p.59 S044</div>
+<div class="meta">Source: p.59–60 C024–C025</div>
+<img src="assets/tables/table9a.png" alt="Table 9 (part 1)" loading="lazy">
+<img src="assets/tables/table9b.png" alt="Table 9 (part 2)" loading="lazy">
+<div class="cap-en">Table 9. Trademarks of the commercially produced CaPs.</div>
+<div class="cap-zh">表 9.商业化生产的 CaP 商标。</div>
+<div class="note"><strong>阅读提示:</strong>该表按组成(β-TCP、CDHA、HAp、珊瑚源 HAp、藻源 HAp、牛骨磷灰石(未烧结/烧结)、HAp+胶原、HAp+海藻酸钠、HAp+PLLA、HAp+聚乙烯、HAp+CaSO₄、BCP、BCP+硅、FA+BCP、β-TCP+PMMA、rhBMP-2/HAp–β-TCP、TTCP+DCPA 等)列出商品名与厂商,如 adbone®TCP(Medbone)、BoneSave(Stryker)、BioOss(Geistlich)、Cerabone(aap)、HAPEX(Gyrus)等——是了解 CaP 市场格局的索引。</div>
+</article>
+<article class="card" id="F014">
+<h3>图 14. 市售 CaP 相关产品的各种应用与形态</h3>
+<div class="meta">Placed near: p.58 S043</div>
+<div class="meta">Source: p.61 C026</div>
+<img src="assets/f14.png" alt="Fig. 14" loading="lazy">
+<div class="cap-en">Figure 14. Various applications and forms of commercially available CaP-related products. (a) Bone graft substitute granules; (b) putty; (c) cement; (d) coated implant; (e) scaffold; (f) xenograft bone substitute; (g) synthetic bone graft.</div>
+<div class="cap-zh">图 14.市售 CaP 相关产品的多种应用与形态:(a) 骨移植替代颗粒;(b) 膏泥(putty);(c) 骨水泥;(d) 涂层植入体;(e) 支架;(f) 异种骨替代物;(g) 合成骨移植物。</div>
+<div class="note"><strong>阅读提示:</strong>展示 CaP 从颗粒到膏体、水泥、涂层、支架、异种骨与合成骨移植物的产品谱系。</div>
+</article>
+<hr>
+<h2 id="sec16">16. The Future of Calcium Phosphates 磷酸钙的未来</h2>
+<p><strong>范围 / Pages:</strong> p.61–65</p>
+<article class="block" id="S045"><div class="srcrow"><a class="chip" href="#S045" title="源锚点(可点击跳转/复制链接)">p.61 S045</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Although CaPs have been used in the clinics for more than three decades, some issues that limit their use have not been resolved yet. Some of the major issues seem to be:</p></div><div class="zh"><span class="lbl">中文</span><p>尽管 CaP 在临床上已应用三十余年,一些限制其使用的问题仍未解决。主要问题包括:</p></div></div></article>
+<article class="block" id="S046"><div class="srcrow"><a class="chip" href="#S046" title="源锚点(可点击跳转/复制链接)">p.64 S046</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>The figure below demonstrates the versatility, scalability, and manipulation of 3D-printed hyperelastic "bone" (HB).</p></div><div class="zh"><span class="lbl">中文</span><p>下图展示了 3D 打印超弹性"骨"(HB)材料的通用性、可规模化性与可加工性。</p></div></div></article>
+<article class="card" id="F015">
+<h3>图 15. 3D 打印超弹性"骨"(HB)的通用性与可扩展性</h3>
+<div class="meta">Placed near: p.64 S046</div>
+<div class="meta">Source: p.64 C027</div>
+<img src="assets/f15.png" alt="Fig. 15" loading="lazy">
+<div class="cap-en">Figure 15. Versatility, scalability, and manipulation of 3D-printed hyperelastic "bone" (HB). (A) Easy to scale up; (B) flexible/twistable; (C) can be cut with scissors and sutured; (D) supports cell infiltration and vascularization.</div>
+<div class="cap-zh">图 15.3D 打印超弹性"骨"(HB)的通用性、可扩展性与可操作性:(A) 易于放大生产;(B) 可弯曲/扭转(超弹性);(C) 可用剪刀裁剪并缝合;(D) 支持细胞浸润与血管化。</div>
+<div class="note"><strong>阅读提示:</strong>HB 是含 90 wt% HAp 的 3D 打印高孔隙弹性材料(以聚己内酯等为黏结相),克服了传统 CaP 陶瓷的脆性——可裁剪、可缝合、可卷曲,便于微创植入。</div>
+</article>
+<article class="card" id="F016">
+<h3>图 16. 增材制造技术获得的结构示例</h3>
+<div class="meta">Placed near: p.65 S047</div>
+<div class="meta">Source: p.65 C028</div>
+<img src="assets/f16.png" alt="Fig. 16" loading="lazy">
+<div class="cap-en">Figure 16. Examples of structures obtained by additive manufacturing techniques. (a) 3D printed porous scaffolds with controlled architecture; (b) patient-specific implants.</div>
+<div class="cap-zh">图 16.增材制造技术获得的结构示例:(a) 3D 打印的孔结构可控多孔支架;(b) 患者个性化植入体。</div>
+<div class="note"><strong>阅读提示:</strong>增材制造(3D 打印)可精确控制支架孔径/孔隙率/外形,实现个性化植入体——是作者看好的 CaP 未来方向之一。</div>
+</article>
+<hr>
+<h2 id="sec17">17. Conclusions 结论</h2>
+<p><strong>范围 / Pages:</strong> p.65–67</p>
+<article class="block" id="S048"><div class="srcrow"><a class="chip" href="#S048" title="源锚点(可点击跳转/复制链接)">p.65 S048</a></div><div class="pair"><div class="orig"><span class="lbl">Original</span><p>Calcium phosphate (CaP) bioceramics are widely used in the field of bone regeneration, both in orthopedics and in dentistry, due to their good biocompatibility, osseointegration and osteoconduction. This article reviews many aspects of CaP bioceramics, in the form of bone cements, paste, scaffolds, and coatings. It starts with a brief historical perspective of their development and uses. Next, it describes the structure, chemistry and mechanical properties of bone. Then, it describes the transient precursor phases that have been observed, both in vitro and in vivo, and the mechanisms of dissolution of CaPs and their reprecipitation as bone. Next, the key requirements from CaPs for medical applications are presented. The structure, properties and applications of CaP-based materials are reviewed, starting with the individual phases as a function of their Ca-to-P atomic ratio, then nano-CaP, biphasic and triphasic formulations, composites and functionally graded materials (FGMs). The antibacterial behaviour of CaPs thanks to incorporation of certain antibacterial agents and the effect of different sterilization processes on CaPs are reviewed. Next, key principles of in vitro and in vivo tests are described. A variety of technologies for coating CaPs are reviewed, focusing on electrochemical processes and the requirements of the US FDA and international standards. Next, a variety of commercial products is listed according to their composition, and major applications are visualized. Finally, key issues in future developments are listed, along with recent developments in additive manufacturing (AM) of CaPs and hyperelastic bone.</p></div><div class="zh"><span class="lbl">中文</span><p>磷酸钙(CaP)生物陶瓷因良好的生物相容性、骨整合与骨传导性,被广泛用于骨科与牙科的骨再生,形态涵盖骨水泥、膏体、支架与涂层。本文综述了 CaP 生物陶瓷的诸多方面:先简述其发展与应用的历史;继而描述骨的结构、化学与力学性质;再述体外与体内观察到的瞬态前驱相,以及 CaP 的溶解与再沉淀成骨机制;接着给出医用 CaP 的关键要求;按 Ca/P 原子比由单一相到纳米 CaP、双相与三相配方、复合材料与功能梯度材料(FGM),系统综述了 CaP 基材料的结构、性质与应用;综述了掺入抗菌剂赋予 CaP 的抗菌行为与不同灭菌工艺的影响;描述了体外与体内试验的关键原则;系统归纳了 CaP 涂层技术(聚焦电化学工艺)及美国 FDA 与国际标准的要求;按组成列出多种商业化产品并展示主要应用;最后列出未来发展的关键问题,以及 CaP 增材制造(AM)与超弹性骨的最新进展。</p></div></div></article>
+<hr>
+<h2 id="glossary">术语表 / Terminology Ledger(常用术语对照)</h2>
+<div class="tblwrap"><table class="md-table"><thead><tr><th>规范英文术语</th><th>中文</th><th>说明 / 首次展开</th></tr></thead><tbody><tr><td>CaP</td><td>磷酸钙</td><td>calcium phosphate,全文核心术语</td></tr><tr><td>HAp / OHAp</td><td>羟基磷灰石</td><td>hydroxyapatite,Ca₁₀(PO₄)₆(OH)₂</td></tr><tr><td>CDHA</td><td>缺钙羟基磷灰石</td><td>calcium-deficient hydroxyapatite</td></tr><tr><td>DCPD</td><td>二水磷酸氢钙(透磷钙石)</td><td>brushite,CaHPO₄·2H₂O</td></tr><tr><td>DCPA</td><td>无水磷酸氢钙(三斜磷钙石)</td><td>monetite,CaHPO₄</td></tr><tr><td>MCPM / MCPA</td><td>一水/无水磷酸二氢钙</td><td>monocalcium phosphate (mono)hydrate</td></tr><tr><td>OCP</td><td>磷酸八钙</td><td>octacalcium phosphate,Ca₈H₂(PO₄)₆·5H₂O</td></tr><tr><td>α-TCP / β-TCP</td><td>α-/β-磷酸三钙</td><td>α-/β-tricalcium phosphate</td></tr><tr><td>TTCP (TetCP)</td><td>四钙磷酸盐</td><td>tetracalcium phosphate,Ca₄(PO₄)₂O</td></tr><tr><td>ACP</td><td>无定形磷酸钙</td><td>amorphous calcium phosphate(Posner 簇 Ca₉(PO₄)₆)</td></tr><tr><td>BCP</td><td>双相磷酸钙</td><td>biphasic calcium phosphate(通常 HAp+β-TCP)</td></tr><tr><td>CPC</td><td>磷酸钙骨水泥</td><td>calcium phosphate cement</td></tr><tr><td>FGM</td><td>功能梯度材料</td><td>functionally graded material</td></tr><tr><td>Ca/P ratio</td><td>钙磷原子比</td><td>决定相类型的关键参数</td></tr><tr><td>SBF</td><td>模拟体液</td><td>simulated body fluid</td></tr><tr><td>ED / EPD</td><td>电沉积 / 电泳沉积</td><td>electrochemical/electrophoretic deposition</td></tr><tr><td>PS</td><td>等离子喷涂</td><td>plasma spraying</td></tr><tr><td>IBBC</td><td>界面生物活性骨水泥</td><td>interface bioactive bone cement</td></tr><tr><td>osseointegration</td><td>骨整合</td><td>骨与植入体直接结构功能连接</td></tr><tr><td>osteoconduction</td><td>骨传导</td><td>提供新骨生长支架</td></tr><tr><td>osteoinduction</td><td>骨诱导</td><td>诱导成骨(通常需生长因子)</td></tr><tr><td>bioactivity</td><td>生物活性</td><td>表面沉淀生物磷灰石的能力</td></tr><tr><td>IAP / SI / Ksp</td><td>离子活度积 / 饱和指数 / 溶度积</td><td>热力学沉淀判据</td></tr><tr><td>BAR</td><td>骨沉积率</td><td>bone apposition ratio</td></tr><tr><td>GF</td><td>生长因子</td><td>growth factor</td></tr><tr><td>NP</td><td>纳米颗粒</td><td>nanoparticle</td></tr><tr><td>XRD / FTIR / SEM / TEM</td><td>X射线衍射/红外/扫描电镜/透射电镜</td><td>主要表征手段</td></tr><tr><td>ICP/MS / AAS</td><td>电感耦合等离子体质谱 / 原子吸收光谱</td><td>元素分析</td></tr><tr><td>JCPDS/ICDD</td><td>粉末衍射标准卡片数据库</td><td>PDF 卡片号</td></tr></tbody></table></div>
+<hr>
+<h2 id="notes">阅读提示 / Critical Reading Notes</h2>
+<ul><li><strong>定位</strong>:这是一篇 <strong>2017 年发表的综述(Materials 10, 334)</strong>,作者 Noam Eliaz 是电化学沉积 CaP 涂层领域的代表人物——第 14 节与公式(5)–(15)、图 10、图 12 凝聚了作者团队的核心工作,值得精读。</li><li><strong>按需选读</strong>:若关注材料学,精读第 6 节(表 3–6)与第 14 节(表 8);若关注临床/市场,读第 5、15 节(表 2、9);若关注机制,读第 3、4 节。</li><li><strong>文中图 7–9 属于第 10 节 FGM 的动物实验</strong>(MBA-15 细胞、兔股骨),图 15–16 属于第 16 节增材制造。</li><li><strong>不确定与范围说明</strong>:本对照版覆盖全部 17 节的主题段落、全部图/表与全部 15 个编号方程;综述性展开句(引用大量文献的列举)未逐句全部翻译,原文见 PDF,锚点见 <code>source_map.json</code>。</li><li><strong>版权提示</strong>:本文件为本地个人阅读与研究用途,原文版权归 MDPI 与作者所有。</li></ul>
+<hr>
+</main>
+</body>
+</html>
