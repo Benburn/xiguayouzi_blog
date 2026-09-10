@@ -379,6 +379,29 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "vascular-ultrasound",
+    category: "imaging",
+    title: "血管超声：B型、彩色多普勒、双功与超声造影",
+    excerpt:
+      "基于 Thieme《Vascular Ultrasound》整理的中英对照全文阅读器，覆盖从物理原理、血流动力学到各部位血管检查与超声造影的完整体系。",
+    date: "2026-09-10",
+    readTime: "21 章 · 576 页 · 中英对照",
+    cover: null,
+    tags: ["血管超声", "彩色多普勒", "双功超声", "超声造影", "中英对照"],
+    body: `# 血管超声：B型、彩色多普勒、双功与超声造影
+
+## 为什么值得系统阅读
+
+本书（Thieme《Vascular Ultrasound: B-Mode, Color Doppler and Duplex Ultrasound, Contrast-Enhanced Ultrasound》，2023）系统覆盖血管超声的物理原理、血流动力学、设备设置与伪像，以及颅外脑血管、脑内动脉、四肢血管、腹部与内脏血管、透析通路等各部位的检查方法与超声造影应用，适合超声医师、临床学习者与医疗器械从业者建立完整的血管超声知识体系。
+
+在线版为**逐段中英对照全文阅读器**：左侧为可折叠章节目录与页码跳转，顶部支持「中英对照 / 只看中文 / 只看英文」三种阅读模式与全文搜索；全书按原书页码连续编排，图片、图注、章节标题与正文保持原有对应关系，图片可点击放大，适配电脑、平板与手机。
+
+<aside class="medical-disclaimer"><strong>重要声明：</strong>本在线内容仅供医学教育、专业交流和资料索引使用，由原文辅助翻译整理，不能替代原版书籍、产品说明书、监管批准信息、规范化培训或执业医师的独立判断。内容不构成诊断、治疗、处方或个体化医疗建议；涉及适应证、禁忌证与操作技术时，请以当地现行法规、经批准的产品标签及权威临床指南为准。</aside>
+
+<p><a class="knowledge-card-launch" href="/vascular-ultrasound/index.html">打开《血管超声》全文阅读器 <span>→</span></a></p>
+`,
+  },
+  {
     slug: "ultrasound-standard-planes",
     category: "imaging",
     title: "超声标准切面图解",
@@ -1158,8 +1181,11 @@ McConnell 征特异性相对较高，但敏感性有限，未发现该征象不�
 ];
 
 // 工具函数
+// 分类内文章按发布日倒序排列，最新的排在最前
 export function getPostsByCategory(categoryId) {
-  return blogPosts.filter((p) => p.category === categoryId);
+  return blogPosts
+    .filter((p) => p.category === categoryId)
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
 }
 
 export function getPostBySlug(slug) {
