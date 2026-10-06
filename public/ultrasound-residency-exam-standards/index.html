@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="住院医师规范化培训结业临床实践能力考核标准方案（2022版）超声医学科 · 蓝本原文版（PDF 原版式）">
+<title>超声科规培结业考评分标准 2022版 · 蓝本原文版（PDF 原版式）</title><style>
+:root{--ink:#1c2733;--blue:#155e8a;--line:#c7d5e3;--mut:#5b6b7c;--bg:#e9edf1}
+*{box-sizing:border-box;-webkit-text-size-adjust:100%}
+html,body{margin:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif}
+/* 顶部工具条 */
+#bar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);
+     display:flex;align-items:center;gap:10px;padding:8px 14px;flex-wrap:wrap;font-size:13px}
+#bar .ttl{font-weight:700;color:#12496d;margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#bar .ttl small{font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
+#bar button,#bar select{border:1px solid var(--line);background:#f8fbfd;border-radius:7px;padding:4px 10px;font-size:13px;cursor:pointer;color:#155e8a}
+#bar button:hover{background:#eaf3fb}
+#bar #pageno{width:56px;text-align:center;border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:13px}
+/* 目录抽屉 */
+#tocbtn{position:fixed;left:14px;bottom:16px;z-index:22;width:44px;height:44px;border-radius:50%;border:none;
+        background:var(--blue);color:#fff;font-size:17px;cursor:pointer;box-shadow:0 2px 8px rgba(21,94,138,.35)}
+#toc{position:fixed;left:0;top:0;bottom:0;width:330px;max-width:86vw;background:#fff;z-index:30;
+     box-shadow:2px 0 14px rgba(0,0,0,.18);transform:translateX(-102%);transition:transform .22s ease;
+     overflow:auto;padding:14px 12px 40px}
+#toc.open{transform:none}
+#toc h3{margin:4px 6px 10px;font-size:14px;color:#12496d}
+#toc a{display:block;padding:7px 8px;border-radius:7px;color:var(--ink);text-decoration:none;font-size:13px;line-height:1.5}
+#toc a:hover{background:#eaf3fb}
+#toc a .pg{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
+#toc a.pglnk{display:inline-block;width:46px;text-align:center;border:1px solid var(--line);margin:2px;font-size:12px;padding:3px 0}
+#mask{position:fixed;inset:0;background:rgba(15,30,45,.35);z-index:25;display:none}
+#mask.on{display:block}
+/* 页面容器：与 PDF 等比例 */
+main{padding:14px 0 70px}
+.pgwrap{width:min(100%,940px);margin:0 auto 16px;position:relative}
+.pgwrap .lbl{position:absolute;left:50%;transform:translateX(-50%);top:-11px;background:#fff;border:1px solid var(--line);
+     border-radius:10px;font-size:11px;color:var(--mut);padding:0 9px;z-index:2}
+.pgwrap .sheet{background:#fff;box-shadow:0 1px 5px rgba(20,60,100,.14);border-radius:2px;overflow:hidden}
+.pgwrap svg{display:block;width:100%;height:auto}
+footer{color:var(--mut);font-size:12px;text-align:center;padding:14px;border-top:1px solid var(--line);background:#fff}
+@media (max-width:760px){
+  #bar{padding:6px 10px;gap:6px;font-size:12.5px}
+  #bar .ttl{font-size:12.5px}
+  #bar .ttl small{display:none}
+  main{padding:8px 0 60px}
+  .pgwrap{width:100%;margin-bottom:10px}
+  #tocbtn{left:10px;bottom:12px;width:40px;height:40px;font-size:15px}
+}
+/* 移动端缩放：默认适应宽度；可切到 A4 原比例或放大阅读 */
+  .zoomwrap{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+       background:#fff;box-shadow:0 1px 5px rgba(20,60,100,.14)}
+  .zoomwrap.lock{background:transparent;box-shadow:none}
+  .zoominner{transform-origin:top left}
+  .zoominner img{display:block;width:100%;height:auto}
+  #zoomBar{display:none}
+  @media (max-width:760px){
+    #zoomBar{display:flex;align-items:center;gap:6px;margin-left:auto}
+    #zoomBar button{padding:3px 8px;font-size:12px}
+    #zoomBar button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+    .zoomwrap.free{width:100%}
+    .pgwrap .lbl{font-size:10.5px}
+  }
+  #rotHint{display:none;background:#fff8e6;border-bottom:1px solid #f0dcae;color:#8a6516;
+       font-size:12px;padding:6px 12px;text-align:center}
+  @media (max-width:760px) and (orientation:portrait){
+    #rotHint{display:block}
+  }
+  @media print{
+  #bar,#toc,#tocbtn,#mask,footer{display:none}
+  body{background:#fff}
+  main{padding:0}
+  .pgwrap{width:100%;margin:0;break-after:page}
+  .pgwrap .lbl{display:none}
+  .pgwrap .sheet{box-shadow:none;border-radius:0}
+  @page{size:A4;margin:0}
+}
+</style></head><body>
+<div id="bar">
+  <select id="chsel" onchange="jumpCh(this.value)"><option value="1">考核总则</option><option value="10">附件1 · 附表1-1</option><option value="11">附表1-2</option><option value="14">附表1-3</option><option value="17">附表1-4</option><option value="20">附表1-5</option><option value="23">附表1-6</option><option value="26">附表1-7</option><option value="30">附表1-8</option><option value="33">附表1-9</option><option value="35">附表1-10</option><option value="39">附表1-11</option><option value="42">附表1-12</option><option value="43">附件2 · 各考站评分表</option><option value="58">附件3-1</option><option value="63">附件3-2</option><option value="68">附件3-3</option></select>
+  <button onclick="nav(1)" title="首页">⏮</button>
+  <button onclick="nav(cur-1)" title="上一页">◀</button>
+  <input id="pageno" value="1" onchange="nav(parseInt(this.value)||1)">
+  <span style="color:#5b6b7c">/ 71</span>
+  <button onclick="nav(cur+1)" title="下一页">▶</button>
+  <button onclick="nav(71)" title="末页">⏭</button>
+  <span id="zoomBar">
+    <button type="button" onclick="setZoom('fit')" data-zoom="fit">适应</button>
+    <button type="button" onclick="setZoom('a4')" data-zoom="a4">A4</button>
+    <button type="button" onclick="setZoom('big')" data-zoom="big">放大</button>
+  </span>
+  <span class="ttl">蓝本原文版 · PDF 原版式<small>页面与 PDF 逐页一致（矢量排版，可无损缩放）</small></span>
+</div>
+<div id="rotHint">横屏阅读宽表格更清晰（旋转设备即可自动适配）</div>
+<button id="tocbtn" onclick="toggleToc()" title="目录">☰</button>
+<div id="mask" onclick="toggleToc(false)"></div>
+<nav id="toc"><h3>目录</h3><a href="#pg1" onclick="return nav(1)">考核总则<span class="pg">蓝本正文 P.1–9</span></a><a href="#pg10" onclick="return nav(10)">附件1 · 附表1-1<span class="pg">超声临床思维评分细则（P.10）</span></a><a href="#pg11" onclick="return nav(11)">附表1-2<span class="pg">肝脏左叶及门静脉主干超声技能考核评分细则（P.11–13）</span></a><a href="#pg14" onclick="return nav(14)">附表1-3<span class="pg">肝脏右叶及门静脉主干超声技能考核评分细则（P.14–16）</span></a><a href="#pg17" onclick="return nav(17)">附表1-4<span class="pg">胆道系统超声技能考核评分细则（P.17–19）</span></a><a href="#pg20" onclick="return nav(20)">附表1-5<span class="pg">胰腺超声技能考核评分细则（P.20–22）</span></a><a href="#pg23" onclick="return nav(23)">附表1-6<span class="pg">肾脏超声技能考核评分细则（P.23–25）</span></a><a href="#pg26" onclick="return nav(26)">附表1-7<span class="pg">甲状腺及颈部淋巴结超声技能考核评分细则（P.26–29）</span></a><a href="#pg30" onclick="return nav(30)">附表1-8<span class="pg">颈动脉超声技能考核评分细则（P.30–32）</span></a><a href="#pg33" onclick="return nav(33)">附表1-9<span class="pg">心脏超声技能考核评分细则——胸骨旁左室长轴切面（P.33–34）</span></a><a href="#pg35" onclick="return nav(35)">附表1-10<span class="pg">心脏超声技能考核评分细则——大动脉短轴、左室短轴、剑下四腔心切面（P.35–38）</span></a><a href="#pg39" onclick="return nav(39)">附表1-11<span class="pg">心脏超声技能考核评分细则——心尖系列及胸骨上窝切面（P.39–41）</span></a><a href="#pg42" onclick="return nav(42)">附表1-12<span class="pg">临床人文沟通评分细则（P.42）</span></a><a href="#pg43" onclick="return nav(43)">附件2 · 各考站评分表<span class="pg">附表2-1～2-12（P.43–57）</span></a><a href="#pg58" onclick="return nav(58)">附件3-1<span class="pg">临床思维考站样题（P.58–62）</span></a><a href="#pg63" onclick="return nav(63)">附件3-2<span class="pg">技能操作站样题（P.63–67）</span></a><a href="#pg68" onclick="return nav(68)">附件3-3<span class="pg">人文沟通站样题（P.68–71）</span></a>
+<h3 style="margin-top:14px">按蓝本页码</h3><a class="pglnk" href="#pg1" onclick="return nav(1)">1</a><a class="pglnk" href="#pg2" onclick="return nav(2)">2</a><a class="pglnk" href="#pg3" onclick="return nav(3)">3</a><a class="pglnk" href="#pg4" onclick="return nav(4)">4</a><a class="pglnk" href="#pg5" onclick="return nav(5)">5</a><a class="pglnk" href="#pg6" onclick="return nav(6)">6</a><a class="pglnk" href="#pg7" onclick="return nav(7)">7</a><a class="pglnk" href="#pg8" onclick="return nav(8)">8</a><a class="pglnk" href="#pg9" onclick="return nav(9)">9</a><a class="pglnk" href="#pg10" onclick="return nav(10)">10</a><a class="pglnk" href="#pg11" onclick="return nav(11)">11</a><a class="pglnk" href="#pg12" onclick="return nav(12)">12</a><a class="pglnk" href="#pg13" onclick="return nav(13)">13</a><a class="pglnk" href="#pg14" onclick="return nav(14)">14</a><a class="pglnk" href="#pg15" onclick="return nav(15)">15</a><a class="pglnk" href="#pg16" onclick="return nav(16)">16</a><a class="pglnk" href="#pg17" onclick="return nav(17)">17</a><a class="pglnk" href="#pg18" onclick="return nav(18)">18</a><a class="pglnk" href="#pg19" onclick="return nav(19)">19</a><a class="pglnk" href="#pg20" onclick="return nav(20)">20</a><a class="pglnk" href="#pg21" onclick="return nav(21)">21</a><a class="pglnk" href="#pg22" onclick="return nav(22)">22</a><a class="pglnk" href="#pg23" onclick="return nav(23)">23</a><a class="pglnk" href="#pg24" onclick="return nav(24)">24</a><a class="pglnk" href="#pg25" onclick="return nav(25)">25</a><a class="pglnk" href="#pg26" onclick="return nav(26)">26</a><a class="pglnk" href="#pg27" onclick="return nav(27)">27</a><a class="pglnk" href="#pg28" onclick="return nav(28)">28</a><a class="pglnk" href="#pg29" onclick="return nav(29)">29</a><a class="pglnk" href="#pg30" onclick="return nav(30)">30</a><a class="pglnk" href="#pg31" onclick="return nav(31)">31</a><a class="pglnk" href="#pg32" onclick="return nav(32)">32</a><a class="pglnk" href="#pg33" onclick="return nav(33)">33</a><a class="pglnk" href="#pg34" onclick="return nav(34)">34</a><a class="pglnk" href="#pg35" onclick="return nav(35)">35</a><a class="pglnk" href="#pg36" onclick="return nav(36)">36</a><a class="pglnk" href="#pg37" onclick="return nav(37)">37</a><a class="pglnk" href="#pg38" onclick="return nav(38)">38</a><a class="pglnk" href="#pg39" onclick="return nav(39)">39</a><a class="pglnk" href="#pg40" onclick="return nav(40)">40</a><a class="pglnk" href="#pg41" onclick="return nav(41)">41</a><a class="pglnk" href="#pg42" onclick="return nav(42)">42</a><a class="pglnk" href="#pg43" onclick="return nav(43)">43</a><a class="pglnk" href="#pg44" onclick="return nav(44)">44</a><a class="pglnk" href="#pg45" onclick="return nav(45)">45</a><a class="pglnk" href="#pg46" onclick="return nav(46)">46</a><a class="pglnk" href="#pg47" onclick="return nav(47)">47</a><a class="pglnk" href="#pg48" onclick="return nav(48)">48</a><a class="pglnk" href="#pg49" onclick="return nav(49)">49</a><a class="pglnk" href="#pg50" onclick="return nav(50)">50</a><a class="pglnk" href="#pg51" onclick="return nav(51)">51</a><a class="pglnk" href="#pg52" onclick="return nav(52)">52</a><a class="pglnk" href="#pg53" onclick="return nav(53)">53</a><a class="pglnk" href="#pg54" onclick="return nav(54)">54</a><a class="pglnk" href="#pg55" onclick="return nav(55)">55</a><a class="pglnk" href="#pg56" onclick="return nav(56)">56</a><a class="pglnk" href="#pg57" onclick="return nav(57)">57</a><a class="pglnk" href="#pg58" onclick="return nav(58)">58</a><a class="pglnk" href="#pg59" onclick="return nav(59)">59</a><a class="pglnk" href="#pg60" onclick="return nav(60)">60</a><a class="pglnk" href="#pg61" onclick="return nav(61)">61</a><a class="pglnk" href="#pg62" onclick="return nav(62)">62</a><a class="pglnk" href="#pg63" onclick="return nav(63)">63</a><a class="pglnk" href="#pg64" onclick="return nav(64)">64</a><a class="pglnk" href="#pg65" onclick="return nav(65)">65</a><a class="pglnk" href="#pg66" onclick="return nav(66)">66</a><a class="pglnk" href="#pg67" onclick="return nav(67)">67</a><a class="pglnk" href="#pg68" onclick="return nav(68)">68</a><a class="pglnk" href="#pg69" onclick="return nav(69)">69</a><a class="pglnk" href="#pg70" onclick="return nav(70)">70</a><a class="pglnk" href="#pg71" onclick="return nav(71)">71</a></nav>
+<main>
+<div class="pgwrap" id="pg1" data-page="1"><div class="lbl">P.1 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p01.svg" alt="蓝本 P.1" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg2" data-page="2"><div class="lbl">P.2 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p02.svg" alt="蓝本 P.2" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg3" data-page="3"><div class="lbl">P.3 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p03.svg" alt="蓝本 P.3" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg4" data-page="4"><div class="lbl">P.4 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p04.svg" alt="蓝本 P.4" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg5" data-page="5"><div class="lbl">P.5 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p05.svg" alt="蓝本 P.5" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg6" data-page="6"><div class="lbl">P.6 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p06.svg" alt="蓝本 P.6" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg7" data-page="7"><div class="lbl">P.7 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p07.svg" alt="蓝本 P.7" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg8" data-page="8"><div class="lbl">P.8 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p08.svg" alt="蓝本 P.8" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg9" data-page="9"><div class="lbl">P.9 · 考核总则（蓝本 P.1–9）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p09.svg" alt="蓝本 P.9" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg10" data-page="10"><div class="lbl">P.10 · 附件1 · 附表1-1（蓝本 P.10）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p10.svg" alt="蓝本 P.10" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg11" data-page="11"><div class="lbl">P.11 · 附表1-2（蓝本 P.11–13）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p11.svg" alt="蓝本 P.11" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg12" data-page="12"><div class="lbl">P.12 · 附表1-2（蓝本 P.11–13）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p12.svg" alt="蓝本 P.12" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg13" data-page="13"><div class="lbl">P.13 · 附表1-2（蓝本 P.11–13）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p13.svg" alt="蓝本 P.13" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg14" data-page="14"><div class="lbl">P.14 · 附表1-3（蓝本 P.14–16）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p14.svg" alt="蓝本 P.14" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg15" data-page="15"><div class="lbl">P.15 · 附表1-3（蓝本 P.14–16）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p15.svg" alt="蓝本 P.15" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg16" data-page="16"><div class="lbl">P.16 · 附表1-3（蓝本 P.14–16）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p16.svg" alt="蓝本 P.16" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg17" data-page="17"><div class="lbl">P.17 · 附表1-4（蓝本 P.17–19）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p17.svg" alt="蓝本 P.17" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg18" data-page="18"><div class="lbl">P.18 · 附表1-4（蓝本 P.17–19）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p18.svg" alt="蓝本 P.18" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg19" data-page="19"><div class="lbl">P.19 · 附表1-4（蓝本 P.17–19）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p19.svg" alt="蓝本 P.19" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg20" data-page="20"><div class="lbl">P.20 · 附表1-5（蓝本 P.20–22）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p20.svg" alt="蓝本 P.20" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg21" data-page="21"><div class="lbl">P.21 · 附表1-5（蓝本 P.20–22）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p21.svg" alt="蓝本 P.21" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg22" data-page="22"><div class="lbl">P.22 · 附表1-5（蓝本 P.20–22）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p22.svg" alt="蓝本 P.22" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg23" data-page="23"><div class="lbl">P.23 · 附表1-6（蓝本 P.23–25）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p23.svg" alt="蓝本 P.23" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg24" data-page="24"><div class="lbl">P.24 · 附表1-6（蓝本 P.23–25）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p24.svg" alt="蓝本 P.24" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg25" data-page="25"><div class="lbl">P.25 · 附表1-6（蓝本 P.23–25）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p25.svg" alt="蓝本 P.25" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg26" data-page="26"><div class="lbl">P.26 · 附表1-7（蓝本 P.26–29）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p26.svg" alt="蓝本 P.26" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg27" data-page="27"><div class="lbl">P.27 · 附表1-7（蓝本 P.26–29）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p27.svg" alt="蓝本 P.27" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg28" data-page="28"><div class="lbl">P.28 · 附表1-7（蓝本 P.26–29）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p28.svg" alt="蓝本 P.28" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg29" data-page="29"><div class="lbl">P.29 · 附表1-7（蓝本 P.26–29）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p29.svg" alt="蓝本 P.29" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg30" data-page="30"><div class="lbl">P.30 · 附表1-8（蓝本 P.30–32）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p30.svg" alt="蓝本 P.30" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg31" data-page="31"><div class="lbl">P.31 · 附表1-8（蓝本 P.30–32）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p31.svg" alt="蓝本 P.31" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg32" data-page="32"><div class="lbl">P.32 · 附表1-8（蓝本 P.30–32）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p32.svg" alt="蓝本 P.32" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg33" data-page="33"><div class="lbl">P.33 · 附表1-9（蓝本 P.33–34）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p33.svg" alt="蓝本 P.33" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg34" data-page="34"><div class="lbl">P.34 · 附表1-9（蓝本 P.33–34）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p34.svg" alt="蓝本 P.34" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg35" data-page="35"><div class="lbl">P.35 · 附表1-10（蓝本 P.35–38）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p35.svg" alt="蓝本 P.35" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg36" data-page="36"><div class="lbl">P.36 · 附表1-10（蓝本 P.35–38）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p36.svg" alt="蓝本 P.36" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg37" data-page="37"><div class="lbl">P.37 · 附表1-10（蓝本 P.35–38）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p37.svg" alt="蓝本 P.37" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg38" data-page="38"><div class="lbl">P.38 · 附表1-10（蓝本 P.35–38）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p38.svg" alt="蓝本 P.38" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg39" data-page="39"><div class="lbl">P.39 · 附表1-11（蓝本 P.39–41）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p39.svg" alt="蓝本 P.39" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg40" data-page="40"><div class="lbl">P.40 · 附表1-11（蓝本 P.39–41）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p40.svg" alt="蓝本 P.40" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg41" data-page="41"><div class="lbl">P.41 · 附表1-11（蓝本 P.39–41）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p41.svg" alt="蓝本 P.41" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg42" data-page="42"><div class="lbl">P.42 · 附表1-12（蓝本 P.42）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p42.svg" alt="蓝本 P.42" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg43" data-page="43"><div class="lbl">P.43 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p43.svg" alt="蓝本 P.43" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg44" data-page="44"><div class="lbl">P.44 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p44.svg" alt="蓝本 P.44" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg45" data-page="45"><div class="lbl">P.45 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p45.svg" alt="蓝本 P.45" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg46" data-page="46"><div class="lbl">P.46 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p46.svg" alt="蓝本 P.46" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg47" data-page="47"><div class="lbl">P.47 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p47.svg" alt="蓝本 P.47" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg48" data-page="48"><div class="lbl">P.48 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p48.svg" alt="蓝本 P.48" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg49" data-page="49"><div class="lbl">P.49 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p49.svg" alt="蓝本 P.49" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg50" data-page="50"><div class="lbl">P.50 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p50.svg" alt="蓝本 P.50" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg51" data-page="51"><div class="lbl">P.51 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p51.svg" alt="蓝本 P.51" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg52" data-page="52"><div class="lbl">P.52 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p52.svg" alt="蓝本 P.52" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg53" data-page="53"><div class="lbl">P.53 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p53.svg" alt="蓝本 P.53" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg54" data-page="54"><div class="lbl">P.54 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p54.svg" alt="蓝本 P.54" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg55" data-page="55"><div class="lbl">P.55 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p55.svg" alt="蓝本 P.55" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg56" data-page="56"><div class="lbl">P.56 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p56.svg" alt="蓝本 P.56" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg57" data-page="57"><div class="lbl">P.57 · 附件2 · 各考站评分表（蓝本 P.43–57）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p57.svg" alt="蓝本 P.57" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg58" data-page="58"><div class="lbl">P.58 · 附件3-1（蓝本 P.58–62）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p58.svg" alt="蓝本 P.58" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg59" data-page="59"><div class="lbl">P.59 · 附件3-1（蓝本 P.58–62）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p59.svg" alt="蓝本 P.59" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg60" data-page="60"><div class="lbl">P.60 · 附件3-1（蓝本 P.58–62）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p60.svg" alt="蓝本 P.60" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg61" data-page="61"><div class="lbl">P.61 · 附件3-1（蓝本 P.58–62）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p61.svg" alt="蓝本 P.61" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg62" data-page="62"><div class="lbl">P.62 · 附件3-1（蓝本 P.58–62）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p62.svg" alt="蓝本 P.62" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg63" data-page="63"><div class="lbl">P.63 · 附件3-2（蓝本 P.63–67）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p63.svg" alt="蓝本 P.63" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg64" data-page="64"><div class="lbl">P.64 · 附件3-2（蓝本 P.63–67）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p64.svg" alt="蓝本 P.64" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg65" data-page="65"><div class="lbl">P.65 · 附件3-2（蓝本 P.63–67）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p65.svg" alt="蓝本 P.65" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg66" data-page="66"><div class="lbl">P.66 · 附件3-2（蓝本 P.63–67）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p66.svg" alt="蓝本 P.66" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg67" data-page="67"><div class="lbl">P.67 · 附件3-2（蓝本 P.63–67）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p67.svg" alt="蓝本 P.67" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg68" data-page="68"><div class="lbl">P.68 · 附件3-3（蓝本 P.68–71）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p68.svg" alt="蓝本 P.68" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg69" data-page="69"><div class="lbl">P.69 · 附件3-3（蓝本 P.68–71）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p69.svg" alt="蓝本 P.69" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg70" data-page="70"><div class="lbl">P.70 · 附件3-3（蓝本 P.68–71）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p70.svg" alt="蓝本 P.70" width="595" height="842"></div></div></div>
+<div class="pgwrap" id="pg71" data-page="71"><div class="lbl">P.71 · 附件3-3（蓝本 P.68–71）</div><div class="sheet zoomwrap"><div class="zoominner"><img src="svg/p71.svg" alt="蓝本 P.71" width="595" height="842"></div></div></div>
+</main>
+<footer>蓝本原文版（PDF 原版式）· 全 71 页与原 PDF 排版一致（矢量 SVG，文字可选中、可无损放大）</footer>
+<script>
+var cur = 1, total = 71;
+// 移动端阅读比例：fit=适应宽度（默认），a4=A4 整页原比例可横向滚动，big=放大 1.6 倍
+var ZOOM_KEY = 'us-exam-zoom', zoomMode = 'fit';
+function applyZoom(mode){
+  zoomMode = mode;
+  try{ localStorage.setItem(ZOOM_KEY, mode); }catch(e){}
+  var wraps = document.querySelectorAll('.zoomwrap');
+  var base = (mode === 'fit') ? 0 : (mode === 'a4' ? 595 : 952);
+  Array.prototype.forEach.call(wraps, function(w){
+    var inner = w.querySelector('.zoominner');
+    var img = inner && inner.querySelector('img');
+    if (!img) return;
+    w.classList.toggle('free', base > 0);
+    w.classList.toggle('lock', base === 0);
+    if (base > 0){ img.style.width = base + 'px'; img.style.height = 'auto'; }
+    else { img.style.width = '100%'; img.style.height = 'auto'; }
+  });
+  var bar = document.getElementById('zoomBar');
+  if (bar) Array.prototype.forEach.call(bar.querySelectorAll('button'), function(b){
+    b.classList.toggle('on', b.getAttribute('data-zoom') === mode);
+  });
+}
+function setZoom(mode){ applyZoom(mode); }
+try{ var saved = localStorage.getItem(ZOOM_KEY); if (saved) zoomMode = saved; }catch(e){}
+applyZoom(zoomMode);
+function nav(n) {
+  n = Math.min(total, Math.max(1, n|0));
+  cur = n;
+  var el = document.getElementById('pg' + n);
+  if (el) el.scrollIntoView({behavior: 'auto', block: 'start'});
+  document.getElementById('pageno').value = n;
+  // 从目录跳转后收起抽屉，否则手机上抽屉会一直盖住正文
+  toggleToc(false);
+  return false;
+}
+function jumpCh(p) { nav(parseInt(p)); }
+function toggleToc(force) {
+  var t = document.getElementById('toc'), m = document.getElementById('mask');
+  var open = (force === undefined) ? !t.classList.contains('open') : force;
+  t.classList.toggle('open', open); m.classList.toggle('on', open);
+}
+// 滚动时同步页码（IntersectionObserver 轻量替代）
+var ticking = false;
+window.addEventListener('scroll', function() {
+  if (ticking) return; ticking = true;
+  requestAnimationFrame(function() {
+    var best = 1, bestTop = 1e9;
+    document.querySelectorAll('.pgwrap').forEach(function(w) {
+      var t = Math.abs(w.getBoundingClientRect().top - 60);
+      if (t < bestTop) { bestTop = t; best = parseInt(w.dataset.page); }
+    });
+    cur = best; document.getElementById('pageno').value = best;
+    var sel = document.getElementById('chsel');
+    for (var i = 0; i < sel.options.length; i++) {
+      // 章节下拉保持用户选择，不随滚动变动
+    }
+    ticking = false;
+  });
+}, {passive: true});
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { nav(cur + 1); e.preventDefault(); }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') { nav(cur - 1); e.preventDefault(); }
+  if (e.key === 'Home') { nav(1); }
+  if (e.key === 'End') { nav(total); }
+});
+</script>
+</body></html>
