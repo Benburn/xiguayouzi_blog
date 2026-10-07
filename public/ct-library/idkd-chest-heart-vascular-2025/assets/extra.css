@@ -1,0 +1,219 @@
+/* =====================================================================
+   IDKD / IAEA 中译阅读版 · 补充样式（在 style.css 之后加载）
+   新增：语义表格、要点框、项目符号、分卷、章末注、图注英文副行
+   ===================================================================== */
+
+/* ---------- 要点框（Learning Objectives / Key Points） ---------- */
+.box {
+  background: linear-gradient(180deg, rgba(14,124,134,.075), rgba(14,124,134,.035));
+  border: 1px solid rgba(14,124,134,.22);
+  border-left: 3px solid var(--teal);
+  border-radius: 8px;
+  padding: 14px 18px 10px;
+  margin: 14px 0 18px;
+}
+html[data-theme="dark"] .box {
+  background: linear-gradient(180deg, rgba(65,179,189,.10), rgba(65,179,189,.045));
+  border-color: rgba(65,179,189,.30);
+}
+.box .box-t {
+  font-weight: 700;
+  color: var(--teal-strong);
+  font-size: 15px;
+  letter-spacing: .01em;
+  margin-bottom: 6px;
+}
+.box .p { margin: 6px 0; }
+
+/* ---------- 项目符号列表 ---------- */
+ul.blist {
+  margin: 6px 0 10px 0;
+  padding-left: 1.25em;
+}
+ul.blist li {
+  margin: 4px 0;
+  line-height: 1.75;
+}
+.box ul.blist { margin: 4px 0 8px; }
+.box ul.blist li::marker { color: var(--teal); }
+
+/* ---------- 语义表格 ---------- */
+figure.datatbl { margin: 18px 0; }
+figure.datatbl figcaption {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+figure.datatbl figcaption b { color: var(--teal-strong); }
+figure.datatbl .tw { overflow-x: auto; border-radius: 8px; border: 1px solid var(--line-2); }
+figure.datatbl table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+figure.datatbl thead th {
+  background: rgba(14,124,134,.10);
+  color: var(--ink);
+  font-weight: 700;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line-2);
+  white-space: nowrap;
+}
+html[data-theme="dark"] figure.datatbl thead th { background: rgba(65,179,189,.14); }
+figure.datatbl tbody td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+figure.datatbl tbody tr:last-child td { border-bottom: none; }
+figure.datatbl tbody tr:nth-child(even) { background: rgba(14,124,134,.028); }
+html[data-theme="dark"] figure.datatbl tbody tr:nth-child(even) { background: rgba(65,179,189,.045); }
+figure.datatbl tbody td:first-child { font-weight: 600; white-space: nowrap; }
+
+/* ---------- 分卷（Part） ---------- */
+section.part {
+  margin: 46px 0 10px;
+  padding: 26px 22px;
+  text-align: center;
+  border-top: 1px solid var(--line-2);
+  border-bottom: 1px solid var(--line-2);
+  background: linear-gradient(180deg, rgba(14,124,134,.05), transparent);
+}
+.part-t {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--teal-strong);
+  letter-spacing: .02em;
+}
+
+/* ---------- 章末注（版权/DOI 行） ---------- */
+.chnote {
+  margin: 26px 0 8px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line-2);
+  font-size: 12px;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+/* ---------- 图注英文副行 ---------- */
+figcaption .en, .cap .en, .refs-head .en {
+  display: block;
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 3px;
+  font-weight: 400;
+}
+.refs-head .en { display: inline; margin-left: 6px; }
+
+/* ---------- 单位/通讯地址脚注 ---------- */
+p.affil {
+  font-size: 13px;
+  color: var(--ink-2);
+  margin: 4px 0;
+  line-height: 1.65;
+}
+p.affil:first-of-type { margin-top: 10px; }
+
+/* ---------- 正文内 h1（少见于 IDKD，兜底） ---------- */
+h2.h1in { font-size: 22px; margin-top: 30px; }
+
+/* ---------- 页内小节标题层级视觉（IDKD 数字层级较深） ---------- */
+.page h4 { font-size: 15.5px; margin-top: 1.15em; }
+.page h5 { font-size: 14.5px; color: var(--ink-2); margin-top: 1.05em; }
+
+/* ---------- 前置页整页图 ---------- */
+figure.pageimg {
+  margin: 14px 0 22px;
+  text-align: center;
+}
+figure.pageimg img {
+  max-width: min(760px, 100%);
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  background: #fff;
+}
+figure.pageimg figcaption {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 6px;
+}
+
+figure.pageimg.lic img { max-width: min(620px, 100%); opacity: .92; }
+
+/* ---------- 缩略词/键值列表 ---------- */
+.kvlist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2px 22px;
+  margin: 12px 0 18px;
+  padding: 12px 16px;
+  background: var(--panel-2);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.kvi { display: flex; gap: 8px; padding: 3px 0; font-size: 14px; line-height: 1.6; }
+.kvk { min-width: 64px; font-weight: 700; color: var(--teal-strong); flex: 0 0 auto; }
+.kvv { color: var(--ink); }
+
+/* ---------- 碎片文本簇（无框线表格的散落单元格） ---------- */
+.cellgrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 10px 0 14px;
+  padding: 10px 14px;
+  background: var(--panel-2);
+  border: 1px dashed var(--line-2);
+  border-radius: 8px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.cellgrid span {
+  color: var(--ink);
+  padding: 1px 0;
+}
+.cellgrid span:not(:last-child)::after { content: "·"; color: var(--ink-3); margin-left: 10px; }
+
+/* ---------- 分图小标签（图下的 (a)/(b) 说明行） ---------- */
+figure.fig .figlabels {
+  margin-top: 6px;
+  padding: 6px 12px;
+  background: var(--panel-2);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+/* ---------- 公式（原版裁图保留） ---------- */
+figure.fx {
+  margin: 14px 0 18px;
+  text-align: center;
+  background: var(--panel-2);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+figure.fx img {
+  max-width: min(560px, 100%);
+  width: auto;
+  height: auto;
+  background: #fff;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+/* ---------- 连续阅读版式：页与页之间不留空白 ---------- */
+.srcmark { display: none; }
+.chapter > .p, .chapter > .fig, .chapter > .datatbl, .chapter > .box, .chapter > .kvlist,
+.chapter > .blist, .chapter > .refs-wrap, .chapter > .cellgrid, .chapter > .fx { margin-top: 10px; }
+.chapter > h2, .chapter > h3, .chapter > h4 { margin-top: 1.35em; }
+.page { padding: 0; }
+
+/* 连续版式下的首个小节标题间距 */
+.chapter > .srcmark:first-of-type + h2, .chapter > h2:first-of-type { margin-top: .9em; }

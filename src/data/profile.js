@@ -422,6 +422,47 @@ Ishikawa K, Miyamoto Y, Tsuchiya A, et al. Physical and histological comparison 
 
   // —— 医学影像 ——
   {
+    slug: "ct-diagnostic-imaging-library",
+    category: "imaging",
+    title: "CT 诊断影像书库（六册中文阅读版）",
+    excerpt:
+      "六册开放获取 CT 与影像诊断英文专著的中文阅读版合集：IDKD 诊断影像系列四册（腹部盆腔、脑头颈脊柱、胸部心血管、肌骨）、IAEA 心脏 PET/CT 图谱与《放射学-核医学诊断影像》，共 117 章、2,217 个源页、1,827 幅图表。",
+    date: "2026-10-07",
+    readTime: "6 册 · 2,217 源页 · 1,827 图",
+    cover: "/images/imaging/ct-diagnostic-imaging-library/cover.jpg",
+    tags: ["CT", "诊断影像", "IDKD", "PET/CT", "医学影像"],
+    body: `# CT 诊断影像书库（六册中文阅读版）
+
+![CT 诊断影像书库 · 六册合集封面](/images/imaging/ct-diagnostic-imaging-library/cover.jpg)
+
+书库收录六册**开放获取（Open Access）**出版的 CT 与影像诊断英文专著中文阅读版：IDKD 斯普林格诊断影像系列四册（腹部盆腔／脑头颈脊柱／胸部心血管／肌骨）、IAEA《心脏 PET/CT 图谱：病例研习方法》与《放射学-核医学诊断影像：A Correlative Approach》，合计 **117 章 · 2,217 个源页 · 1,827 幅图表 · 197 张表格**。
+
+每册均为全文中文翻译（参考文献、作者与单位、图表内英文标注按学术惯例保留原文），正文、图注、表格与原书页码一一对应，每个内容块都标注源页码，方便与原书或 PDF 对照；全部为离线自包含页面，打开即读。
+
+<aside class="medical-disclaimer"><strong>重要声明：</strong>六册原书均为开放获取出版物，合法免费来源与许可类型以各书版权页为准；本中文阅读版由机器翻译辅助整理，仅供医学教育、专业学习和个人学习使用，不能替代原版教材、规范化培训或执业医师的独立判断。译文术语以英文原文为准；内容不构成诊断、治疗或操作建议。</aside>
+
+## 书库目录（六册）
+
+1. **《放射学-核医学诊断影像》**（Springer · Wiley 2023）— 31 章 · 910 源页 · 图 827 · 表 62，[打开阅读](/ct-library/radiology-nuclear-medicine-2023/index.html)
+2. **《腹部与盆腔疾病 2023-2026：诊断影像》**（IDKD 2023）— 21 章 · 287 源页 · 图 207 · 表 20，[打开阅读](/ct-library/idkd-abdomen-pelvis-2023/index.html)
+3. **《脑、头颈与脊柱疾病 2024-2027：诊断影像》**（IDKD 2024）— 20 章 · 313 源页 · 图 228 · 表 27，[打开阅读](/ct-library/idkd-brain-headneck-spine-2024/index.html)
+4. **《胸部、心脏与血管系统疾病 2025-2028：诊断影像》**（IDKD 2025）— 20 章 · 255 源页 · 图 191 · 表 31，[打开阅读](/ct-library/idkd-chest-heart-vascular-2025/index.html)
+5. **《肌肉骨骼疾病 2026-2029：诊断影像》**（IDKD 2026）— 20 章 · 239 源页 · 图 214 · 表 19，[打开阅读](/ct-library/idkd-musculoskeletal-2026/index.html)
+6. **《IAEA 心脏 PET/CT 图谱：病例研习方法》**（IAEA · Springer 2022）— 5 章 · 213 源页 · 图 160 · 表 38，[打开阅读](/ct-library/iaea-cardiac-petct-2022/index.html)
+
+<p><a class="knowledge-card-launch" href="/ct-library/index.html">进入书库合集页（六册总入口） <span>→</span></a></p>
+
+## 阅读功能（六册一致）
+
+- **电脑端**：左侧固定目录随时跳转（章节可折叠），顶部搜索框全文检索正文、图注与表格，支持命中计数与上下跳转；
+- **手机 / 平板**：左上角 ☰ 按钮展开抽屉式目录，点按章节后自动收起；正文与图表随屏宽自适应，无横向滚动；
+- **图片放大**：点击任意图表进入灯箱，滚轮缩放、拖动平移、双击复位、Esc 关闭；
+- **深色模式**：一键切换，自动记忆并可选跟随系统；
+- **阅读进度与定位**：顶部实时显示全书阅读百分比，目录自动高亮当前章节；
+- **页码溯源**：每个内容块保留原书页码标签。
+`,
+  },
+  {
     slug: "ultrasound-residency-exam-standards",
     category: "imaging",
     title: "超声科规培结业考评分标准（2022版 · 蓝本原文版）",
