@@ -1,0 +1,971 @@
+/* ==========================================================================
+   《体表解剖图谱》彩图版 — 阅读层设计系统
+   设计方向：「临床图谱室」
+   纸感米白底 + 深墨蓝主色 + 青色强调（取自原书侧边章节色块）
+   全部字体走本机可用的中文印刷字体栈，无外部请求，保证离线可用。
+   ========================================================================== */
+
+/* --------------------------------------------------------------- tokens */
+:root {
+  color-scheme: light;
+
+  --paper:      #faf8f3;
+  --paper-2:    #f2eee4;
+  --surface:    #ffffff;
+  --surface-2:  #fbf9f5;
+  --ink:        #1b2a36;
+  --ink-2:      #46596a;
+  --ink-3:      #7d8d9b;
+  --ink-4:      #a9b5bf;
+  --navy:       #123451;
+  --navy-2:     #1d4e77;
+  --cyan:       #2e9bd6;
+  --cyan-2:     #a9d9f2;
+  --cyan-3:     #eaf5fc;
+  --line:       #e2dcd0;
+  --line-2:     #efeae0;
+  --mark:       #ffe9a8;
+  --mark-ink:   #4a3a00;
+  --shadow-sm:  0 1px 2px rgba(18, 52, 81, .06), 0 2px 8px rgba(18, 52, 81, .05);
+  --shadow-md:  0 2px 6px rgba(18, 52, 81, .07), 0 12px 32px rgba(18, 52, 81, .09);
+  --shadow-lg:  0 24px 70px rgba(8, 20, 32, .35);
+
+  --radius:     12px;
+  --radius-sm:  8px;
+  --sidebar-w:  336px;
+  --topbar-h:   60px;
+  --measure:    44rem;
+
+  --font-display: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "STSong",
+                  "SimSun", "Times New Roman", serif;
+  --font-body:    "Source Han Sans SC", "Noto Sans SC", "PingFang SC",
+                  "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", system-ui,
+                  -apple-system, sans-serif;
+  --font-mono:    "Cascadia Mono", "JetBrains Mono", Consolas, "SFMono-Regular",
+                  ui-monospace, monospace;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --paper:      #10151a;
+  --paper-2:    #161c22;
+  --surface:    #1a2129;
+  --surface-2:  #202830;
+  --ink:        #e7eef4;
+  --ink-2:      #aebcc8;
+  --ink-3:      #82919e;
+  --ink-4:      #5d6b78;
+  --navy:       #8cc4e8;
+  --navy-2:     #6fb2dd;
+  --cyan:       #4fb3e8;
+  --cyan-2:     #2c6c92;
+  --cyan-3:     #16293a;
+  --line:       #2b343d;
+  --line-2:     #232b33;
+  --mark:       #7a6318;
+  --mark-ink:   #ffeeb0;
+  --shadow-sm:  0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-md:  0 2px 6px rgba(0, 0, 0, .4), 0 12px 32px rgba(0, 0, 0, .45);
+  --shadow-lg:  0 24px 70px rgba(0, 0, 0, .7);
+}
+
+/* --------------------------------------------------------------- base */
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16.5px;
+  line-height: 1.85;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 极淡的纸纹，只做质感，不干扰阅读 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .35;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(46, 155, 214, .05), transparent 42%),
+    radial-gradient(circle at 84% 78%, rgba(18, 52, 81, .045), transparent 46%);
+}
+[data-theme="dark"] body::before { opacity: .5; }
+
+img { max-width: 100%; height: auto; }
+a { color: var(--navy-2); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+::selection { background: var(--cyan-2); color: #06121c; }
+[data-theme="dark"] ::selection { background: var(--cyan-2); color: #eef7ff; }
+
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 999;
+  background: var(--navy); color: #fff; padding: .6rem 1rem; border-radius: 0 0 8px 0;
+}
+.skip-link:focus { left: 0; }
+
+/* --------------------------------------------------------------- app shell */
+.app {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* The drawer scrim is an overlay, so it must be fixed in *every* viewport.
+   Left static it became an in-flow grid item, took the wide column, and pushed
+   <main> down into the sidebar column -- the whole book rendered 336px wide. */
+.scrim {
+  position: fixed; inset: var(--topbar-h) 0 0; z-index: 70;
+  background: rgba(8, 18, 28, .45);
+  opacity: 0; pointer-events: none; transition: opacity .2s ease;
+}
+.scrim.is-open { opacity: 1; pointer-events: auto; }
+
+/* Pin the content column instead of relying on auto-placement, so no future
+   overlay element can silently shift <main> into the narrow column. */
+@media (min-width: 1081px) {
+  .main { grid-column: 2; grid-row: 2; }
+}
+
+/* --------------------------------------------------------------- topbar */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  grid-column: 1 / -1;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: saturate(150%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+@supports not (background: color-mix(in srgb, red, blue)) {
+  .topbar { background: var(--paper); }
+}
+
+.topbar__brand {
+  display: flex; align-items: baseline; gap: 10px;
+  min-width: 0;
+  font-family: var(--font-display);
+}
+.topbar__title {
+  font-size: 1.06rem; font-weight: 700; letter-spacing: .04em;
+  color: var(--ink); white-space: nowrap;
+}
+.topbar__edition {
+  font-family: var(--font-body);
+  font-size: .62rem; letter-spacing: .16em; color: #fff;
+  background: var(--cyan); padding: .1rem .38rem; border-radius: 4px;
+  transform: translateY(-2px); white-space: nowrap;
+}
+.topbar__spacer { flex: 1 1 auto; }
+
+.iconbtn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 34px; min-width: 34px; padding: 0 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  border-radius: 8px;
+  font: inherit; font-size: .8rem;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+  white-space: nowrap;
+}
+.iconbtn:hover { border-color: var(--cyan); color: var(--navy); }
+.iconbtn svg { width: 16px; height: 16px; display: block; }
+.iconbtn--menu { display: none; }
+
+/* --- search --- */
+.search {
+  position: relative;
+  display: flex; align-items: center;
+  height: 34px;
+  min-width: 220px; max-width: 380px; flex: 0 1 380px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.search:focus-within { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-3); }
+.search__icon { width: 15px; height: 15px; margin: 0 4px 0 10px; color: var(--ink-3); flex: none; }
+.search__input {
+  flex: 1 1 auto; min-width: 0;
+  border: 0; background: transparent; color: var(--ink);
+  font: inherit; font-size: .84rem; height: 100%; padding: 0 4px;
+  outline: none;
+}
+.search__input::placeholder { color: var(--ink-4); }
+.search__count {
+  font-family: var(--font-mono); font-size: .7rem; color: var(--ink-3);
+  padding: 0 6px; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.search__nav { display: flex; align-items: center; gap: 2px; padding-right: 5px; }
+.search__nav button {
+  width: 22px; height: 22px; display: grid; place-items: center;
+  border: 0; background: transparent; color: var(--ink-3);
+  border-radius: 5px; cursor: pointer; padding: 0;
+}
+.search__nav button:hover { background: var(--cyan-3); color: var(--navy); }
+.search__nav button[disabled] { opacity: .35; cursor: default; }
+.search__nav svg { width: 13px; height: 13px; }
+
+mark.hit { background: var(--mark); color: var(--mark-ink); border-radius: 2px; padding: 0 .06em; }
+mark.hit.is-current { background: var(--cyan); color: #fff; }
+
+/* --------------------------------------------------------------- sidebar */
+.sidebar {
+  position: sticky;
+  top: var(--topbar-h);
+  align-self: start;
+  height: calc(100vh - var(--topbar-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper-2);
+  border-right: 1px solid var(--line);
+  padding: 20px 0 60px;
+  scrollbar-width: thin;
+}
+.sidebar::-webkit-scrollbar { width: 9px; }
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--line); border-radius: 9px; border: 3px solid var(--paper-2);
+}
+.sidebar::-webkit-scrollbar-thumb:hover { background: var(--ink-4); }
+
+.sidebar__head {
+  padding: 0 20px 12px;
+  font-size: .66rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-4); font-weight: 600;
+}
+
+.nav { list-style: none; margin: 0; padding: 0; }
+.nav__chapter > .nav__row { padding-left: 16px; }
+
+.nav__row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 16px 7px 20px;
+  color: var(--ink-2);
+  font-size: .875rem;
+  line-height: 1.45;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+.nav__row:hover { background: var(--surface); color: var(--ink); text-decoration: none; }
+
+.nav__num {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: .7rem; color: var(--ink-4);
+  min-width: 1.9em;
+  font-variant-numeric: tabular-nums;
+}
+.nav__label { flex: 1 1 auto; min-width: 0; }
+
+.nav__chapter > .nav__row {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: .95rem; color: var(--ink);
+  padding-top: 9px; padding-bottom: 9px;
+}
+.nav__chapter > .nav__row .nav__num {
+  color: #fff; background: var(--ch, var(--cyan));
+  border-radius: 5px; min-width: 1.6em; text-align: center;
+  font-size: .66rem; padding: .12em 0; font-weight: 700;
+}
+.nav__chapter.is-open > .nav__row { border-left-color: var(--ch, var(--cyan)); }
+
+.nav__section > .nav__row {
+  padding-left: 24px; font-weight: 600; font-size: .82rem; color: var(--ink-2);
+}
+.nav__section > .nav__row .nav__num { display: none; }
+
+.nav__item > .nav__row { padding-left: 44px; font-size: .8rem; color: var(--ink-3); }
+.nav__item > .nav__row .nav__num { display: none; }
+
+.nav__sub { list-style: none; margin: 0; padding: 0; display: none; }
+.nav__chapter.is-open > .nav__sub,
+.nav__section.is-open > .nav__sub { display: block; }
+
+.nav__row.is-active {
+  background: var(--surface);
+  color: var(--navy);
+  border-left-color: var(--ch, var(--cyan));
+  font-weight: 600;
+}
+.nav__row.is-active .nav__label { text-decoration: underline; text-underline-offset: 4px; }
+
+.nav__caret {
+  flex: none; width: 12px; height: 12px; color: var(--ink-4);
+  transition: transform .18s ease;
+}
+.nav__chapter.is-open > .nav__row .nav__caret,
+.nav__section.is-open > .nav__row .nav__caret { transform: rotate(90deg); }
+.nav__leaf-mark { flex: none; width: 12px; }
+
+/* --------------------------------------------------------------- main */
+.main { min-width: 0; padding: 0 0 120px; }
+
+.wrap { max-width: var(--measure); margin: 0 auto; padding: 0 28px; }
+.wrap--wide { max-width: 62rem; }
+
+/* --- cover --- */
+.cover {
+  position: relative;
+  padding: 52px 0 40px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+.cover__grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 232px; gap: 40px; align-items: end;
+}
+.cover__kicker {
+  font-size: .68rem; letter-spacing: .3em; color: var(--cyan); font-weight: 700;
+  margin-bottom: 14px;
+}
+.cover__title {
+  font-family: var(--font-display);
+  /* sized so the six-character title always fits on one line inside the
+     reading measure next to the cover plate -- it must never break as
+     体表解剖图 / 谱 */
+  font-size: clamp(2.1rem, 4.4vw, 3.35rem);
+  line-height: 1.1; letter-spacing: .05em; font-weight: 700;
+  color: var(--navy); margin: 0 0 6px; white-space: nowrap;
+}
+.cover__pinyin {
+  font-family: var(--font-mono); font-size: .74rem; letter-spacing: .34em;
+  color: var(--ink-4); text-transform: uppercase; margin-bottom: 22px;
+}
+.cover__meta { font-size: .86rem; color: var(--ink-2); line-height: 2; }
+.cover__meta b { color: var(--ink); font-weight: 600; }
+.cover__rule {
+  height: 3px; width: 76px; background: var(--cyan); border-radius: 2px; margin: 22px 0;
+}
+.cover__figure {
+  margin: 0; border-radius: var(--radius); overflow: hidden;
+  box-shadow: var(--shadow-md); border: 1px solid var(--line);
+  background: var(--surface);
+}
+.cover__figure img { display: block; width: 100%; }
+
+.stat-row {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px;
+}
+.stat {
+  display: flex; align-items: baseline; gap: 7px;
+  padding: 8px 14px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line);
+  font-size: .78rem; color: var(--ink-2);
+}
+.stat b {
+  font-family: var(--font-mono); font-size: .98rem; color: var(--navy);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- chapter --- */
+.chapter { padding-top: 8px; }
+
+.chapter__head {
+  position: relative;
+  padding: 64px 0 28px;
+  margin-bottom: 18px;
+  border-bottom: 2px solid var(--ch, var(--cyan));
+}
+.chapter__head::after {
+  content: ""; position: absolute; left: 0; bottom: -2px;
+  width: 108px; height: 6px; background: var(--ch, var(--cyan)); border-radius: 0 0 3px 3px;
+}
+.chapter__eyebrow {
+  font-size: .7rem; letter-spacing: .26em; font-weight: 700;
+  color: var(--ch, var(--cyan)); margin-bottom: 10px;
+}
+.chapter__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.6vw, 2.7rem);
+  line-height: 1.14; letter-spacing: .06em; font-weight: 700;
+  color: var(--navy); margin: 0;
+}
+.chapter__ghost {
+  position: absolute; right: 0; top: 30px;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 8.4rem; line-height: .72;
+  color: var(--ch, var(--cyan)); opacity: .09;
+  pointer-events: none; user-select: none;
+}
+.chapter__intro {
+  display: flex; flex-wrap: wrap; gap: 8px 18px;
+  margin-top: 14px; font-size: .78rem; color: var(--ink-3);
+}
+.chapter__intro span { display: inline-flex; align-items: center; gap: 6px; }
+.chapter__intro b { color: var(--ink-2); font-weight: 600; }
+
+/* --- section --- */
+.section { padding: 34px 0 4px; }
+.section__head {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 0 6px;
+  scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+.section__head::before {
+  content: ""; width: 4px; height: 1.35em; border-radius: 2px;
+  background: var(--ch, var(--cyan)); flex: none;
+}
+.section__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.3rem; letter-spacing: .05em; color: var(--ink); margin: 0;
+}
+.section__page {
+  font-family: var(--font-mono); font-size: .68rem; color: var(--ink-4);
+  margin-left: auto; font-variant-numeric: tabular-nums;
+}
+
+/* --- entry --- */
+.entry { padding: 22px 0 6px; scroll-margin-top: calc(var(--topbar-h) + 16px); }
+.entry__head {
+  display: flex; align-items: baseline; gap: 11px;
+  margin: 0 0 12px;
+}
+.entry__badge {
+  flex: none;
+  display: inline-grid; place-items: center;
+  min-width: 26px; height: 26px; padding: 0 7px;
+  border-radius: 7px;
+  background: var(--ch-soft, var(--cyan-3));
+  color: var(--ch, var(--cyan));
+  font-family: var(--font-display); font-weight: 700; font-size: .84rem;
+  transform: translateY(3px);
+}
+.entry__title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.13rem; letter-spacing: .03em; color: var(--ink); margin: 0;
+}
+.entry__page {
+  font-family: var(--font-mono); font-size: .68rem; color: var(--ink-4);
+  margin-left: auto; font-variant-numeric: tabular-nums;
+}
+
+/* --- prose --- */
+.page > p { margin: 0 0 1.05em; text-align: justify; }
+.page > p:last-child { margin-bottom: 0; }
+.page > p + p { margin-top: -.15em; }
+
+/* 【要点提示】/【体表定位】 卡片 */
+.callout {
+  position: relative;
+  margin: 1.15rem 0;
+  padding: 15px 20px 15px 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--cyan);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  box-shadow: var(--shadow-sm);
+}
+.callout__tag {
+  display: inline-block;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: .82rem; letter-spacing: .06em;
+  color: var(--cyan);
+  margin-bottom: .3em;
+}
+.callout p { margin: 0 0 .7em; text-align: justify; }
+.callout p:last-child { margin-bottom: 0; }
+
+.callout--locate { border-left-color: var(--navy); }
+.callout--locate .callout__tag { color: var(--navy); }
+
+.orphan-caption {
+  margin: .9rem 0; padding: 10px 14px;
+  background: var(--surface-2); border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  font-size: .84rem; color: var(--ink-2); text-align: center;
+}
+
+/* --- plate / figure group --- */
+.plate { margin: 1.6rem 0 1.9rem; }
+
+.plate__stack { display: grid; gap: 16px; }
+.plate__stack--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.plate__stack--3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+@media (max-width: 720px) {
+  .plate__stack--2, .plate__stack--3 { grid-template-columns: minmax(0, 1fr); }
+}
+
+figure.image-block {
+  margin: 0;
+  position: relative;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease;
+}
+figure.image-block:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--cyan-2);
+  transform: translateY(-1px);
+}
+figure.image-block > img {
+  display: block; width: 100%; height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #fff;
+  cursor: zoom-in;
+}
+[data-theme="dark"] figure.image-block > img { background: #f4f1ec; }
+
+figcaption {
+  margin-top: 9px;
+  font-size: .8rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: pretty;
+}
+figcaption b { color: var(--ink); font-weight: 600; }
+
+/* 图版字母与图版名：字母沿用原书印在照片下方的 A/B/C 标注，
+   仅当 build_pages.py 以「互为最近」规则确认了字母归属时才输出；
+   图版名只在它确实位于该张照片正下方时归属到这张照片。 */
+figure.image-block > figcaption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin: 10px auto 0;
+}
+.figtag {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 7px;
+  background: var(--cyan-3);
+  color: var(--cyan);
+  border: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .04em;
+}
+.figcap {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: .84rem;
+  color: var(--ink);
+  letter-spacing: .03em;
+  text-wrap: pretty;
+}
+
+/* 图版组图注：图名 + 原书 A/B 图例，逐字照录 */
+.plate__caption {
+  margin-top: 14px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ch, var(--cyan));
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: .82rem;
+  line-height: 1.75;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: pretty;
+}
+.plate__caption b {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .98rem;
+  letter-spacing: .04em;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.plate__caption span { display: block; }
+
+/* 整页图版（原页无法忠实拆解时保留整块） */
+.plate--fullpage figure.image-block { padding: 8px; }
+.plate--fullpage figure.image-block > img { border-radius: 8px; }
+
+/* --- source page marker --- */
+.page-marker {
+  display: flex; align-items: center; gap: 12px;
+  margin: 40px 0 6px;
+  font-family: var(--font-mono); font-size: .66rem; letter-spacing: .12em;
+  color: var(--ink-4);
+  scroll-margin-top: calc(var(--topbar-h) + 16px);
+}
+.page-marker::after {
+  content: ""; flex: 1 1 auto; height: 1px; background: var(--line-2);
+}
+.page-marker b { color: var(--ink-3); font-weight: 600; }
+
+/* 原页仅作图片保留时（前言/目录等） */
+.page-facsimile { margin: 20px 0 8px; }
+.page-facsimile figure.image-block > img { cursor: zoom-in; }
+
+/* 原页影印：只在 OCR 有版面未取到文字时出现，默认折叠，不干扰阅读 */
+.page-source {
+  margin: 26px 0 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+  overflow: hidden;
+}
+.page-source > summary {
+  padding: 11px 16px;
+  cursor: pointer;
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: .02em;
+  list-style: none;
+}
+.page-source > summary::-webkit-details-marker { display: none; }
+.page-source > summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 8px;
+  color: var(--cyan);
+  transition: transform .18s ease;
+}
+.page-source[open] > summary::before { transform: rotate(90deg); }
+.page-source > summary:hover { color: var(--navy); }
+.page-source figure.image-block { margin: 0; padding: 0 16px; }
+.page-source figure.image-block > img { cursor: zoom-in; }
+.page-source__note {
+  margin: 0; padding: 10px 16px 14px;
+  font-size: .72rem; color: var(--ink-4); line-height: 1.75;
+}
+.page-facsimile__note {
+  margin: 10px 0 0; font-size: .76rem; color: var(--ink-3); text-align: center;
+}
+
+/* --- reference list --- */
+.refs { padding: 40px 0 10px; }
+.refs ol { margin: 0; padding-left: 1.5em; }
+.refs li { margin-bottom: .5em; font-size: .88rem; color: var(--ink-2); }
+
+/* --- designed table of contents --- */
+.tocgrid {
+  columns: 2;
+  column-gap: 2.6rem;
+  margin-top: 8px;
+}
+@media (max-width: 860px) { .tocgrid { columns: 1; } }
+
+.tocgrid__col {
+  break-inside: avoid;
+  margin: 0 0 26px;
+  padding: 14px 16px 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--ch, var(--cyan));
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+.tocgrid__ch {
+  display: flex; align-items: baseline; gap: 9px;
+  padding-bottom: 9px; margin-bottom: 8px;
+  border-bottom: 1px solid var(--line-2);
+  color: var(--ink); text-decoration: none;
+}
+.tocgrid__ch:hover { text-decoration: none; color: var(--navy); }
+.tocgrid__num {
+  flex: none;
+  font-family: var(--font-mono); font-size: .64rem; letter-spacing: .08em;
+  color: #fff; background: var(--ch, var(--cyan));
+  padding: .2em .45em; border-radius: 4px;
+}
+.tocgrid__name {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 1.02rem; letter-spacing: .04em;
+}
+.tocgrid__pg {
+  margin-left: auto;
+  font-family: var(--font-mono); font-size: .74rem; color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
+.tocgrid__list { list-style: none; margin: 0; padding: 0; }
+.tocgrid__list ul { list-style: none; margin: 4px 0 8px; padding: 0 0 0 14px; }
+.tocgrid__list li a {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 3px 0;
+  font-size: .8rem; color: var(--ink-2); text-decoration: none;
+}
+.tocgrid__list li a:hover { color: var(--navy); text-decoration: none; }
+.tocgrid__list li a i {
+  margin-left: auto; font-style: normal;
+  font-family: var(--font-mono); font-size: .68rem; color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
+.tocgrid__sec {
+  font-weight: 600; color: var(--ink) !important;
+  font-size: .83rem !important;
+  border-left: 2px solid var(--ch, var(--cyan));
+  padding-left: 8px !important;
+}
+
+/* --- chapter footer nav --- */
+.chapter-nav {
+  display: flex; gap: 12px; justify-content: space-between;
+  margin: 56px 0 0; padding-top: 22px; border-top: 1px solid var(--line);
+}
+.chapter-nav a, .chapter-nav span {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 11px 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line); background: var(--surface);
+  font-size: .82rem; color: var(--ink-2); max-width: 46%;
+  text-decoration: none;
+}
+.chapter-nav a:hover { border-color: var(--cyan); color: var(--navy); text-decoration: none; }
+.chapter-nav em {
+  font-style: normal; font-size: .64rem; letter-spacing: .14em; color: var(--ink-4);
+}
+.chapter-nav .is-next { text-align: right; margin-left: auto; }
+
+/* --------------------------------------------------------------- lightbox */
+.lightbox {
+  position: fixed; inset: 0; z-index: 200;
+  display: none;
+  background: rgba(6, 13, 20, .96);
+  backdrop-filter: blur(5px);
+}
+.lightbox.is-open { display: block; }
+
+/* The stage is inset so the photo can never sit under the caption strip above it
+   or the control bar below it -- on a phone the image used to run the full height
+   and both overlays landed on top of the anatomy. Fit and pan maths read
+   stage.clientWidth/Height, so shrinking the stage keeps every clamp correct. */
+.lightbox__stage {
+  position: absolute; inset: 74px 0 92px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* Landscape phones have ~375px of height: give the stage back the room it can. */
+@media (max-height: 540px) {
+  .lightbox__stage { inset: 52px 0 64px; }
+  .lightbox__caption { padding: 8px 16px; font-size: .78rem; }
+  .lightbox__bar { bottom: 10px; padding: 4px 7px; }
+  .lightbox__close { top: 8px; right: 10px; width: 34px; height: 34px; }
+}
+.lightbox__stage.is-dragging { cursor: grabbing; }
+.lightbox__img {
+  position: absolute;
+  top: 0; left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+  max-width: none;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .6);
+  background: #fff;
+  border-radius: 4px;
+}
+
+.lightbox__bar {
+  position: absolute; left: 50%; bottom: 22px;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 9px;
+  background: rgba(22, 30, 38, .92);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  box-shadow: var(--shadow-lg);
+  z-index: 3;
+}
+.lightbox__bar button {
+  height: 32px; min-width: 34px; padding: 0 10px;
+  display: inline-grid; place-items: center;
+  border: 0; border-radius: 999px;
+  background: transparent; color: #dce7ef;
+  font: inherit; font-size: .78rem; cursor: pointer;
+}
+.lightbox__bar button:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.lightbox__bar button[disabled] { opacity: .3; cursor: default; }
+.lightbox__bar svg { width: 16px; height: 16px; }
+.lightbox__zoom {
+  font-family: var(--font-mono); font-size: .72rem; color: #9fb3c2;
+  min-width: 4.2em; text-align: center; font-variant-numeric: tabular-nums;
+}
+.lightbox__sep { width: 1px; height: 20px; background: rgba(255, 255, 255, .14); margin: 0 3px; }
+
+.lightbox__caption {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 3;
+  padding: 16px 22px;
+  background: linear-gradient(rgba(6, 13, 20, .88), transparent);
+  color: #e9f2f8; font-size: .84rem; line-height: 1.6;
+  pointer-events: none;
+}
+.lightbox__caption b {
+  font-family: var(--font-mono); font-size: .68rem; letter-spacing: .12em;
+  color: var(--cyan-2); display: block; margin-bottom: 3px; font-weight: 600;
+}
+.lightbox__close {
+  position: absolute; right: 18px; top: 14px; z-index: 4;
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border: 1px solid rgba(255, 255, 255, .16); border-radius: 50%;
+  background: rgba(22, 30, 38, .8); color: #fff; cursor: pointer;
+}
+.lightbox__close:hover { background: rgba(255, 255, 255, .18); }
+.lightbox__close svg { width: 18px; height: 18px; }
+
+/* --------------------------------------------------------------- back to top */
+.totop {
+  position: fixed; right: 22px; bottom: 22px; z-index: 90;
+  width: 40px; height: 40px; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: var(--surface); color: var(--ink-2);
+  box-shadow: var(--shadow-md); cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.totop.is-shown { opacity: 1; pointer-events: auto; }
+.totop:hover { color: var(--navy); border-color: var(--cyan); transform: translateY(-2px); }
+.totop svg { width: 17px; height: 17px; }
+
+/* --------------------------------------------------------------- progress */
+.progress {
+  position: fixed; left: 0; top: 0; height: 3px; z-index: 100;
+  background: var(--cyan); width: 0;
+  transition: width .12s linear;
+}
+
+/* --------------------------------------------------------------- offline badge */
+.offline-note {
+  margin: 30px auto 0; max-width: var(--measure); padding: 0 28px;
+  font-size: .74rem; color: var(--ink-4); line-height: 1.8;
+}
+.offline-note code {
+  font-family: var(--font-mono); font-size: .92em;
+  background: var(--paper-2); padding: .1em .35em; border-radius: 4px;
+}
+
+/* --------------------------------------------------------------- responsive */
+@media (max-width: 1080px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .sidebar {
+    position: fixed;
+    top: var(--topbar-h);
+    left: 0;
+    /* An explicit height is required: `top` + `bottom: 0` + `height: auto`
+       collapsed on narrow viewports (measured 320x568: y=0, height=792 instead
+       of y=60, height=508) which pushed the drawer over the top bar and made the
+       menu button untappable while it was open. */
+    bottom: auto;
+    height: calc(100vh - var(--topbar-h));
+    height: calc(100dvh - var(--topbar-h));
+    width: min(88vw, var(--sidebar-w));
+    z-index: 80;
+    transform: translateX(-102%);
+    transition: transform .24s ease;
+    box-shadow: var(--shadow-lg);
+    -webkit-overflow-scrolling: touch;
+  }
+  .sidebar.is-open { transform: none; }
+  .iconbtn--menu { display: inline-flex; }
+}
+
+/* The cover keeps its two columns down to tablet width -- a landscape phone is
+   wide but short, and stacking it there wasted half the screen. Only phones
+   stack it. */
+@media (max-width: 720px) {
+  .cover__grid { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .cover__figure { max-width: 260px; }
+}
+
+/* Touch screens get finger-sized controls (>=40px) instead of mouse-sized ones. */
+@media (pointer: coarse) {
+  .iconbtn, .search { height: 40px; }
+  .iconbtn { min-width: 40px; }
+  .search__nav button { width: 34px; height: 40px; }
+  .nav__row { min-height: 42px; }
+  .lightbox__bar button { min-width: 40px; min-height: 40px; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .wrap { padding: 0 18px; }
+  .topbar { gap: 8px; padding: 0 12px; }
+  .topbar__title { font-size: .95rem; }
+  .topbar__edition { display: none; }
+  /* the brand keeps its width; the search absorbs the squeeze. With the brand
+     allowed to shrink, its nowrap title spilled out of its box and was covered
+     by the search field on a 320px screen ("体表解剖图" with the last glyph cut). */
+  .topbar__brand { flex: 0 0 auto; }
+  .topbar__spacer { display: none; }
+  .search { min-width: 88px; flex: 1 1 0; }
+  .search__count { display: none; }
+  .chapter__ghost { font-size: 5.4rem; top: 44px; }
+  .chapter-nav { flex-direction: column; }
+  .chapter-nav a, .chapter-nav span { max-width: none; }
+  .chapter-nav .is-next { text-align: left; margin-left: 0; }
+}
+
+/* Narrowest phones: the lightbox control bar was 324px wide inside a 320px
+   screen (2px cut off each side). Tighten the gaps and drop the separators
+   rather than let any control fall outside the screen. */
+@media (max-width: 420px) {
+  .lightbox__bar { gap: 4px; padding: 6px 8px; }
+  .lightbox__bar button { min-width: 36px; min-height: 36px; }
+  .lightbox__sep { display: none; }
+  .lightbox__zoom { min-width: 40px; font-size: .7rem; }
+  .lightbox__caption { font-size: .74rem; padding-inline: 12px; }
+  .topbar { gap: 6px; padding: 0 8px; }
+  .topbar__title { font-size: .88rem; }
+  .search__nav { display: none; }
+  .plate__stack--2, .plate__stack--3 { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* --------------------------------------------------------------- print */
+@media print {
+  :root {
+    --paper: #fff; --paper-2: #fff; --surface: #fff; --surface-2: #fff;
+    --ink: #000; --ink-2: #222; --ink-3: #444; --line: #bbb; --line-2: #ddd;
+    --shadow-sm: none; --shadow-md: none;
+  }
+  html, body { background: #fff; color: #000; font-size: 10.5pt; }
+  body::before { display: none; }
+  .topbar, .sidebar, .totop, .progress, .scrim, .lightbox,
+  .search, .chapter-nav, .offline-note, .page-marker::after { display: none !important; }
+  .app { display: block; }
+  .main { padding: 0; }
+  .wrap { max-width: none; padding: 0; }
+
+  .chapter { break-before: page; }
+  .chapter:first-of-type { break-before: auto; }
+  .chapter__head { padding-top: 0; }
+  .chapter__ghost { display: none; }
+
+  .section__head, .entry__head { break-after: avoid; }
+  .callout { break-inside: avoid; box-shadow: none; background: #fff; }
+  figure.image-block {
+    break-inside: avoid; box-shadow: none; background: #fff;
+    border: 1px solid #ccc; padding: 4px;
+  }
+  .figtag { background: #000; box-shadow: none; }
+  figcaption { color: #333; }
+  .plate__stack--2, .plate__stack--3 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .page-marker { color: #666; margin-top: 18px; }
+  a[href^="#"] { color: #000; text-decoration: none; }
+}
